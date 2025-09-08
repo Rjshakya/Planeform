@@ -1,18 +1,19 @@
-"use client";
 
+import { NodeViewProps } from "@tiptap/core";
+import React from "react";
+import { InsertLongInputParams } from "./node";
+import { NodeViewWrapper } from "@tiptap/react";
 import {
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { NodeViewWrapper, type NodeViewProps } from "@tiptap/react";
-import React from "react";
+import { Textarea } from "@/components/ui/textarea";
 
-const ShortInput = (props: NodeViewProps) => {
-  const { label, id, type, isRequired, placeholder, form } = props?.node?.attrs;
+export const LongInputView = (props: NodeViewProps) => {
+  const { label, id, isRequired, placeholder, form, rows } = props?.node
+    ?.attrs as InsertLongInputParams;
 
   return (
     <>
@@ -24,11 +25,11 @@ const ShortInput = (props: NodeViewProps) => {
             <FormItem className="mt-4 field">
               <FormLabel className=" text-2xl" id={id}>{label} </FormLabel>
               <FormControl>
-                <Input
-                  placeholder={placeholder}
-                  type={type}
+                <Textarea
                   required={isRequired}
+                  placeholder={placeholder}
                   {...field}
+                  rows={rows}
                 />
               </FormControl>
               {/* <FormDescription>{placeholder?.toString()}</FormDescription> */}
@@ -39,5 +40,3 @@ const ShortInput = (props: NodeViewProps) => {
     </>
   );
 };
-
-export default ShortInput;

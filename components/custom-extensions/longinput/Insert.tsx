@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -15,7 +16,7 @@ import { useCurrentEditor } from "@tiptap/react";
 import { useState } from "react";
 import { v4 } from "uuid";
 
-export const InsertShortInput = ({
+export const InsertLongInput = ({
   setOpen,
 }: {
   setOpen?: (open: boolean) => void;
@@ -23,35 +24,30 @@ export const InsertShortInput = ({
   const { editor } = useCurrentEditor();
   const [label, setlabel] = useState("");
   const [placeholder, setPlaceHolder] = useState("");
-  // const [open, setOpen] = useState(false);
   const handleInsert = (label: string, placeholder: string) => {
-    editor?.commands?.insertShortInput({
+    editor?.commands?.insertLongInput({
       id: v4(),
       isRequired: false,
       label,
       placeholder,
-      type: "text",
       form: useFormStore.getState()?.getHookForm()!,
+      rows: 10,
     });
 
     setlabel("");
     setPlaceHolder("");
-    setOpen?.(false)
-    // setOpen(false);
+    setOpen?.(false);
   };
 
   return (
     <>
       {/* <DialogTrigger asChild>
         <Button variant={"ghost"} size={"sm"}>
-          Short Input
+          Long Input
         </Button>
       </DialogTrigger> */}
-      {/* <DialogHeader>
-        <DialogTitle>Configure short input</DialogTitle>
-      </DialogHeader> */}
 
-      <DialogTitle>Configure short input</DialogTitle>
+      <DialogTitle>Configure long input</DialogTitle>
       <Label>Field Name</Label>
       <Input
         value={label}
@@ -67,13 +63,16 @@ export const InsertShortInput = ({
         placeholder="place holder for input field"
       />
 
-      <Button
-        variant={"ghost"}
-        size={"lg"}
-        onClick={() => handleInsert(label, placeholder)}
-      >
-        Insert
-      </Button>
+      <DialogFooter>
+        <DialogClose></DialogClose>
+        <Button
+          variant={"ghost"}
+          size={"lg"}
+          onClick={() => handleInsert(label, placeholder)}
+        >
+          Insert
+        </Button>
+      </DialogFooter>
     </>
   );
 };

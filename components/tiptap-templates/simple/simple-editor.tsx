@@ -76,6 +76,9 @@ import { FieldValues, useForm, UseFormReturn } from "react-hook-form";
 import { Form } from "@/components/ui/form";
 import { shortInputNode } from "@/components/custom-extensions/shortinput/node";
 import { InsertShortInput } from "@/components/custom-extensions/shortinput/Insert";
+import { longInputNode } from "@/components/custom-extensions/longinput/node";
+import { multipleChoiceNode } from "@/components/custom-extensions/multiple-choices/node";
+import { CustomInputsDropdown } from "@/components/custom-input-dropdown";
 
 // import content from "@/components/tiptap-templates/simple/data/content.json";
 
@@ -145,7 +148,7 @@ const MainToolbarContent = ({
       <Spacer />
 
       <ToolbarGroup>
-        <InsertShortInput />
+         <CustomInputsDropdown/>
       </ToolbarGroup>
 
       {isMobile && <ToolbarSeparator />}
@@ -210,7 +213,6 @@ export function SimpleEditor({
         "aria-label": "Main content area, start typing to enter text.",
         class: "simple-editor min-h-[80vh]",
       },
-
     },
     extensions: [
       StarterKit.configure({
@@ -238,10 +240,11 @@ export function SimpleEditor({
         onError: (error: any) => console.error("Upload failed:", error),
       }),
       shortInputNode,
+      longInputNode,
+      multipleChoiceNode,
     ],
     editable: true,
     content: "Main content area, start typing to enter text.",
-
   });
 
   const rect = useCursorVisibility({
@@ -249,6 +252,10 @@ export function SimpleEditor({
     overlayHeight: toolbarRef.current?.getBoundingClientRect().height ?? 0,
   });
 
+  const onSubmit = (values:any) => {
+    console.log(values);
+  }
+ 
   React.useEffect(() => {
     if (!isMobile && mobileView !== "main") {
       setMobileView("main");
@@ -264,8 +271,8 @@ export function SimpleEditor({
           style={{
             ...(isMobile
               ? {
-                bottom: `calc(100% - ${height - rect.y}px)`,
-              }
+                  bottom: `calc(100% - ${height - rect.y}px)`,
+                }
               : {}),
           }}
         >
