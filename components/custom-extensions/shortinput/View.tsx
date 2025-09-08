@@ -1,5 +1,6 @@
 "use client";
 
+import Component from "@/components/comp-46";
 import {
   FormControl,
   FormDescription,
@@ -22,14 +23,24 @@ const ShortInput = (props: NodeViewProps) => {
           name={label}
           render={({ field }) => (
             <FormItem className="mt-4 field">
-              <FormLabel className=" text-2xl" id={id}>{label} </FormLabel>
+              <FormLabel className=" text-2xl" id={id}>
+                {label}{" "}
+              </FormLabel>
               <FormControl>
-                <Input
-                  placeholder={placeholder}
-                  type={type}
-                  required={isRequired}
-                  {...field}
-                />
+                {type === "phone" ? (
+                  <Component
+                    value={field.value}
+                    valueChange={field.onChange}
+                    id={id}
+                  />
+                ) : (
+                  <Input
+                    placeholder={placeholder}
+                    type={type}
+                    required={isRequired}
+                    {...field}
+                  />
+                )}
               </FormControl>
               {/* <FormDescription>{placeholder?.toString()}</FormDescription> */}
             </FormItem>

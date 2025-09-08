@@ -79,6 +79,7 @@ import { InsertShortInput } from "@/components/custom-extensions/shortinput/Inse
 import { longInputNode } from "@/components/custom-extensions/longinput/node";
 import { multipleChoiceNode } from "@/components/custom-extensions/multiple-choices/node";
 import { CustomInputsDropdown } from "@/components/custom-input-dropdown";
+import { actionButtonNode } from "@/components/custom-extensions/action-btn/node";
 
 // import content from "@/components/tiptap-templates/simple/data/content.json";
 
@@ -148,7 +149,7 @@ const MainToolbarContent = ({
       <Spacer />
 
       <ToolbarGroup>
-         <CustomInputsDropdown/>
+        <CustomInputsDropdown />
       </ToolbarGroup>
 
       {isMobile && <ToolbarSeparator />}
@@ -242,6 +243,7 @@ export function SimpleEditor({
       shortInputNode,
       longInputNode,
       multipleChoiceNode,
+      actionButtonNode,
     ],
     editable: true,
     content: "Main content area, start typing to enter text.",
@@ -252,10 +254,10 @@ export function SimpleEditor({
     overlayHeight: toolbarRef.current?.getBoundingClientRect().height ?? 0,
   });
 
-  const onSubmit = (values:any) => {
+  const onSubmit = (values: any) => {
     console.log(values);
-  }
- 
+  };
+
   React.useEffect(() => {
     if (!isMobile && mobileView !== "main") {
       setMobileView("main");
@@ -291,7 +293,10 @@ export function SimpleEditor({
         </Toolbar>
 
         <Form {...form}>
-          <form className=" w-full h-full">
+          <form
+            onSubmit={form?.handleSubmit(onSubmit)}
+            className=" w-full h-full"
+          >
             <EditorContent
               editor={editor}
               role="presentation"

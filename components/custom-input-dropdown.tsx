@@ -14,6 +14,8 @@ import { InsertMultipleChoice } from "./custom-extensions/multiple-choices/Inser
 import { Button } from "./ui/button";
 import { useMultiDialogStore } from "@/stores/useMultiDialogStore";
 import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
+import { InsertActionBtn } from "./custom-extensions/action-btn/Insert";
+import { InsertPhoneInput } from "./custom-extensions/phoneinput/Insert";
 
 export const CustomInputsDropdown = () => {
   const { setOpenMultiChoiceInput } = useMultiDialogStore();
@@ -30,7 +32,7 @@ export const CustomInputsDropdown = () => {
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <Card className="py-1">
-            <CardContent className="px-1">
+            <CardContent className="px-1 grid gap-1">
               <DropdownMenuItem
                 onClick={() => {
                   setOpen(true);
@@ -55,6 +57,14 @@ export const CustomInputsDropdown = () => {
               >
                 Multiple choice
               </DropdownMenuItem>
+
+              <DropdownMenuItem asChild>
+                <InsertPhoneInput />
+              </DropdownMenuItem>
+
+              <DropdownMenuItem asChild>
+                <InsertActionBtn />
+              </DropdownMenuItem>
             </CardContent>
           </Card>
         </DropdownMenuContent>
@@ -63,8 +73,8 @@ export const CustomInputsDropdown = () => {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           {dialog === "multiple" && <InsertMultipleChoice setOpen={setOpen} />}
-          {dialog === "short" && <InsertShortInput  setOpen={setOpen}/>}
-          {dialog === "long" && <InsertLongInput setOpen={setOpen}/>}
+          {dialog === "short" && <InsertShortInput setOpen={setOpen} />}
+          {dialog === "long" && <InsertLongInput setOpen={setOpen} />}
         </DialogContent>
       </Dialog>
     </>
