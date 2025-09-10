@@ -16,6 +16,7 @@ import { useMultiDialogStore } from "@/stores/useMultiDialogStore";
 import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
 import { InsertActionBtn } from "./custom-extensions/action-btn/Insert";
 import { InsertPhoneInput } from "./custom-extensions/phoneinput/Insert";
+import { InsertDateInput } from "./custom-extensions/date-input/Insert";
 
 export const CustomInputsDropdown = () => {
   const { setOpenMultiChoiceInput } = useMultiDialogStore();
@@ -58,7 +59,18 @@ export const CustomInputsDropdown = () => {
                 Multiple choice
               </DropdownMenuItem>
 
-              <DropdownMenuItem asChild>
+             
+
+              <DropdownMenuItem
+                onClick={() => {
+                  setOpen(true);
+                  setDialog("Date");
+                }}
+              >
+                Date input
+              </DropdownMenuItem>
+
+               <DropdownMenuItem asChild>
                 <InsertPhoneInput />
               </DropdownMenuItem>
 
@@ -75,6 +87,7 @@ export const CustomInputsDropdown = () => {
           {dialog === "multiple" && <InsertMultipleChoice setOpen={setOpen} />}
           {dialog === "short" && <InsertShortInput setOpen={setOpen} />}
           {dialog === "long" && <InsertLongInput setOpen={setOpen} />}
+          {dialog === "Date" && <InsertDateInput setOpen={setOpen} />}
         </DialogContent>
       </Dialog>
     </>

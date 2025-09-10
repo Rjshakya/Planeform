@@ -1,5 +1,6 @@
 "use client";
 
+import DateComponent from "@/components/comp-41";
 import Component from "@/components/comp-46";
 import {
   FormControl,
@@ -9,6 +10,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { parseDate } from "@internationalized/date";
 import { NodeViewWrapper, type NodeViewProps } from "@tiptap/react";
 import React from "react";
 
@@ -23,7 +25,7 @@ const ShortInput = (props: NodeViewProps) => {
           name={label}
           render={({ field }) => (
             <FormItem className="mt-4 field">
-              <FormLabel className=" text-2xl" id={id}>
+              <FormLabel aria-label={label}  className=" text-2xl" id={id}>
                 {label}{" "}
               </FormLabel>
               <FormControl>
@@ -33,6 +35,11 @@ const ShortInput = (props: NodeViewProps) => {
                     valueChange={field.onChange}
                     id={id}
                   />
+                ) : type === "Date" ? (
+                  <DateComponent
+                    value={field?.value}
+                    onValueChange={field?.onChange}
+                  />
                 ) : (
                   <Input
                     placeholder={placeholder}
@@ -41,6 +48,20 @@ const ShortInput = (props: NodeViewProps) => {
                     {...field}
                   />
                 )}
+
+                {/* {type === "Date" ? (
+                  <DateComponent
+                    value={field?.value}
+                    onValueChange={field?.onChange}
+                  />
+                ) : (
+                  <Input
+                    placeholder={placeholder}
+                    type={type}
+                    required={isRequired}
+                    {...field}
+                  />
+                )} */}
               </FormControl>
               {/* <FormDescription>{placeholder?.toString()}</FormDescription> */}
             </FormItem>

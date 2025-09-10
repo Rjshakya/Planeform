@@ -4,32 +4,28 @@ import { FileSpreadsheet } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-
+import Dashboard from "../dashboard/page";
 
 export default async function Auth() {
-
   const session = await auth.api.getSession({
-    headers: await headers()
-  })
+    headers: await headers(),
+  });
 
   if (session?.session?.id) {
-    redirect("/dashboard")
+    redirect('/dashboard')
   }
 
   return (
     <main className="grid min-h-svh lg:grid-cols-2">
       <div className=" hidden  lg:flex items-center justify-center">
         <div className=" w-[400px] h-[400px] relative ">
-
           <Image
             src={"/auth-image.jpg"}
             alt="Image"
             fill
             className=" rounded-2xl"
           />
-
         </div>
-
       </div>
       <div className="flex flex-col gap-4 p-6 md:px-8">
         <div className="flex justify-center gap-2 md:justify-start">

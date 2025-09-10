@@ -1,5 +1,5 @@
 import { betterAuth } from "better-auth";
-import { getDB } from "./db";
+import { db } from "./db";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import {
   account,
@@ -8,7 +8,7 @@ import {
   verification,
 } from "@/app/db/schema/auth-schema";
 
-const db = await getDB();
+
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",

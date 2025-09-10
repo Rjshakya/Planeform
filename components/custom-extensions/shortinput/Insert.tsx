@@ -42,14 +42,6 @@ export const InsertShortInput = ({
 
   return (
     <>
-      {/* <DialogTrigger asChild>
-        <Button variant={"ghost"} size={"sm"}>
-          Short Input
-        </Button>
-      </DialogTrigger> */}
-      {/* <DialogHeader>
-        <DialogTitle>Configure short input</DialogTitle>
-      </DialogHeader> */}
 
       <DialogTitle>Configure short input</DialogTitle>
       <Label>Field Name</Label>

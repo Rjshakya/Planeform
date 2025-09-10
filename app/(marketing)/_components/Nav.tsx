@@ -1,8 +1,13 @@
 import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 
 
 export const Nav = () => {
+     
+
+     
+
   return (
     <nav className="w-full py-2 px-2 border rounded-lg max-w-2xl mx-auto">
       <div className="wrapper flex justify-between items-center">
