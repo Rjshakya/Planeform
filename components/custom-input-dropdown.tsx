@@ -17,14 +17,18 @@ import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
 import { InsertActionBtn } from "./custom-extensions/action-btn/Insert";
 import { InsertPhoneInput } from "./custom-extensions/phoneinput/Insert";
 import { InsertDateInput } from "./custom-extensions/date-input/Insert";
+import { useCurrentEditor } from "@tiptap/react";
 
 export const CustomInputsDropdown = () => {
   const { setOpenMultiChoiceInput } = useMultiDialogStore();
   const [open, setOpen] = useState(false);
   const [dialog, setDialog] = useState("");
+  const { editor } = useCurrentEditor()
+  
 
   return (
     <>
+    
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant={"ghost"} size={"sm"}>

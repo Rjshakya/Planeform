@@ -32,7 +32,6 @@ export const InsertMultipleChoice = ({
     if (!editor) return;
     editor?.commands?.insertmultipleChoiceInput({
       id: v4(),
-      form: useFormStore.getState().getHookForm()!,
       label,
       options,
       type: "single",
@@ -48,7 +47,7 @@ export const InsertMultipleChoice = ({
 
   const handleAddOptions = () => {
     const copy = options ? [...options] : [];
-    copy?.push({ value: `option-${copy?.length + 1}`, id: copy?.length + 1 });
+    copy?.push({ label: `option-${copy?.length + 1}`, id: `${copy?.length + 1}` });
     setOptions(copy);
   };
 
@@ -77,12 +76,12 @@ export const InsertMultipleChoice = ({
                 <Input
                   onChange={(e) => {
                     const copy = [...options];
-                    copy[i].value = e?.currentTarget?.value;
+                    copy[i].label = e?.currentTarget?.value;
                     setOptions(copy);
                   }}
-                  value={o?.value}
+                  value={o?.label}
                   type="text"
-                  placeholder={o?.value}
+                  placeholder={o?.label}
                 />
                 <Button
                   onClick={() => {

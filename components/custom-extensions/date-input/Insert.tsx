@@ -20,7 +20,6 @@ export const InsertDateInput = ({
 
     editor?.commands?.insertShortInput({
       id: v4(),
-      form: useFormStore.getState().getHookForm()!,
       isRequired: true,
       label: label,
       placeholder: "m",

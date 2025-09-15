@@ -12,7 +12,6 @@ export const InsertPhoneInput = () => {
 
     editor?.commands?.insertShortInput({
       id: v4(),
-      form: useFormStore?.getState()?.getHookForm()!,
       isRequired: true,
       label: "Phone no:",
       placeholder: "",

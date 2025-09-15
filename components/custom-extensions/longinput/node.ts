@@ -9,7 +9,6 @@ export interface InsertLongInputParams {
   id: string;
   isRequired: boolean;
   placeholder: string;
-  form: UseFormReturn;
   rows: number;
 }
 
@@ -27,7 +26,6 @@ export const longInputNode = Node.create({
       label: { default: "Label:" },
       placeholder: { default: "" },
       isRequired: { default: true },
-      form: { default: null },
       rows: { default: 8 },
     };
   },
@@ -47,7 +45,7 @@ export const longInputNode = Node.create({
   addCommands() {
     return {
       insertLongInput:
-        ({ label, id, isRequired, placeholder, form, rows }) =>
+        ({ label, id, isRequired, placeholder, rows }) =>
         ({ commands }) => {
           return commands.insertContent({
             type: "LongInput",
@@ -56,7 +54,6 @@ export const longInputNode = Node.create({
               id,
               isRequired,
               placeholder,
-              form,
               rows,
             },
           });

@@ -1,31 +1,24 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   ArrowDown,
   ArrowUp,
   Bell,
-  Copy,
-  CornerUpLeft,
-  CornerUpRight,
-  FileText,
-  GalleryVerticalEnd,
-  LineChart,
   Link,
   LogOut,
   MoreHorizontal,
   Settings2,
   Star,
   Trash,
-  Trash2,
-} from "lucide-react"
+} from "lucide-react";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
 import {
   Sidebar,
   SidebarContent,
@@ -34,10 +27,22 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import { signOut } from "@/lib/auth-client"
-import { redirect } from "next/navigation"
-import { ThemeToggle } from "./tiptap-templates/simple/theme-toggle"
+} from "@/components/ui/sidebar";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { signOut } from "@/lib/auth-client";
+import { ThemeToggle } from "./tiptap-templates/simple/theme-toggle";
+import { useEditorStore } from "@/stores/useEditorStore";
+import { FormEditor } from "@/app/dashboard/[slug]/form/_components/FormEditor";
+import { useFormStore } from "@/stores/useformStore";
+import { useForm } from "react-hook-form";
+import { usePathname } from "next/navigation";
 
 const data = [
   [
@@ -76,24 +81,41 @@ const data = [
       icon: LogOut,
     },
   ],
-]
+];
 
 export function NavActions() {
-  const [isOpen, setIsOpen] = React.useState(false)
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [jsonContent, setJsonContent] = React.useState<any>();
+  const pathName = usePathname();
 
-  React.useEffect(() => {
-    setIsOpen(true)
-  }, [])
+  const handlePreview = () => {
+    const editor = useEditorStore.getState().getEditor();
+
+    console.log(editor);
+
+    if (!editor) return;
+
+    const json = editor.getJSON();
+    console.log(json);
+
+    setJsonContent(json);
+  };
+
+  // console.log(form);
 
   return (
     <div className="flex items-center gap-2 text-sm">
-      <div className="text-muted-foreground hidden font-medium md:inline-block">
+      {/* <div className="text-muted-foreground hidden font-medium md:inline-block">
         Edit Oct 08
-      </div>
+      </div> */}
+
+      
+
       <Button variant="ghost" size="icon" className="h-7 w-7">
         <Star />
       </Button>
-      <ThemeToggle/>
+      <ThemeToggle />
+
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -116,14 +138,15 @@ export function NavActions() {
                     <SidebarMenu>
                       {group.map((item, index) => (
                         <SidebarMenuItem key={index}>
-                          <SidebarMenuButton onClick={async () => {
-                            if (item.label === "Log out") {
-                              await signOut()
-
-                            } else {
-                              return;
-                            }
-                          }}>
+                          <SidebarMenuButton
+                            onClick={async () => {
+                              if (item.label === "Log out") {
+                                await signOut();
+                              } else {
+                                return;
+                              }
+                            }}
+                          >
                             <item.icon /> <span>{item.label}</span>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
@@ -137,5 +160,5 @@ export function NavActions() {
         </PopoverContent>
       </Popover>
     </div>
-  )
+  );
 }

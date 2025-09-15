@@ -103,12 +103,13 @@ export const MarkButton = React.forwardRef<HTMLButtonElement, MarkButtonProps>(
         <TooltipTrigger asChild>
           <Button
             type="button"
+            className={`${isActive && 'bg-muted'}`}
             disabled={!canToggle}
             variant={"ghost"}
+            size={"sm"}
             data-disabled={!canToggle}
             aria-label={label}
             aria-pressed={isActive}
-            tooltip={label}
             onClick={handleClick}
             {...buttonProps}
             ref={ref}
@@ -124,9 +125,7 @@ export const MarkButton = React.forwardRef<HTMLButtonElement, MarkButtonProps>(
             )}
           </Button>
         </TooltipTrigger>
-        <TooltipContent>
-          <p>{type}</p>
-        </TooltipContent>
+        <TooltipContent>{label}</TooltipContent>
       </Tooltip>
     );
   }

@@ -15,7 +15,6 @@ import { Superscript } from "@tiptap/extension-superscript";
 import { Selection } from "@tiptap/extensions";
 
 // --- UI Primitives ---
-import { Button } from "@/components/tiptap-ui-primitive/button";
 import { Spacer } from "@/components/tiptap-ui-primitive/spacer";
 import {
   Toolbar,
@@ -45,11 +44,7 @@ import {
   ColorHighlightPopoverContent,
   ColorHighlightPopoverButton,
 } from "@/components/tiptap-ui/color-highlight-popover";
-import {
-  LinkPopover,
-  LinkContent,
-  LinkButton,
-} from "@/components/tiptap-ui/link-popover";
+import { LinkContent } from "@/components/tiptap-ui/link-popover";
 import { MarkButton } from "@/components/tiptap-ui/mark-button";
 import { TextAlignButton } from "@/components/tiptap-ui/text-align-button";
 import { UndoRedoButton } from "@/components/tiptap-ui/undo-redo-button";
@@ -65,7 +60,7 @@ import { useWindowSize } from "@/hooks/use-window-size";
 import { useCursorVisibility } from "@/hooks/use-cursor-visibility";
 
 // --- Components ---
-import { ThemeToggle } from "@/components/tiptap-templates/simple/theme-toggle";
+// import { ThemeToggle } from "@/components/tiptap-templates/simple/theme-toggle";
 
 // --- Lib ---
 import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils";
@@ -75,23 +70,44 @@ import "@/components/tiptap-templates/simple/simple-editor.scss";
 import { FieldValues, useForm, UseFormReturn } from "react-hook-form";
 import { Form } from "@/components/ui/form";
 import { shortInputNode } from "@/components/custom-extensions/shortinput/node";
-import { InsertShortInput } from "@/components/custom-extensions/shortinput/Insert";
 import { longInputNode } from "@/components/custom-extensions/longinput/node";
 import { multipleChoiceNode } from "@/components/custom-extensions/multiple-choices/node";
 import { CustomInputsDropdown } from "@/components/custom-input-dropdown";
 import { actionButtonNode } from "@/components/custom-extensions/action-btn/node";
-
-// import content from "@/components/tiptap-templates/simple/data/content.json";
+import { toast } from "sonner";
+import { useEditorStore } from "@/stores/useEditorStore";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { usePathname } from "next/navigation";
+import { useFormStore } from "@/stores/useformStore";
+import { FormEditor } from "@/app/dashboard/[slug]/form/_components/FormEditor";
+import { PreviewForm } from "@/components/PreviewForm";
+import { TiptapMarkDropdown } from "@/components/tiptap-mark-dropdown";
+import { TiptapTextAlignDropdown } from "@/components/tiptap-text-align-dropdown";
+import { Input } from "@/components/ui/input";
+import { PublishForm } from "@/components/PublishForm";
+import { EditForm } from "@/components/EditForm";
 
 const MainToolbarContent = ({
   onHighlighterClick,
-  onLinkClick,
+  // onLinkClick,
   isMobile,
 }: {
   onHighlighterClick: () => void;
   onLinkClick: () => void;
   isMobile: boolean;
 }) => {
+
+
+   const forEditPage = usePathname().includes(`/edit/`)
+
   return (
     <div className=" bg-card flex p-1 rounded-sm mx-auto  overflow-auto ">
       <Spacer />
@@ -116,11 +132,7 @@ const MainToolbarContent = ({
       <ToolbarSeparator />
 
       <ToolbarGroup>
-        <MarkButton type="bold" />
-        <MarkButton type="italic" />
-        <MarkButton type="strike" />
-        <MarkButton type="code" />
-        <MarkButton type="underline" />
+        <TiptapMarkDropdown />
         {!isMobile ? (
           <ColorHighlightPopover />
         ) : (
@@ -134,10 +146,11 @@ const MainToolbarContent = ({
       <ToolbarSeparator />
 
       <ToolbarGroup>
-        <TextAlignButton align="left" />
+        {/* <TextAlignButton align="left" />
         <TextAlignButton align="center" />
         <TextAlignButton align="right" />
-        <TextAlignButton align="justify" />
+        <TextAlignButton align="justify" /> */}
+        <TiptapTextAlignDropdown />
       </ToolbarGroup>
 
       <ToolbarSeparator />
@@ -146,10 +159,22 @@ const MainToolbarContent = ({
         <ImageUploadButton text="Add" />
       </ToolbarGroup>
 
-      <Spacer />
+      <ToolbarSeparator />
 
       <ToolbarGroup>
         <CustomInputsDropdown />
+      </ToolbarGroup>
+
+      <ToolbarSeparator />
+
+      <ToolbarGroup className="ml-2">
+        <PreviewForm />
+      </ToolbarGroup>
+
+      <ToolbarSeparator />
+
+      <ToolbarGroup className="ml-1">
+        {forEditPage ? <EditForm/> : <PublishForm />}
       </ToolbarGroup>
 
       {isMobile && <ToolbarSeparator />}
@@ -191,9 +216,13 @@ const MobileToolbarContent = ({
 );
 
 export function SimpleEditor({
-  form,
+  parentform,
+  content,
+  isEditable,
 }: {
-  form: UseFormReturn<FieldValues, any, FieldValues>;
+  parentform: UseFormReturn<FieldValues, any, FieldValues> | null;
+  content?: any;
+  isEditable?: boolean;
 }) {
   // const form = useForm()
   const isMobile = useIsMobile();
@@ -203,6 +232,7 @@ export function SimpleEditor({
   >("main");
   const toolbarRef = React.useRef<HTMLDivElement>(null);
 
+  const form =  useForm();
   const editor = useEditor({
     immediatelyRender: false,
     shouldRerenderOnTransaction: false,
@@ -245,8 +275,8 @@ export function SimpleEditor({
       multipleChoiceNode,
       actionButtonNode,
     ],
-    editable: true,
-    content: "Main content area, start typing to enter text.",
+    editable: isEditable,
+    content: content,
   });
 
   const rect = useCursorVisibility({
@@ -256,6 +286,8 @@ export function SimpleEditor({
 
   const onSubmit = (values: any) => {
     console.log(values);
+    toast(JSON.stringify(values));
+    form?.resetField("name", { defaultValue: "" });
   };
 
   React.useEffect(() => {
@@ -264,43 +296,50 @@ export function SimpleEditor({
     }
   }, [isMobile, mobileView]);
 
+  React.useEffect(() => {
+    useEditorStore.setState({ editor: editor });
+    useFormStore.setState({ form: form });
+  }, [editor]);
+
   return (
     <div className="simple-editor-wrapper selection:bg-teal-200/30 dark:selection:bg-teal-700/40">
       <EditorContext.Provider value={{ editor }}>
-        <Toolbar
-          className=""
-          ref={toolbarRef}
-          style={{
-            ...(isMobile
-              ? {
-                  bottom: `calc(100% - ${height - rect.y}px)`,
-                }
-              : {}),
-          }}
-        >
-          {mobileView === "main" ? (
-            <MainToolbarContent
-              onHighlighterClick={() => setMobileView("highlighter")}
-              onLinkClick={() => setMobileView("link")}
-              isMobile={isMobile}
-            />
-          ) : (
-            <MobileToolbarContent
-              type={mobileView === "highlighter" ? "highlighter" : "link"}
-              onBack={() => setMobileView("main")}
-            />
-          )}
-        </Toolbar>
+        {isEditable && (
+          <Toolbar
+            className=""
+            ref={toolbarRef}
+            style={{
+              ...(isMobile
+                ? {
+                    bottom: `calc(100% - ${height - rect.y}px)`,
+                  }
+                : {}),
+            }}
+          >
+            {mobileView === "main" ? (
+              <MainToolbarContent
+                onHighlighterClick={() => setMobileView("highlighter")}
+                onLinkClick={() => setMobileView("link")}
+                isMobile={isMobile}
+              />
+            ) : (
+              <MobileToolbarContent
+                type={mobileView === "highlighter" ? "highlighter" : "link"}
+                onBack={() => setMobileView("main")}
+              />
+            )}
+          </Toolbar>
+        )}
 
-        <Form {...form}>
+        <Form {...form!}>
           <form
-            onSubmit={form?.handleSubmit(onSubmit)}
+            onSubmit={form?.handleSubmit?.(onSubmit)}
             className=" w-full h-full"
           >
             <EditorContent
               editor={editor}
               role="presentation"
-              className=" max-w-2xl w-full flex flex-col mx-auto flex- mt-8 md:px-4"
+              className=" max-w-2xl w-full flex flex-col mx-auto mt-8 md:px-4"
             />
           </form>
         </Form>

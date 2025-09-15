@@ -3,7 +3,6 @@ import { Node, mergeAttributes } from "@tiptap/core";
 import { ReactNodeViewRenderer } from "@tiptap/react";
 import { v4 } from "uuid";
 import ShortInput from "./View";
-import { UseFormReturn } from "react-hook-form";
 
 interface InsertShortInputParams {
   label: string;
@@ -11,7 +10,6 @@ interface InsertShortInputParams {
   type: string;
   isRequired: boolean;
   placeholder: string;
-  form: UseFormReturn;
 }
 
 // Extend the Commands interface to include your custom command
@@ -31,7 +29,6 @@ export const shortInputNode = Node.create({
       placeholder: { default: "" },
       type: { default: "text" },
       isRequired: { default: true },
-      form: { default: null },
     };
   },
 
@@ -50,11 +47,11 @@ export const shortInputNode = Node.create({
   addCommands() {
     return {
       insertShortInput:
-        ({ label, id, type, isRequired, placeholder, form }) =>
+        ({ label, id, type, isRequired, placeholder }) =>
         ({ commands }) => {
           return commands.insertContent({
             type: "shortInput",
-            attrs: { label, id, type, isRequired, placeholder, form },
+            attrs: { label, id, type, isRequired, placeholder },
           });
         },
     };

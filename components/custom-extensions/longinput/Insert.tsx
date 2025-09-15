@@ -30,7 +30,6 @@ export const InsertLongInput = ({
       isRequired: false,
       label,
       placeholder,
-      form: useFormStore.getState()?.getHookForm()!,
       rows: 10,
     });
 

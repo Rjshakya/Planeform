@@ -31,7 +31,6 @@ export const InsertShortInput = ({
       label,
       placeholder,
       type: "text",
-      form: useFormStore.getState()?.getHookForm()!,
     });
 
     setlabel("");

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 export const ActionButtonView = (props: NodeViewProps) => {
   const { id, text, type } = props?.node?.attrs as InsertActionButtonParams;
   return (
-    <NodeViewWrapper>
+    <NodeViewWrapper as={"div"}>
       <Button size={"lg"} className=" mt-6" id={id} type={"submit"}>
         {text}
       </Button>

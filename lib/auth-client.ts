@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 
 export const authClient = createAuthClient({
   baseURL: "http://localhost:3005",
+  
 });
 export const signIn = async () => {
   await authClient.signIn.social({

@@ -134,4 +134,43 @@
   body {
     @apply bg-background text-foreground tracking-tighter;
   }
+
+  .tiptap.ProseMirror {
+    h1,
+    h2,
+    h3,
+    h4 {
+      position: relative;
+      color: inherit;
+      font-style: inherit;
+
+      &:first-child {
+        margin-top: 0;
+      }
+    }
+
+    h1 {
+      font-weight: 700;
+      @apply text-7xl tracking-tighter mt-2
+     /* margin-top: .5em; */;
+    }
+
+    h2 {
+      font-size: 2em;
+      font-weight: 700;
+      margin-top: 1em;
+    }
+
+    h3 {
+      font-size: 1.125em;
+      font-weight: 600;
+      margin-top: 1em;
+    }
+
+    h4 {
+      font-size: 1em;
+      font-weight: 600;
+      margin-top: 1em;
+    }
+  }
 }

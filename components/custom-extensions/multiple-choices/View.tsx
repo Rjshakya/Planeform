@@ -13,10 +13,13 @@ import React from "react";
 import { InsertMultipleChoiceParams } from "./node";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Button } from "@/components/ui/button";
+import { useFormStore } from "@/stores/useformStore";
 
 export const MultipleChoiceView = (props: NodeViewProps) => {
-  const { form, id,  label, options, type } = props?.node
+  const { id, label, options, type } = props?.node
     ?.attrs as InsertMultipleChoiceParams;
+
+  const form = useFormStore.getState().getHookForm();
   return (
     <>
       <NodeViewWrapper as={"div"}>
@@ -25,24 +28,28 @@ export const MultipleChoiceView = (props: NodeViewProps) => {
           name={label}
           render={({ field }) => (
             <FormItem className="mt-4 field">
-              <FormLabel className=" text-2xl" id={id}>{label} </FormLabel>
+              <FormLabel className=" text-2xl" id={id}>
+                {label}{" "}
+              </FormLabel>
               <FormControl>
                 <ToggleGroup
                   type={"single"}
-                  value={field.value}
-                  onValueChange={field.onChange}
+                  value={field?.value}
+                  onValueChange={field?.onChange}
                   className=" grid grid-cols-2"
                 >
-                  {options?.map((o, i) => {
-                    return (
-                      <FormItem key={i}>
-                        {" "}
-                        <FormControl>
-                          <Option value={o?.value} index={i} />
-                        </FormControl>{" "}
-                      </FormItem>
-                    );
-                  })}
+                  {options &&
+                    options?.length > 0 &&
+                    options?.map?.((o, i) => {
+                      return (
+                        <FormItem key={i}>
+                          {" "}
+                          <FormControl>
+                            <Option value={o?.label} index={i} />
+                          </FormControl>{" "}
+                        </FormItem>
+                      );
+                    })}
                 </ToggleGroup>
               </FormControl>
               {/* <FormDescription>{placeholder?.toString()}</FormDescription> */}

@@ -116,6 +116,7 @@ export const ColorHighlightButton = React.forwardRef<
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
+            className={`${isActive && 'bg-muted'}`}
             type="button"
             variant={"ghost"}
             size={"sm"}

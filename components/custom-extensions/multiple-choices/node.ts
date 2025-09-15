@@ -5,15 +5,14 @@ import { v4 } from "uuid";
 import { MultipleChoiceView } from "./View";
 
 export interface Ioptions {
-  value: string;
-  id:number
+  label: string;
+  id:string
 }
 
 export interface InsertMultipleChoiceParams {
   id: string;
   label: string;
   type: string;
-  form: UseFormReturn;
   options: Ioptions[];
 }
 
@@ -31,8 +30,7 @@ export const multipleChoiceNode = Node.create({
       label: { default: "Label:" },
       type: { default: "multiple" },
       isRequired: { default: true },
-      form: { default: null },
-      options: { default: [{ value: "option-1" }] },
+      options: { default: [{ label: "option-1" }] },
     };
   },
 
@@ -51,11 +49,11 @@ export const multipleChoiceNode = Node.create({
   addCommands() {
     return {
       insertmultipleChoiceInput:
-        ({ label, id, type,  form, options }) =>
+        ({ label, id, type, options }) =>
         ({ commands }) => {
           return commands.insertContent({
             type: "multipleChoiceInput",
-            attrs: { label, id, type,  form, options },
+            attrs: { label, id, type, options },
           });
         },
     };

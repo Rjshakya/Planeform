@@ -1,4 +1,3 @@
-
 import { AppSidebar } from "@/components/app-sidebar";
 import { NavActions } from "@/components/nav-actions";
 import { Separator } from "@/components/ui/separator";
@@ -8,14 +7,11 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 
-
 export default async function DashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  
-
   return (
     <SidebarProvider>
       <AppSidebar />

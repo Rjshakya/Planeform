@@ -10,10 +10,13 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
+import { useFormStore } from "@/stores/useformStore";
 
 export const LongInputView = (props: NodeViewProps) => {
-  const { label, id, isRequired, placeholder, form, rows } = props?.node
+  const { label, id, isRequired, placeholder,  rows } = props?.node
     ?.attrs as InsertLongInputParams;
+
+    const form = useFormStore.getState().getHookForm()
 
   return (
     <>

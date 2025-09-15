@@ -103,7 +103,7 @@ export const HeadingButton = React.forwardRef<
         type="button"
         variant={"ghost"}
         size={"sm"}
-
+        className={`${isActive && 'bg-muted'}`}
         // data-active-state={isActive ? "on" : "off"}
         // role="button"
         // tabIndex={-1}

@@ -1,18 +1,15 @@
+"use client";
 import Image from "next/image";
 import SignIn from "./_components/SignIn";
 import { FileSpreadsheet } from "lucide-react";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import Dashboard from "../dashboard/page";
+import { authClient } from "@/lib/auth-client";
 
-export default async function Auth() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+export default function Auth() {
+  const { data } = authClient.useSession();
 
-  if (session?.session?.id) {
-    redirect('/dashboard')
+  if (data?.session?.id) {
+    redirect("/dashboard");
   }
 
   return (

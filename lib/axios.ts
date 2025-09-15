@@ -1,3 +1,4 @@
+import 'client-only';
 import axios from "axios";
 
 export const apiClient = axios.create({

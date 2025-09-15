@@ -96,6 +96,7 @@ export const ListButton = React.forwardRef<HTMLButtonElement, ListButtonProps>(
         type="button"
         variant={"ghost"}
         size={"sm"}
+        className={`${isActive && 'bg-muted'}`}
         
         // data-active-state={isActive ? "on" : "off"}
         disabled={!canToggle}
