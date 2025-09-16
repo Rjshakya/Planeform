@@ -85,7 +85,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { useFormStore } from "@/stores/useformStore";
 import { FormEditor } from "@/app/dashboard/[slug]/form/_components/FormEditor";
 import { PreviewForm } from "@/components/PreviewForm";
@@ -104,9 +104,7 @@ const MainToolbarContent = ({
   onLinkClick: () => void;
   isMobile: boolean;
 }) => {
-
-
-   const forEditPage = usePathname().includes(`/edit/`)
+  const forEditPage = usePathname().includes(`/edit/`);
 
   return (
     <div className=" bg-card flex p-1 rounded-sm mx-auto  overflow-auto ">
@@ -174,7 +172,7 @@ const MainToolbarContent = ({
       <ToolbarSeparator />
 
       <ToolbarGroup className="ml-1">
-        {forEditPage ? <EditForm/> : <PublishForm />}
+        {forEditPage ? <EditForm /> : <PublishForm />}
       </ToolbarGroup>
 
       {isMobile && <ToolbarSeparator />}
@@ -225,6 +223,8 @@ export function SimpleEditor({
   isEditable?: boolean;
 }) {
   // const form = useForm()
+  const router = useRouter();
+  const { formId } = useParams();
   const isMobile = useIsMobile();
   const { height } = useWindowSize();
   const [mobileView, setMobileView] = React.useState<
@@ -232,7 +232,7 @@ export function SimpleEditor({
   >("main");
   const toolbarRef = React.useRef<HTMLDivElement>(null);
 
-  const form =  useForm();
+  const form = useForm();
   const editor = useEditor({
     immediatelyRender: false,
     shouldRerenderOnTransaction: false,
@@ -284,10 +284,15 @@ export function SimpleEditor({
     overlayHeight: toolbarRef.current?.getBoundingClientRect().height ?? 0,
   });
 
-  const onSubmit = (values: any) => {
-    console.log(values);
-    toast(JSON.stringify(values));
-    form?.resetField("name", { defaultValue: "" });
+  const onSubmit = async (values: any) => {
+    if (!formId) return;
+    const res = await useFormStore
+      .getState()
+      .handleSubmit(values, formId as string);
+    if (res) {
+      router.push(`/thank-you`);
+    }
+    form.reset();
   };
 
   React.useEffect(() => {
@@ -334,7 +339,7 @@ export function SimpleEditor({
         <Form {...form!}>
           <form
             onSubmit={form?.handleSubmit?.(onSubmit)}
-            className=" w-full h-full"
+            className=" w-full h-full px-2"
           >
             <EditorContent
               editor={editor}

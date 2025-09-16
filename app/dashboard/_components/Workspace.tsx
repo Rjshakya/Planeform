@@ -55,7 +55,7 @@ export default function Workspace() {
       <div className=" header w-full">
         <div className=" w-full flex items-center justify-between p-2">
           <div className=" w-full">
-            <h3 className=" text-3xl font-medium">Workspaces</h3>
+            <h3 className=" text-3xl font-medium">Your Workspaces</h3>
           </div>
           <div className="">
             <Dialog>

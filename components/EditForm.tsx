@@ -17,6 +17,7 @@ import { useState } from "react";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
 import { apiClient } from "@/lib/axios";
+import { mutate } from "swr";
 
 export const EditForm = () => {
   const { editor } = useCurrentEditor();
@@ -35,7 +36,6 @@ export const EditForm = () => {
 
     setCreating(true);
     try {
-
       const promises = [
         await apiClient.patch(`/api/form/`, {
           formId,
@@ -46,8 +46,9 @@ export const EditForm = () => {
       ];
       await Promise.all(promises);
       toast(`form updated. successfully`);
-      setOpen(false)
+      setOpen(false);
       router.push(`/dashboard/workspace/${workspaceId}`);
+      mutate(`/api/form/${formId}`);
     } catch (e) {
       toast(`failed to save the form`);
     }

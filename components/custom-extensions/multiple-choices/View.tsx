@@ -25,10 +25,10 @@ export const MultipleChoiceView = (props: NodeViewProps) => {
       <NodeViewWrapper as={"div"}>
         <FormField
           control={form?.control}
-          name={label}
+          name={id}
           render={({ field }) => (
             <FormItem className="mt-4 field">
-              <FormLabel className=" text-2xl" id={id}>
+              <FormLabel htmlFor={label} className=" text-2xl" id={id}>
                 {label}{" "}
               </FormLabel>
               <FormControl>

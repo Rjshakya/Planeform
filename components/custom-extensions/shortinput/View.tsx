@@ -25,10 +25,10 @@ const ShortInput = (props: NodeViewProps) => {
         {form && (
           <FormField
             control={form?.control}
-            name={label}
+            name={id}
             render={({ field }) => (
-              <FormItem className="mt-4 field">
-                <FormLabel aria-label={label} className=" text-2xl" id={id}>
+              <FormItem  className="mt-4 field">
+                <FormLabel htmlFor={label}  aria-label={label} className=" text-2xl" id={id}>
                   {label}{" "}
                 </FormLabel>
                 <FormControl>
@@ -49,6 +49,7 @@ const ShortInput = (props: NodeViewProps) => {
                       type={type}
                       required={isRequired}
                       {...field}
+                      
                       
                     />
                   )}

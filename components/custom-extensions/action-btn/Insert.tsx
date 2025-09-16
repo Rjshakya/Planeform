@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useCurrentEditor } from "@tiptap/react";
+import { Loader2Icon } from "lucide-react";
 import React from "react";
 import { v4 } from "uuid";
 
