@@ -1,5 +1,6 @@
 "use client";
-import TanStackTable from "@/components/comp-485";
+import TanStackTable from "@/components/Data-table";
+import { Integrations } from "@/components/Integrations";
 import { Submissions } from "@/components/Submissions";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export default function Page() {
@@ -11,7 +12,7 @@ export default function Page() {
             Form
           </p>
         </div>
-        <TabsList className=" bg-background w-2xs h-full">
+        <TabsList className=" bg-background flex items-center gap-8">
           <TabsTrigger
             className=" p-0 text-left text-lg py-3.5 w-full h-full data-[state=active]:underline  data-[state=active]:underline-offset-4 "
             value="Submission"
@@ -24,13 +25,22 @@ export default function Page() {
           >
             Analytics
           </TabsTrigger>
+          <TabsTrigger
+            className=" p-0 text-left text-lg py-3.5 w-full h-full data-[state=active]:underline  data-[state=active]:underline-offset-4"
+            value="Integrations"
+          >
+            Integrations
+          </TabsTrigger>
         </TabsList>
-        <TabsContent className="px-1  grid gap-2 " value="Submission">
-          <p>Your form submissions are here.</p>
+        <TabsContent className="px-1  grid gap-2 mt-4 " value="Submission">
+          <p className="">Your form submissions are here.</p>
           <Submissions />
         </TabsContent>
-        <TabsContent className="px-1 mt-8" value="Analytics">
+        <TabsContent className="px-1 mt-4" value="Analytics">
           See analytics of your form here .
+        </TabsContent>
+        <TabsContent className="px-1 mt-4" value="Integrations">
+          <Integrations />
         </TabsContent>
       </Tabs>
     </main>

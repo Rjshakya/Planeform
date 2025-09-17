@@ -1,6 +1,14 @@
 "use client";
 
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -92,6 +100,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Iheads } from "./Submissions";
+import { mutate } from "swr";
 
 type Item = {
   id: string;
@@ -155,7 +164,7 @@ const statusFilterFn: FilterFn<Item> = (
 //     size: 180,
 //     filterFn: multiColumnFilterFn,
 //     enableHiding: false,
-    
+
 //   },
 //   {
 //     header: "Email",
@@ -206,34 +215,43 @@ const statusFilterFn: FilterFn<Item> = (
 //     },
 //     size: 120,
 //   },
-  // {
-  //   id: "actions",
-  //   header: () => <span className="sr-only">Actions</span>,
-  //   cell: ({ row }) => <RowActions row={row} />,
-  //   size: 60,
-  //   enableHiding: false,
-  // },
+// {
+//   id: "actions",
+//   header: () => <span className="sr-only">Actions</span>,
+//   cell: ({ row }) => <RowActions row={row} />,
+//   size: 60,
+//   enableHiding: false,
+// },
 // ];
 
-export default function TanStackTable({columns , tableData}:{columns:ColumnDef<Iheads>[] , tableData:any[]}) {
+export default function TanStackTable({
+  columns,
+  tableData,
+  states,
+  formId,
+}: {
+  columns: ColumnDef<Iheads>[];
+  tableData: any[];
+  states: {
+    pagination: PaginationState;
+    setPagination: Dispatch<SetStateAction<PaginationState>>;
+    pageCount: number;
+  };
+  formId: string;
+}) {
   const id = useId();
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  });
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [sorting, setSorting] = useState<SortingState>([
-    {
-      id: "name",
-      desc: false,
-    },
-  ]);
+  // const [sorting, setSorting] = useState<SortingState>([
+  //   {
+  //     id: "Name",
+  //     desc: false,
+  //   },
+  // ]);
 
   const [data, setData] = useState<any[]>(tableData);
-
 
   const handleDeleteRows = () => {
     const selectedRows = table.getSelectedRowModel().rows;
@@ -249,67 +267,25 @@ export default function TanStackTable({columns , tableData}:{columns:ColumnDef<I
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    onSortingChange: setSorting,
+    manualPagination: true,
+    pageCount: states?.pageCount ?? -1,
     enableSortingRemoval: false,
-    getPaginationRowModel: getPaginationRowModel(),
-    onPaginationChange: setPagination,
+    onPaginationChange: states.setPagination,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     getFilteredRowModel: getFilteredRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
     state: {
-      sorting,
-      pagination,
       columnFilters,
       columnVisibility,
+      pagination: states.pagination,
     },
   });
-
-  // Get unique status values
-  // const uniqueStatusValues = useMemo(() => {
-  //   const statusColumn = table.getColumn("status");
-
-  //   if (!statusColumn) return [];
-
-  //   const values = Array.from(statusColumn.getFacetedUniqueValues().keys());
-
-  //   return values.sort();
-  // }, [table.getColumn("status")?.getFacetedUniqueValues()]);
-
-  // // Get counts for each status
-  // const statusCounts = useMemo(() => {
-  //   const statusColumn = table.getColumn("status");
-  //   if (!statusColumn) return new Map();
-  //   return statusColumn.getFacetedUniqueValues();
-  // }, [table.getColumn("status")?.getFacetedUniqueValues()]);
-
-  // const selectedStatuses = useMemo(() => {
-  //   const filterValue = table.getColumn("status")?.getFilterValue() as string[];
-  //   return filterValue ?? [];
-  // }, [table.getColumn("status")?.getFilterValue()]);
-
-  // const handleStatusChange = (checked: boolean, value: string) => {
-  //   const filterValue = table.getColumn("status")?.getFilterValue() as string[];
-  //   const newFilterValue = filterValue ? [...filterValue] : [];
-
-  //   if (checked) {
-  //     newFilterValue.push(value);
-  //   } else {
-  //     const index = newFilterValue.indexOf(value);
-  //     if (index > -1) {
-  //       newFilterValue.splice(index, 1);
-  //     }
-  //   }
-
-  //   table
-  //     .getColumn("status")
-  //     ?.setFilterValue(newFilterValue.length ? newFilterValue : undefined);
-  // };
 
   return (
     <div className="space-y-4 overflow-auto">
       {/* Filters */}
-      
+
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-3 py-1.5">
           {/* Filter by name or email */}
@@ -319,13 +295,13 @@ export default function TanStackTable({columns , tableData}:{columns:ColumnDef<I
               ref={inputRef}
               className={cn(
                 "peer min-w-60 ps-9",
-                Boolean(table.getColumn('Name')?.getFilterValue()) && "pe-9"
+                Boolean(table?.getColumn?.("Name")?.getFilterValue()) && "pe-9"
               )}
               value={
-                (table.getColumn("Name")?.getFilterValue() ?? "") as string
+                (table?.getColumn("Name")?.getFilterValue() ?? "") as string
               }
               onChange={(e) =>
-                table.getColumn("Name")?.setFilterValue(e.target.value)
+                table?.getColumn("Name")?.setFilterValue(e.target.value)
               }
               placeholder="Filter by name or email..."
               type="text"
@@ -334,12 +310,12 @@ export default function TanStackTable({columns , tableData}:{columns:ColumnDef<I
             <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">
               <ListFilterIcon size={16} aria-hidden="true" />
             </div>
-            {Boolean(table.getColumn("Name")?.getFilterValue()) && (
+            {Boolean(table?.getColumn("Name")?.getFilterValue()) && (
               <button
                 className="text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md transition-[color,box-shadow] outline-none focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
                 aria-label="Clear filter"
                 onClick={() => {
-                  table.getColumn("name")?.setFilterValue("");
+                  table?.getColumn("Name")?.setFilterValue("");
                   if (inputRef.current) {
                     inputRef.current.focus();
                   }
@@ -349,7 +325,7 @@ export default function TanStackTable({columns , tableData}:{columns:ColumnDef<I
               </button>
             )}
           </div>
-          
+
           {/* Toggle columns visibility */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -573,24 +549,9 @@ export default function TanStackTable({columns , tableData}:{columns:ColumnDef<I
             aria-live="polite"
           >
             <span className="text-foreground">
-              {table.getState().pagination.pageIndex *
-                table.getState().pagination.pageSize +
-                1}
-              -
-              {Math.min(
-                Math.max(
-                  table.getState().pagination.pageIndex *
-                    table.getState().pagination.pageSize +
-                    table.getState().pagination.pageSize,
-                  0
-                ),
-                table.getRowCount()
-              )}
+              {table.getState().pagination.pageIndex + 1}
             </span>{" "}
-            of{" "}
-            <span className="text-foreground">
-              {table.getRowCount().toString()}
-            </span>
+            of <span className="text-foreground">{table.getPageCount()}</span>
           </p>
         </div>
 
@@ -599,7 +560,7 @@ export default function TanStackTable({columns , tableData}:{columns:ColumnDef<I
           <Pagination>
             <PaginationContent>
               {/* First page button */}
-              <PaginationItem>
+              {/* <PaginationItem>
                 <Button
                   size="icon"
                   variant="outline"
@@ -610,14 +571,21 @@ export default function TanStackTable({columns , tableData}:{columns:ColumnDef<I
                 >
                   <ChevronFirstIcon size={16} aria-hidden="true" />
                 </Button>
-              </PaginationItem>
+              </PaginationItem> */}
               {/* Previous page button */}
               <PaginationItem>
                 <Button
                   size="icon"
                   variant="outline"
                   className="disabled:pointer-events-none disabled:opacity-50"
-                  onClick={() => table.previousPage()}
+                  onClick={async () => {
+                    await mutate(
+                      `/api/response/form/${formId}?pageIndex=${states.pagination.pageIndex}&pageSize=${states.pagination.pageSize}`,
+                      undefined,
+                      { revalidate: false }
+                    );
+                    table.previousPage();
+                  }}
                   disabled={!table.getCanPreviousPage()}
                   aria-label="Go to previous page"
                 >
@@ -630,7 +598,14 @@ export default function TanStackTable({columns , tableData}:{columns:ColumnDef<I
                   size="icon"
                   variant="outline"
                   className="disabled:pointer-events-none disabled:opacity-50"
-                  onClick={() => table.nextPage()}
+                  onClick={async () => {
+                    await mutate(
+                      `/api/response/form/${formId}?pageIndex=${states.pagination.pageIndex}&pageSize=${states.pagination.pageSize}`,
+                      undefined,
+                      { revalidate: false }
+                    );
+                    table.nextPage();
+                  }}
                   disabled={!table.getCanNextPage()}
                   aria-label="Go to next page"
                 >
@@ -638,7 +613,7 @@ export default function TanStackTable({columns , tableData}:{columns:ColumnDef<I
                 </Button>
               </PaginationItem>
               {/* Last page button */}
-              <PaginationItem>
+              {/* <PaginationItem>
                 <Button
                   size="icon"
                   variant="outline"
@@ -649,7 +624,7 @@ export default function TanStackTable({columns , tableData}:{columns:ColumnDef<I
                 >
                   <ChevronLastIcon size={16} aria-hidden="true" />
                 </Button>
-              </PaginationItem>
+              </PaginationItem> */}
             </PaginationContent>
           </Pagination>
         </div>
@@ -685,7 +660,7 @@ export function RowActions({ row }: { row: Row<any> }) {
           <DropdownMenuItem>Share</DropdownMenuItem>
           <DropdownMenuItem>Add to favorites</DropdownMenuItem>
         </DropdownMenuGroup> */}
-        <DropdownMenuSeparator />
+        {/* <DropdownMenuSeparator /> */}
         <DropdownMenuItem className="text-destructive focus:text-destructive">
           <span>Delete</span>
           <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>

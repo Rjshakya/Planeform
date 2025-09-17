@@ -1,14 +1,12 @@
 "use client";
 import useSWR from "swr";
-import TanStackTable, { RowActions } from "./comp-485";
+import TanStackTable, { RowActions } from "./Data-table";
 import { apiClient } from "@/lib/axios";
 import { useParams } from "next/navigation";
 import { Loader } from "lucide-react";
-import { ColumnDef, FilterFn } from "@tanstack/react-table";
+import { ColumnDef, FilterFn, PaginationState } from "@tanstack/react-table";
 import { Checkbox } from "./ui/checkbox";
-import { Badge } from "./ui/badge";
-import { cn } from "@/lib/utils";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export interface Iheads {
   label: string;
@@ -18,9 +16,20 @@ const fetcher = (url: string) => apiClient.get(url);
 
 export const Submissions = () => {
   const { formId } = useParams();
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 2,
+  });
+  useEffect(() => {
+    console.log("Pagination state changed:", pagination);
+  }, [pagination]);
   const { data, error, isLoading } = useSWR(
-    `/api/response/form/${formId}`,
-    fetcher
+    `/api/response/form/${formId}?pageIndex=${pagination.pageIndex}&pageSize=${pagination.pageSize}`,
+    fetcher,
+    {
+      dedupingInterval:0,
+      // revalidateIfStale
+    }
   );
 
   const responses = data?.data?.responses;
@@ -28,7 +37,7 @@ export const Submissions = () => {
   const columns = useMemo(() => {
     const columnArr: ColumnDef<Iheads>[] = heads?.map((h) => {
       return {
-        id:h?.label,
+        id: h?.label,
         header: h?.label,
         accessorKey: h?.label,
         cell: ({ row }) => (
@@ -36,7 +45,6 @@ export const Submissions = () => {
         ),
         size: 180,
         enableHiding: true,
-        
       };
     });
 
@@ -65,20 +73,30 @@ export const Submissions = () => {
     });
 
     columnArr?.push({
-    id: "actions",
-    header: () => <span className="sr-only">Actions</span>,
-    cell: ({ row }) => <RowActions row={row} />,
-    size: 60,
-    enableHiding: false,
-  },)
+      id: "actions",
+      header: () => <span className="sr-only">Actions</span>,
+      cell: ({ row }) => <RowActions row={row} />,
+      size: 60,
+      enableHiding: false,
+    });
 
     return columnArr;
   }, [data]);
 
   if (error) return <p>error occurred</p>;
-  if (isLoading) return <Loader className=" animate-spin" />;
+  if (isLoading)
+    return (
+      <div className=" w-full min-h-[50vh] grid place-content-center">
+        <Loader className=" animate-spin" />
+      </div>
+    );
 
-  
-
-  return <TanStackTable tableData={responses?.res} columns={columns} />;
+  return (
+    <TanStackTable
+      states={{ pagination, setPagination, pageCount: responses?.totalPages }}
+      tableData={data?.data?.responses?.res || []}
+      columns={columns}
+      formId={formId as string}
+    />
+  );
 };
