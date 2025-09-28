@@ -3,9 +3,9 @@
 import {
   Dispatch,
   SetStateAction,
-  useEffect,
+ 
   useId,
-  useMemo,
+  
   useRef,
   useState,
 } from "react";
@@ -17,18 +17,15 @@ import {
   getCoreRowModel,
   getFacetedUniqueValues,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   PaginationState,
   Row,
-  SortingState,
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
 import {
   ChevronDownIcon,
-  ChevronFirstIcon,
-  ChevronLastIcon,
+
   ChevronLeftIcon,
   ChevronRightIcon,
   ChevronUpIcon,
@@ -36,7 +33,6 @@ import {
   CircleXIcon,
   Columns3Icon,
   EllipsisIcon,
-  FilterIcon,
   ListFilterIcon,
   PlusIcon,
   TrashIcon,
@@ -54,9 +50,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -64,33 +58,17 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Pagination,
   PaginationContent,
   PaginationItem,
 } from "@/components/ui/pagination";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import {
   Table,
   TableBody,
@@ -99,7 +77,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Iheads } from "./Submissions";
+import { Iheads } from "@/app/dashboard/[workspaceId]/form/view/[formId]/_components/Submissions";
 import { mutate } from "swr";
 
 type Item = {
@@ -494,7 +472,7 @@ export default function TanStackTable({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="last:py-0">
+                    <TableCell key={cell.id} className="last:py-0 border mx-8">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

@@ -6,22 +6,22 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "./ui/dialog";
-import { Label } from "./ui/label";
-import { Input } from "./ui/input";
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { useCurrentEditor } from "@tiptap/react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { filterFormFields } from "./PublishForm";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui//button";
 import { useState } from "react";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
 import { apiClient } from "@/lib/axios";
 import { mutate } from "swr";
+import { filterFormFields } from "../../../create/_components/PublishForm";
 
 export const EditForm = () => {
   const { editor } = useCurrentEditor();
-  const { slug: workspaceId, formId } = useParams();
+  const { workspaceId, formId } = useParams();
   const searchParams = useSearchParams();
   const [creating, setCreating] = useState(false);
   const [open, setOpen] = useState(false);

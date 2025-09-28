@@ -1,9 +1,30 @@
 import Link from "next/link";
-import { Badge } from "./ui/badge";
-import { Button } from "./ui/button";
-import { Card, CardContent, CardHeader } from "./ui/card";
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { authClient } from "@/lib/auth-client";
+import { useParams, useRouter } from "next/navigation";
 
 export const Integrations = () => {
+  const { workspaceId, formId } = useParams();
+  const clientUrl = process.env.NEXT_CLIENT_URL;
+  const router = useRouter();
+
+  console.log(clientUrl);
+
+  const linkGoogleSheet = async () => {
+    try {
+      await authClient.linkSocial({
+        provider: "google",
+        scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+        callbackURL: `http://localhost:3000/dashboard/${workspaceId}/form/view/${formId}`,
+      });
+      
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <div className=" w-full grid gap-4">
       <Card className=" header w-full grid gap-2 p-0 px-2 py-2">
@@ -34,14 +55,15 @@ export const Integrations = () => {
             <span>
               <p>Google</p>
             </span>
-            <Button variant={"ghost"} size={"sm"}>
+
+            <Button onClick={linkGoogleSheet} variant={"ghost"} size={"sm"}>
               connect
             </Button>
           </CardHeader>
           <CardContent className=" px-0 ">
-            <div className=" bg-background w-full h-44 relative overflow-hidden rounded-2xl">
+            <div className=" bg-muted w-full h-44 relative overflow-hidden rounded-2xl">
               <svg
-                className="absolute inset-0 w-full h-full pointer-events-none opacity-95 mix-blend-overlay"
+                className="absolute inset-0 w-full h-full pointer-events-none opacity-100 mix-blend-overlay"
                 preserveAspectRatio="none"
                 viewBox="0 0 100 100"
                 xmlns="http://www.w3.org/2000/svg"
@@ -52,15 +74,15 @@ export const Integrations = () => {
                     {/* fractalNoise produces the grain */}
                     <feTurbulence
                       type="fractalNoise"
-                      baseFrequency="0.9" /* tweak for grain size */
-                      numOctaves="2" /* tweak for complexity */
+                      baseFrequency="1" /* tweak for grain size */
+                      numOctaves="10" /* tweak for complexity */
                       stitchTiles="stitch"
                     />
                     {/* desaturate (make it grayscale) */}
                     <feColorMatrix type="saturate" values="0" />
                     {/* control alpha so noise is translucent */}
                     <feComponentTransfer>
-                      <feFuncA type="table" tableValues="0 0.35" />
+                      <feFuncA type="table" tableValues="0 0.75" />
                     </feComponentTransfer>
                   </filter>
                 </defs>
@@ -75,7 +97,7 @@ export const Integrations = () => {
               </svg>
 
               <div className="relative z-10 w-full h-full">
-                <p className="w-full absolute bottom-12 right-4 leading-24 opacity-25 text-9xl font-bold tracking-[-0.10em] capitalize -rotate-6  ">
+                <p className=" w-full absolute bottom-12 right-4 leading-24 opacity-35 text-9xl font-bold tracking-[-0.10em] capitalize -rotate-6  ">
                   Google
                 </p>
               </div>

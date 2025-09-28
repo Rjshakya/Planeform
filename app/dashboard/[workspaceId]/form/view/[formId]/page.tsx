@@ -1,8 +1,8 @@
 "use client";
-import TanStackTable from "@/components/Data-table";
-import { Integrations } from "@/components/Integrations";
-import { Submissions } from "@/components/Submissions";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Submissions } from "./_components/Submissions";
+import { Integrations } from "./_components/Integrations";
 export default function Page() {
   return (
     <main className=" w-full">

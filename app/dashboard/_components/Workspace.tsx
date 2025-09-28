@@ -23,10 +23,13 @@ import { Input } from "@/components/ui/input";
 const fetcher = (url: string) => apiClient.get(url).then((res) => res.data);
 
 export default function Workspace() {
-  const { data, error, isLoading, mutate } = useSWR("/api/workspace", fetcher);
   const [creating, setCreating] = useState(false);
   const { data: session, error: sessionError } = authClient.useSession();
   const [workspaceName, setWorkspaceName] = useState("");
+  const { data, error, isLoading, mutate } = useSWR(
+    `/api/workspace/${session?.user?.id}`,
+    fetcher
+  );
 
   if (sessionError) {
     signOut();

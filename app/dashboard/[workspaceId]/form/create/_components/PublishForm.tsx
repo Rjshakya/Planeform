@@ -6,10 +6,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "./ui/dialog";
-import { Button } from "./ui/button";
-import { Label } from "./ui/label";
-import { Input } from "./ui/input";
+} from "@/components/ui//dialog";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { useCurrentEditor } from "@tiptap/react";
 import { JsonDoc } from "@/lib/types";
 import { toast } from "sonner";
@@ -27,7 +27,7 @@ export const PublishForm = () => {
   const [creating, setCreating] = useState(false);
   const [open, setOpen] = useState(false);
   const [formName, setFormName] = useState("");
-  const { slug: workspace } = useParams();
+  const { workspaceId:workspace } = useParams();
   const { data: session } = authClient.useSession();
   const shortId = uid.rnd();
 
@@ -37,6 +37,8 @@ export const PublishForm = () => {
       await signOut();
       return;
     }
+
+    if(!workspace)return;
     const json = editor?.getJSON();
     const form_schema = JSON.stringify(json);
     const creator = session?.user?.id;
@@ -109,7 +111,7 @@ export const filterFormFields = (jsonDoc: JsonDoc, formId: string) => {
   );
   const mapFilteredFields = filterInputFields?.map((f, i) => {
     return {
-      id:f?.attrs?.id,
+      id: f?.attrs?.id,
       form: formId,
       label: f?.attrs?.label,
       type: f?.type,

@@ -1,12 +1,13 @@
 "use client";
 import useSWR from "swr";
-import TanStackTable, { RowActions } from "./Data-table";
+import TanStackTable, { RowActions } from "@/components/Data-table";
 import { apiClient } from "@/lib/axios";
 import { useParams } from "next/navigation";
 import { Loader } from "lucide-react";
-import { ColumnDef, FilterFn, PaginationState } from "@tanstack/react-table";
-import { Checkbox } from "./ui/checkbox";
+import { ColumnDef, PaginationState } from "@tanstack/react-table";
+
 import { useEffect, useMemo, useState } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export interface Iheads {
   label: string;
@@ -27,7 +28,7 @@ export const Submissions = () => {
     `/api/response/form/${formId}?pageIndex=${pagination.pageIndex}&pageSize=${pagination.pageSize}`,
     fetcher,
     {
-      dedupingInterval:0,
+      dedupingInterval: 0,
       // revalidateIfStale
     }
   );
@@ -40,9 +41,26 @@ export const Submissions = () => {
         id: h?.label,
         header: h?.label,
         accessorKey: h?.label,
-        cell: ({ row }) => (
-          <div className="font-medium">{row.getValue(h?.label)}</div>
-        ),
+        cell: ({ row }) => {
+          // @ts-ignore
+          const isTime = row.getValue(h.label)?.id === "time";
+          if (isTime) {
+            // @ts-ignore
+            const time = row.getValue(h.label)?.value;
+            const date = new Date(time);
+            return (
+              // @ts-ignore
+              <div className="font-medium">
+                {date?.toDateString()}, {date?.toLocaleTimeString()}
+              </div>
+            );
+          }
+
+          return (
+            // @ts-ignore
+            <div className="font-medium">{row.getValue(h?.label)?.value}</div>
+          );
+        },
         size: 180,
         enableHiding: true,
       };
@@ -51,17 +69,22 @@ export const Submissions = () => {
     columnArr?.unshift({
       id: "select",
       header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
+        <div className=" grid place-content-center">
+          <Checkbox
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && "indeterminate")
+            }
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected(!!value)
+            }
+            aria-label="Select all"
+          />
+        </div>
       ),
       cell: ({ row }) => (
         <Checkbox
+          className=""
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
           aria-label="Select row"

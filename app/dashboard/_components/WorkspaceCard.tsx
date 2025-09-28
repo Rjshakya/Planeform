@@ -17,6 +17,7 @@ import useSWR from "swr";
 import { toast } from "sonner";
 import { ArrowCircleUp2, Edit, Trash } from "iconsax-reactjs";
 import Link from "next/link";
+import { authClient } from "@/lib/auth-client";
 
 interface workspaceCardProps {
   name: string;
@@ -28,13 +29,14 @@ export const WorkspaceCard = (props: workspaceCardProps) => {
   const router = useRouter();
   const [deleting, setDeleting] = useState(false);
   const { mutate } = useSWR("/api/workspace");
+  const { data } = authClient.useSession();
 
   const handleDeleteWorkspace = async (id: string) => {
     setDeleting(true);
     try {
       const res = await apiClient.delete(`/api/workspace/${id}`);
       if (res.status === 200) {
-        mutate("/api/workspace");
+        mutate(`/api/workspace/${data?.user?.id}`);
         toast(`${props.name} deleted successfully`);
       }
     } catch (e) {
@@ -50,7 +52,10 @@ export const WorkspaceCard = (props: workspaceCardProps) => {
       className=" py-1.5 px-2 cursor-pointer"
     >
       <CardHeader className=" px-0.5 flex items-center justify-between gap-1">
-        <Link className=" hover:underline-offset-2 hover:underline" href={`/dashboard/workspace/${props?.id}`}>
+        <Link
+          className=" hover:underline-offset-2 hover:underline"
+          href={`/dashboard/workspace/${props?.id}`}
+        >
           <p className=" capitalize">{props?.name || "workspace"}</p>
         </Link>
         <DropdownMenu>
@@ -91,7 +96,7 @@ export const WorkspaceCard = (props: workspaceCardProps) => {
         </DropdownMenu>
       </CardHeader>
       <CardContent className=" px-0 ">
-        <div className=" bg-background w-full h-44 relative overflow-hidden rounded-2xl">
+        <div className=" bg-muted w-full h-44 relative overflow-hidden rounded-2xl">
           <svg
             className="absolute inset-0 w-full h-full pointer-events-none opacity-95 mix-blend-overlay"
             preserveAspectRatio="none"
@@ -126,11 +131,11 @@ export const WorkspaceCard = (props: workspaceCardProps) => {
             />
           </svg>
 
-          <span className="relative z-10">
-            <p className=" leading-24 opacity-25 text-9xl font-bold tracking-[-0.10em] capitalize -rotate-6 pr-10  ">
+          <div className="relative z-10 w-full h-full">
+            <p className="w-full absolute bottom-0 right-2 leading-24 opacity-25 text-9xl font-bold tracking-[-0.10em] capitalize -rotate-6 pr-10  ">
               {props.name}
             </p>
-          </span>
+          </div>
         </div>
       </CardContent>
     </Card>

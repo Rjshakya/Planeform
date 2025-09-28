@@ -74,26 +74,15 @@ import { longInputNode } from "@/components/custom-extensions/longinput/node";
 import { multipleChoiceNode } from "@/components/custom-extensions/multiple-choices/node";
 import { CustomInputsDropdown } from "@/components/custom-input-dropdown";
 import { actionButtonNode } from "@/components/custom-extensions/action-btn/node";
-import { toast } from "sonner";
 import { useEditorStore } from "@/stores/useEditorStore";
 import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { useFormStore } from "@/stores/useformStore";
-import { FormEditor } from "@/app/dashboard/[slug]/form/_components/FormEditor";
-import { PreviewForm } from "@/components/PreviewForm";
+import { PreviewForm } from "@/app/dashboard/[workspaceId]/form/create/_components/PreviewForm";
 import { TiptapMarkDropdown } from "@/components/tiptap-mark-dropdown";
 import { TiptapTextAlignDropdown } from "@/components/tiptap-text-align-dropdown";
-import { Input } from "@/components/ui/input";
-import { PublishForm } from "@/components/PublishForm";
-import { EditForm } from "@/components/EditForm";
+import { PublishForm } from "@/app/dashboard/[workspaceId]/form/create/_components/PublishForm";
+import { EditForm } from "@/app/dashboard/[workspaceId]/form/edit/[formId]/_components/EditForm";
 
 const MainToolbarContent = ({
   onHighlighterClick,

@@ -17,6 +17,10 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
+import { apiClient } from "@/lib/axios";
+
+
+// const fetcher = (url: string) => apiClient.get(url)
 
 export function NavWorkspaces({
   workspaces,
@@ -30,6 +34,9 @@ export function NavWorkspaces({
     }[]
   }[]
 }) {
+
+
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Workspaces</SidebarGroupLabel>

@@ -1,21 +1,26 @@
 import { useUserStore } from "@/stores/useUserStore";
 import { createAuthClient } from "better-auth/react";
 import { redirect } from "next/navigation";
+import { toast } from "sonner";
+
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+const clientUrl = process.env.NEXT_PUBLIC_CLIENT_URL;
 
 export const authClient = createAuthClient({
-  baseURL: "http://localhost:3005",
-  
+  baseURL: baseUrl,
 });
 export const signIn = async () => {
-  await authClient.signIn.social({
-    provider: "google",
-    callbackURL: "/dashboard",
-  });
+  try {
+    await authClient.signIn.social({
+      provider: "google",
+      callbackURL: `${clientUrl}/dashboard`,
+    });
 
-  const session = await authClient.getSession();
-  console.log(session);
-
-  useUserStore.setState({ user: session?.data?.user });
+    const session = await authClient.getSession();
+    useUserStore.setState({ user: session?.data?.user });
+  } catch (e) {
+    toast("failed to authenticate");
+  }
 };
 
 export const signOut = async () => {

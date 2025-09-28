@@ -2,14 +2,12 @@ import React, { useState } from "react";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { FormEditor } from "@/app/dashboard/[slug]/form/_components/FormEditor";
-import { Button } from "./ui/button";
-import { useFormStore } from "@/stores/useformStore";
+import { FormEditor } from "@/app/dashboard/[workspaceId]/form/_components/FormEditor";
+import { Button } from "@/components/ui/button";
 import { useCurrentEditor } from "@tiptap/react";
 import { JsonDoc } from "@/lib/types";
 
@@ -21,7 +19,7 @@ export const PreviewForm = () => {
     if (!editor) return;
     const json = editor.getJSON();
     console.log(json);
-    
+
     setJsonContent(json);
   };
 

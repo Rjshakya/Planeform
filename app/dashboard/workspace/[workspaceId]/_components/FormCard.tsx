@@ -96,7 +96,7 @@ export default function FormCard(props: formProps) {
         </DropdownMenu>
       </CardHeader>
       <CardContent className=" px-0 ">
-        <div className=" bg-background w-full h-44 relative overflow-hidden rounded-2xl">
+        <div className=" bg-muted w-full h-44 relative overflow-hidden rounded-2xl">
           <svg
             className="absolute inset-0 w-full h-full pointer-events-none opacity-95 mix-blend-overlay"
             preserveAspectRatio="none"
@@ -131,11 +131,11 @@ export default function FormCard(props: formProps) {
             />
           </svg>
 
-          <span className="relative z-10">
-            <p className=" leading-24 opacity-25 text-9xl font-bold tracking-[-0.10em] capitalize -rotate-6 pr-10  ">
+          <div className="relative z-10 w-full h-full ">
+            <p className="w-full absolute bottom-2 right-2 leading-24 opacity-25 text-9xl font-bold tracking-[-0.10em] capitalize -rotate-6 pr-10  ">
               {props.name}
             </p>
-          </span>
+          </div>
         </div>
       </CardContent>
     </Card>

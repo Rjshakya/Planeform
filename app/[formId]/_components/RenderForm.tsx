@@ -1,5 +1,5 @@
 "use client";
-import { FormEditor } from "@/app/dashboard/[slug]/form/_components/FormEditor";
+import { FormEditor } from "@/app/dashboard/[workspaceId]/form/_components/FormEditor";
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 import { apiClient } from "@/lib/axios";
 import { cn } from "@/lib/utils";
