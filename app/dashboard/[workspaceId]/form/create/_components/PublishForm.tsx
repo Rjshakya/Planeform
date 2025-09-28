@@ -27,7 +27,7 @@ export const PublishForm = () => {
   const [creating, setCreating] = useState(false);
   const [open, setOpen] = useState(false);
   const [formName, setFormName] = useState("");
-  const { workspaceId:workspace } = useParams();
+  const { workspaceId: workspace } = useParams();
   const { data: session } = authClient.useSession();
   const shortId = uid.rnd();
 
@@ -38,7 +38,7 @@ export const PublishForm = () => {
       return;
     }
 
-    if(!workspace)return;
+    if (!workspace) return;
     const json = editor?.getJSON();
     const form_schema = JSON.stringify(json);
     const creator = session?.user?.id;
@@ -63,7 +63,12 @@ export const PublishForm = () => {
         toast(`You have successfully created form : ${formname}`);
       }
     } catch (e) {
-      toast(`failed to create form: ${formname}`);
+      if (e instanceof Error) {
+        toast(`failed to create form: ${formname} , error: ${e.message}`);
+      } else {
+        toast(`failed to create form: ${formname}`);
+      }
+
       mutate(`/api/form/workspace/${workspace}`);
     }
 

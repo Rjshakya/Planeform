@@ -1,6 +1,7 @@
 "use client";
 
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
+import { JsonDoc } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { useFormStore } from "@/stores/useformStore";
 // import { useFormStore } from "@/stores/useformStore";
@@ -13,7 +14,7 @@ export const FormEditor = ({
 }: // hookForm,
 {
   isEditable: boolean;
-  content?: any;
+  content?:JsonDoc;
   className?: string;
   
 }) => {

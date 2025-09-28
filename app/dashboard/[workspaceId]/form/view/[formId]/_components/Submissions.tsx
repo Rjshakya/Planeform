@@ -104,7 +104,7 @@ export const Submissions = () => {
     });
 
     return columnArr;
-  }, [data]);
+  }, [heads]);
 
   if (error) return <p>error occurred</p>;
   if (isLoading)

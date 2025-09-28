@@ -1,3 +1,4 @@
+'use client';
 import { cn } from "@/lib/utils";
 import { RenderForm } from "./_components/RenderForm";
 

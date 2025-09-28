@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 
-import { PlusIcon } from "lucide-react";
+import { Loader, PlusIcon } from "lucide-react";
 import { WorkspaceCard } from "./WorkspaceCard";
 import useSWR from "swr";
 import { apiClient } from "@/lib/axios";
@@ -38,6 +38,9 @@ export default function Workspace() {
   if (isLoading) return <p>loading ...</p>;
 
   const handleCreateWorkspace = async (params: createWorkspaceParams) => {
+    if (!params.owner || !params.name) {
+      return;
+    }
     setCreating(true);
     try {
       const res = await apiClient.post("/api/workspace", params);
@@ -82,11 +85,12 @@ export default function Workspace() {
                     onClick={async () =>
                       handleCreateWorkspace({
                         name: workspaceName,
-                        owner: session?.user?.id!,
+                        owner: session?.user?.id || "",
                       })
                     }
                   >
-                    Submit
+                    {creating && <Loader className={`animate-spin`} />}
+                    <span>Submitt</span>
                   </Button>
                 </DialogFooter>
               </DialogContent>
@@ -97,7 +101,7 @@ export default function Workspace() {
 
       <div className=" w-full grid md:grid-cols-3 px-2 gap-4">
         {data?.workspace && data?.workspace?.length > 0 ? (
-          data?.workspace?.map((w: any) => (
+          data?.workspace?.map((w: { id: string; name: string }) => (
             <WorkspaceCard id={w?.id} name={w?.name} key={w?.id} />
           ))
         ) : (

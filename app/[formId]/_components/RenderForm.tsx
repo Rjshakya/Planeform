@@ -1,12 +1,9 @@
 "use client";
 import { FormEditor } from "@/app/dashboard/[workspaceId]/form/_components/FormEditor";
-import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 import { apiClient } from "@/lib/axios";
-import { cn } from "@/lib/utils";
-import { useFormStore } from "@/stores/useformStore";
 import { useParams } from "next/navigation";
-import React, { useState } from "react";
-import { useForm, UseFormReturn } from "react-hook-form";
+import React from "react";
+
 import useSWR from "swr";
 
 const fetcher = (url: string) => apiClient.get(url);

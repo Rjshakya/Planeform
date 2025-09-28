@@ -203,7 +203,6 @@ const MobileToolbarContent = ({
 );
 
 export function SimpleEditor({
-  parentform,
   content,
   isEditable,
 }: {
@@ -293,7 +292,7 @@ export function SimpleEditor({
   React.useEffect(() => {
     useEditorStore.setState({ editor: editor });
     useFormStore.setState({ form: form });
-  }, [editor]);
+  }, [editor , form]);
 
   return (
     <div className="simple-editor-wrapper selection:bg-teal-200/30 dark:selection:bg-teal-700/40">
