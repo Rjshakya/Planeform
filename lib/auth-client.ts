@@ -1,4 +1,4 @@
-import 'client-only';
+import "client-only";
 import { useUserStore } from "@/stores/useUserStore";
 import { createAuthClient } from "better-auth/react";
 import { redirect } from "next/navigation";
@@ -14,7 +14,7 @@ export const signIn = async () => {
   try {
     await authClient.signIn.social({
       provider: "google",
-      callbackURL: `${clientUrl}/dashboard`,
+      callbackURL: `https://nextformly.rajshakya631.workers.dev//dashboard`,
     });
 
     const session = await authClient.getSession();
