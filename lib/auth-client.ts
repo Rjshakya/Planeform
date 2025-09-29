@@ -1,3 +1,4 @@
+import 'client-only';
 import { useUserStore } from "@/stores/useUserStore";
 import { createAuthClient } from "better-auth/react";
 import { redirect } from "next/navigation";
