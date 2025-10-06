@@ -28,7 +28,7 @@ import {
 } from "@/components/tiptap-ui-primitive/toolbar";
 
 // --- Tiptap Node ---
-import { ImageUploadNode } from "@/components/tiptap-node/image-upload-node/image-upload-node-extension";
+// import { ImageUploadNode } from "@/components/tiptap-node/image-upload-node/image-upload-node-extension";
 import { HorizontalRule } from "@/components/tiptap-node/horizontal-rule-node/horizontal-rule-node-extension";
 import "@/components/tiptap-node/blockquote-node/blockquote-node.scss";
 import "@/components/tiptap-node/code-block-node/code-block-node.scss";
@@ -96,6 +96,7 @@ import { CutomizationPanel } from "@/components/custom-extensions/CutomizationPa
 import { toast } from "sonner";
 import { dateInputNode } from "@/components/custom-extensions/date-input/node";
 import { cn } from "@/lib/utils";
+import GlobalDragHandle from 'tiptap-extension-global-drag-handle'
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -253,15 +254,19 @@ export function SimpleEditor({
           enableClickSelection: true,
         },
       }) as any,
+      GlobalDragHandle?.configure({
+        dragHandleWidth: 20,
+          scrollTreshold: 100,
+      }),
       HorizontalRule,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       TaskList,
       TaskItem.configure({ nested: true }),
       Highlight.configure({ multicolor: true }),
       Image,
-      ImageUploadNode.configure({
-        accept: "png",
-      }),
+      // ImageUploadNode.configure({
+      //   accept: "png",
+      // }),
       Typography,
       Superscript,
       Subscript,
