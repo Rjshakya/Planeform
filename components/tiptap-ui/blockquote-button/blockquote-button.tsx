@@ -1,47 +1,50 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 
 // --- Tiptap UI ---
-import type { UseBlockquoteConfig } from "@/components/tiptap-ui/blockquote-button"
+import type { UseBlockquoteConfig } from "@/components/tiptap-ui/blockquote-button";
 import {
   BLOCKQUOTE_SHORTCUT_KEY,
   useBlockquote,
-} from "@/components/tiptap-ui/blockquote-button"
+} from "@/components/tiptap-ui/blockquote-button";
 
 // --- Hooks ---
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor"
+import { useTiptapEditor } from "@/hooks/use-tiptap-editor";
 
 // --- Lib ---
-import { parseShortcutKeys } from "@/lib/tiptap-utils"
+import { parseShortcutKeys } from "@/lib/tiptap-utils";
 
 // --- UI Primitives ---
-import type { ButtonProps } from "@/components/tiptap-ui-primitive/button"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-
+import type { ButtonProps } from "@/components/tiptap-ui-primitive/button";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export interface BlockquoteButtonProps
   extends Omit<ButtonProps, "type">,
-  UseBlockquoteConfig {
+    UseBlockquoteConfig {
   /**
    * Optional text to display alongside the icon.
    */
-  text?: string
+  text?: string;
   /**
    * Optional show shortcut keys in the button.
    * @default false
    */
-  showShortcut?: boolean
+  showShortcut?: boolean;
 }
 
 export function BlockquoteShortcutBadge({
   shortcutKeys = BLOCKQUOTE_SHORTCUT_KEY,
 }: {
-  shortcutKeys?: string
+  shortcutKeys?: string;
 }) {
-  return <Badge>{parseShortcutKeys({ shortcutKeys })}</Badge>
+  return <Badge>{parseShortcutKeys({ shortcutKeys })}</Badge>;
 }
 
 /**
@@ -66,7 +69,7 @@ export const BlockquoteButton = React.forwardRef<
     },
     ref
   ) => {
-    const { editor } = useTiptapEditor(providedEditor)
+    const { editor } = useTiptapEditor(providedEditor);
     const {
       isVisible,
       canToggle,
@@ -79,30 +82,28 @@ export const BlockquoteButton = React.forwardRef<
       editor,
       hideWhenUnavailable,
       onToggled,
-    })
+    });
 
     const handleClick = React.useCallback(
       (event: React.MouseEvent<HTMLButtonElement>) => {
-        onClick?.(event)
-        if (event.defaultPrevented) return
-        handleToggle()
+        onClick?.(event);
+        if (event.defaultPrevented) return;
+        handleToggle();
       },
       [handleToggle, onClick]
-    )
+    );
 
     if (!isVisible) {
-      return null
+      return null;
     }
 
     return (
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
-            className={`${isActive && 'bg-muted'}`}
+            // className={`${isActive && 'bg-muted'}`}
             type="button"
-            variant={"ghost"}
-
-
+            variant={`${isActive ? "secondary" : "ghost"}`}
             disabled={!canToggle}
             data-disabled={!canToggle}
             aria-label={label}
@@ -126,9 +127,8 @@ export const BlockquoteButton = React.forwardRef<
           <p>Blockquote</p>
         </TooltipContent>
       </Tooltip>
-
-    )
+    );
   }
-)
+);
 
-BlockquoteButton.displayName = "BlockquoteButton"
+BlockquoteButton.displayName = "BlockquoteButton";

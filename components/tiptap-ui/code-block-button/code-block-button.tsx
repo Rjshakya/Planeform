@@ -101,9 +101,9 @@ export const CodeBlockButton = React.forwardRef<
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
-            className={`${isActive && 'bg-muted'}`}
+            // className={`${isActive && 'bg-muted'}`}
             type="button"
-            variant={"ghost"}
+            variant={`${isActive ? 'secondary' : 'ghost'}`}
             disabled={!canToggle}
             data-disabled={!canToggle}
             aria-label={label}

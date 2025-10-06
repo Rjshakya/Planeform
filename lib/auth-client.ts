@@ -14,7 +14,7 @@ export const signIn = async () => {
   try {
     await authClient.signIn.social({
       provider: "google",
-      callbackURL: `https://nextformly.rajshakya631.workers.dev//dashboard`,
+      callbackURL: `${clientUrl}/dashboard`,
     });
 
     const session = await authClient.getSession();

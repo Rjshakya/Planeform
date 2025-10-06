@@ -35,6 +35,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export interface ColorHighlightPopoverContentProps {
   /**
@@ -120,11 +125,11 @@ export function ColorHighlightPopoverContent({
   return (
     <Card
       ref={containerRef}
-      className=" flex items-center justify-center py-1"
+      className=" flex items-center justify-center py-2 border-0 shadow-none"
       style={isMobile ? { boxShadow: "none", border: 0 } : {}}
     >
       <CardContent
-        className="px-1 flex items-center justify-center"
+        className="px-1 w-full flex items-center justify-center gap-2"
         style={isMobile ? { padding: 0 } : {}}
       >
         {colors.map((color, index) => (
@@ -186,20 +191,26 @@ export function ColorHighlightPopover({
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
-      <PopoverTrigger asChild>
-        <ColorHighlightPopoverButton
-          disabled={!canColorHighlight}
-          data-active-state={isActive ? "on" : "off"}
-          data-disabled={!canColorHighlight}
-          aria-pressed={isActive}
-          aria-label={label}
-          tooltip={label}
-          {...props}
-        >
-          <Icon className="tiptap-button-icon" />
-        </ColorHighlightPopoverButton>
-      </PopoverTrigger>
-      <PopoverContent className="p-0" aria-label="Highlight colors">
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <PopoverTrigger asChild>
+            <ColorHighlightPopoverButton
+              disabled={!canColorHighlight}
+              data-active-state={isActive ? "on" : "off"}
+              data-disabled={!canColorHighlight}
+              aria-pressed={isActive}
+              aria-label={label}
+              tooltip={label}
+              {...props}
+            >
+              <Icon className="tiptap-button-icon" />
+            </ColorHighlightPopoverButton>
+          </PopoverTrigger>
+        </TooltipTrigger>
+        <TooltipContent>Highlight</TooltipContent>
+      </Tooltip>
+
+      <PopoverContent className=" p-0" aria-label="Highlight colors">
         <ColorHighlightPopoverContent editor={editor} colors={colors} />
       </PopoverContent>
     </Popover>

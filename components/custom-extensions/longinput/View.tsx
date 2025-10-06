@@ -1,4 +1,3 @@
-
 import { NodeViewProps } from "@tiptap/core";
 import React from "react";
 import { InsertLongInputParams } from "./node";
@@ -11,12 +10,13 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { useFormStore } from "@/stores/useformStore";
+import { NodeViewContent } from "@tiptap/react";
 
 export const LongInputView = (props: NodeViewProps) => {
-  const { label, id, isRequired, placeholder,  rows } = props?.node
+  const { label, id, isRequired, placeholder, rows } = props?.node
     ?.attrs as InsertLongInputParams;
 
-    const form = useFormStore.getState().getHookForm()
+  const form = useFormStore.getState().getHookForm();
 
   return (
     <>
@@ -26,7 +26,12 @@ export const LongInputView = (props: NodeViewProps) => {
           name={id}
           render={({ field }) => (
             <FormItem className="mt-4 field">
-              <FormLabel htmlFor={label} className=" text-2xl" id={id}>{label} </FormLabel>
+              <FormLabel htmlFor={label} className=" text-2xl" id={id}>
+                <NodeViewContent
+                  as="div"
+                  className="outline-none focus:outline-none inline-block min-w-[20px]"
+                />
+              </FormLabel>
               <FormControl>
                 <Textarea
                   required={isRequired}

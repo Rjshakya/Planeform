@@ -14,7 +14,7 @@ import { useCurrentEditor } from "@tiptap/react";
 import { JsonDoc } from "@/lib/types";
 import { toast } from "sonner";
 import { apiClient } from "@/lib/axios";
-import { useParams } from "next/navigation";
+import { redirect, useParams, useRouter } from "next/navigation";
 import { authClient, signOut } from "@/lib/auth-client";
 import { mutate } from "swr";
 import { Loader } from "lucide-react";
@@ -30,6 +30,7 @@ export const PublishForm = () => {
   const { workspaceId: workspace } = useParams();
   const { data: session } = authClient.useSession();
   const shortId = uid.rnd();
+  const router = useRouter();
 
   const handlePublish = async (formname: string) => {
     if (!session?.user?.id) {
@@ -58,8 +59,6 @@ export const PublishForm = () => {
       if (res.status === 201) {
         const formId = res?.data?.form?.shortId;
         await postFormFields(json, formId);
-        mutate(`/api/form/workspace/${workspace}`);
-        setOpen(false);
         toast(`You have successfully created form : ${formname}`);
       }
     } catch (e) {
@@ -68,11 +67,11 @@ export const PublishForm = () => {
       } else {
         toast(`failed to create form: ${formname}`);
       }
-
-      mutate(`/api/form/workspace/${workspace}`);
     }
-
+    mutate(`/api/form/workspace/${workspace}`);
     setCreating(false);
+    setOpen(false);
+    router.push(`/dashboard/workspace/${workspace}`);
   };
 
   return (

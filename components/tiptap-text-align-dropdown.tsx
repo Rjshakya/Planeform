@@ -10,6 +10,7 @@ import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import { TextAlignButton } from "./tiptap-ui/text-align-button";
 import { AlignLeftIcon } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 const textAligns = [
   { align: "left" },
@@ -21,14 +22,20 @@ const textAligns = [
 export const TiptapTextAlignDropdown = () => {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant={"ghost"} size={"icon"}>
-          <AlignLeftIcon />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="min-w-0 w-14">
-        <Card className=" py-1 ">
-          <CardContent className=" px-1 flex flex-col items-center gap-1">
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <DropdownMenuTrigger asChild>
+            <Button variant={"ghost"} size={"icon"}>
+              <AlignLeftIcon />
+            </Button>
+          </DropdownMenuTrigger>
+        </TooltipTrigger>
+        <TooltipContent>Text align</TooltipContent>
+      </Tooltip>
+
+      <DropdownMenuContent className="">
+        <Card className=" py-1 border-0 shadow-none">
+          <CardContent className=" px-1 flex flex-row items-center gap-1">
             {textAligns.map((m, i) => {
               return (
                 <DropdownMenuItem key={i} asChild>
@@ -36,19 +43,6 @@ export const TiptapTextAlignDropdown = () => {
                 </DropdownMenuItem>
               );
             })}
-
-            {/* <DropdownMenuItem asChild>
-                  <MarkButton type="italic" />
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <MarkButton type="strike" />
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <MarkButton type="code" />
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <MarkButton type="underline" />
-                </DropdownMenuItem> */}
           </CardContent>
         </Card>
       </DropdownMenuContent>

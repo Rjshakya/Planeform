@@ -17,7 +17,8 @@ import { useState } from "react";
 import { v4 } from "uuid";
 import { Ioptions } from "./node";
 import { PlusIcon, Trash } from "lucide-react";
-import { useMultiDialogStore } from "@/stores/useMultiDialogStore";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { toast } from "sonner";
 
 export const InsertMultipleChoice = ({
   setOpen,
@@ -26,44 +27,93 @@ export const InsertMultipleChoice = ({
 }) => {
   const { editor } = useCurrentEditor();
   const [label, setlabel] = useState("");
-
+  const [parentId, setParentId] = useState(v4());
   const [options, setOptions] = useState<Ioptions[]>();
+  const [type, setType] = useState("single");
   const handleInsert = (label: string, options: Ioptions[]) => {
+    toast(type);
     if (!editor) return;
     editor?.commands?.insertmultipleChoiceInput({
-      id: v4(),
+      id: parentId,
       label,
-      options,
-      type: "single",
+      type,
     });
+
+    options?.forEach((o) => editor?.commands?.insertOption(o));
 
     setlabel("");
     setOptions(undefined);
     setOpen?.(false);
-    console.log("mc:inserted");
-
-    // setOpen?.(false);
   };
 
-  const handleAddOptions = () => {
+  const handleAddOptions = (pId: string, type: string) => {
     const copy = options ? [...options] : [];
-    copy?.push({ label: `option-${copy?.length + 1}`, id: `${copy?.length + 1}` });
+    copy?.push({
+      label: `${copy?.length + 1}`,
+      id: `${copy?.length + 1}`,
+      parentId: pId,
+      type,
+    });
     setOptions(copy);
   };
 
   return (
-    <>
-      <DialogTitle>Configure multiple choice input</DialogTitle>
-      <Label>Field Name</Label>
-      <Input
-        value={label}
-        onChange={(e) => setlabel(e?.currentTarget?.value)}
-        type="text"
-        placeholder="label that you want on input"
-      />
+    <div className=" grid gap-6">
+      <DialogTitle className="mb-4">
+        Configure multiple choice input
+      </DialogTitle>
+      <div className=" grid gap-4">
+        <Label>Field Name</Label>
+        <Input
+          value={label}
+          onChange={(e) => setlabel(e?.currentTarget?.value)}
+          type="text"
+          placeholder="label that you want on input"
+        />
+      </div>
+
+      <div className="w-full grid gap-4 mb-2">
+        <Label>
+          <span>Type</span>
+          <p className=" text-muted-foreground text-sm">
+            {"(first select type then add options)"}
+          </p>
+        </Label>
+        <RadioGroup
+          onValueChange={(v) => setType(v)}
+          className="flex items-center gap-3"
+          defaultValue="single"
+        >
+          <Label className="border-input has-data-[state=checked]:border-primary/50 has-focus-visible:border-ring has-focus-visible:ring-ring/50 relative flex cursor-pointer flex-col items-center gap-3 rounded-md border px-1 py-3 text-center shadow-xs transition-[color,box-shadow] outline-none has-focus-visible:ring-[3px] has-data-disabled:cursor-not-allowed has-data-disabled:opacity-50 w-16">
+            <RadioGroupItem
+              // id={`${id}-${item.value}`}
+              value={"single"}
+              className="sr-only after:absolute after:inset-0"
+            />
+            <p className="text-foreground text-sm leading-none font-medium">
+              Single
+            </p>
+          </Label>
+          <Label className="border-input has-data-[state=checked]:border-primary/50 has-focus-visible:border-ring has-focus-visible:ring-ring/50 relative flex cursor-pointer flex-col items-center gap-3 rounded-md border px-1 py-3 text-center shadow-xs transition-[color,box-shadow] outline-none has-focus-visible:ring-[3px] has-data-disabled:cursor-not-allowed has-data-disabled:opacity-50 w-16">
+            <RadioGroupItem
+              // id={`${id}-${item.value}`}
+              value={"multiple"}
+              className="sr-only after:absolute after:inset-0"
+            />
+            <p className="text-foreground text-sm leading-none font-medium">
+              Multiple
+            </p>
+          </Label>
+        </RadioGroup>
+      </div>
+
       <Label className=" flex items-center justify-between">
         <span>Options</span>
-        <Button onClick={handleAddOptions} variant={"ghost"} size={"icon"}>
+        <Button
+          onClick={() => handleAddOptions(parentId, type)}
+          variant={"ghost"}
+          size={"icon"}
+        >
           <PlusIcon />
         </Button>
       </Label>
@@ -72,7 +122,7 @@ export const InsertMultipleChoice = ({
         <div className="grid gap-2">
           {options?.map((o, i) => {
             return (
-              <div key={i} className=" flex items-center justify-between">
+              <div key={i} className=" flex items-center justify-between gap-2">
                 <Input
                   onChange={(e) => {
                     const copy = [...options];
@@ -102,13 +152,13 @@ export const InsertMultipleChoice = ({
       <DialogFooter>
         {/* <DialogClose></DialogClose> */}
         <Button
-          variant={"ghost"}
+          variant={"secondary"}
           size={"lg"}
           onClick={() => handleInsert(label, options!)}
         >
           Insert
         </Button>
       </DialogFooter>
-    </>
+    </div>
   );
 };

@@ -1,10 +1,10 @@
-import { ChevronRight, MoreHorizontal, Plus } from "lucide-react"
+import { ChevronRight, MoreHorizontal, Plus } from "lucide-react";
 
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from "@/components/ui/collapsible";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -16,9 +16,9 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 import { apiClient } from "@/lib/axios";
-
+import Link from "next/link";
 
 // const fetcher = (url: string) => apiClient.get(url)
 
@@ -26,30 +26,26 @@ export function NavWorkspaces({
   workspaces,
 }: {
   workspaces: {
-    name: string
-    emoji: React.ReactNode
-    pages: {
-      name: string
-      emoji: React.ReactNode
-    }[]
-  }[]
+    id: string;
+    name: string;
+    forms: {
+      name: string;
+      shortId: string;
+    }[];
+  }[];
 }) {
-
-
-
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Workspaces</SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
-          {workspaces.map((workspace) => (
-            <Collapsible key={workspace.name}>
+          {workspaces?.map((workspace) => (
+            <Collapsible key={workspace?.name}>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <a href="#">
-                    <span>{workspace.emoji}</span>
-                    <span>{workspace.name}</span>
-                  </a>
+                  <Link href={`/dashboard/workspace/${workspace?.id}`}>
+                    <span className=" pl-6">{workspace?.name}</span>
+                  </Link>
                 </SidebarMenuButton>
                 <CollapsibleTrigger asChild>
                   <SidebarMenuAction
@@ -60,17 +56,20 @@ export function NavWorkspaces({
                   </SidebarMenuAction>
                 </CollapsibleTrigger>
                 <SidebarMenuAction showOnHover>
-                  <Plus />
+                  <Link href={`/dashboard/${workspace?.id}/form/create`}>
+                    <Plus size={15} />
+                  </Link>
                 </SidebarMenuAction>
                 <CollapsibleContent>
                   <SidebarMenuSub>
-                    {workspace.pages.map((page) => (
-                      <SidebarMenuSubItem key={page.name}>
+                    {workspace?.forms?.map((form) => (
+                      <SidebarMenuSubItem key={form?.name}>
                         <SidebarMenuSubButton asChild>
-                          <a href="#">
-                            <span>{page.emoji}</span>
-                            <span>{page.name}</span>
-                          </a>
+                          <Link
+                            href={`/dashboard/${workspace?.id}/form/view/${form?.shortId}`}
+                          >
+                            <span>{form?.name}</span>
+                          </Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     ))}
@@ -79,14 +78,8 @@ export function NavWorkspaces({
               </SidebarMenuItem>
             </Collapsible>
           ))}
-          <SidebarMenuItem>
-            <SidebarMenuButton className="text-sidebar-foreground/70">
-              <MoreHorizontal />
-              <span>More</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
-  )
+  );
 }

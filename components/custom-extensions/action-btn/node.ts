@@ -14,6 +14,7 @@ export const actionButtonNode = Node.create({
   draggable: true,
   group: "block",
   allowGapCursor: true,
+  content: "inline*",
   addAttributes() {
     return {
       id: { default: v4() },
@@ -41,6 +42,7 @@ export const actionButtonNode = Node.create({
           return commands.insertContent({
             type: "actionButton",
             attrs: { ...params },
+            content: [{ type: "text", text: params?.text || "Submit" }],
           });
         };
       },

@@ -13,6 +13,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-dm-sans);
   --font-mono: var(--font-geist-mono);
+  --font-inter: var(--font-Inter);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -151,26 +152,18 @@
 
     h1 {
       font-weight: 700;
-      @apply text-7xl tracking-tighter mt-2
+      @apply text-4xl tracking-tighter mt-2
      /* margin-top: .5em; */;
     }
 
     h2 {
-      font-size: 2em;
       font-weight: 700;
-      margin-top: 1em;
+      @apply text-3xl tracking-tighter mt-2;
     }
 
     h3 {
-      font-size: 1.125em;
-      font-weight: 600;
-      margin-top: 1em;
-    }
-
-    h4 {
-      font-size: 1em;
-      font-weight: 600;
-      margin-top: 1em;
+      font-weight: 700;
+      @apply text-2xl tracking-tighter mt-2;
     }
   }
 }

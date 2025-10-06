@@ -1,15 +1,15 @@
 "use client";
 
 import {
+  CSSProperties,
   Dispatch,
   SetStateAction,
- 
   useId,
-  
   useRef,
   useState,
 } from "react";
 import {
+  Column,
   ColumnDef,
   ColumnFiltersState,
   FilterFn,
@@ -20,12 +20,14 @@ import {
   getSortedRowModel,
   PaginationState,
   Row,
+  SortingState,
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
 import {
+  ArrowLeftToLineIcon,
+  ArrowRightToLineIcon,
   ChevronDownIcon,
-
   ChevronLeftIcon,
   ChevronRightIcon,
   ChevronUpIcon,
@@ -34,6 +36,7 @@ import {
   Columns3Icon,
   EllipsisIcon,
   ListFilterIcon,
+  PinOffIcon,
   PlusIcon,
   TrashIcon,
 } from "lucide-react";
@@ -79,6 +82,8 @@ import {
 } from "@/components/ui/table";
 import { Iheads } from "@/app/dashboard/[workspaceId]/form/view/[formId]/_components/Submissions";
 import { mutate } from "swr";
+import { toast } from "sonner";
+import { apiClient } from "@/lib/axios";
 
 type Item = {
   id: string;
@@ -98,109 +103,16 @@ const multiColumnFilterFn: FilterFn<Item> = (row, columnId, filterValue) => {
   return searchableRowContent.includes(searchTerm);
 };
 
-const statusFilterFn: FilterFn<Item> = (
-  row,
-  columnId,
-  filterValue: string[]
-) => {
-  if (!filterValue?.length) return true;
-  const status = row.getValue(columnId) as string;
-  return filterValue.includes(status);
+const getPinningStyles = (column: Column<any>): CSSProperties => {
+  const isPinned = column.getIsPinned();
+  return {
+    left: isPinned === "left" ? `${column.getStart("left")}px` : undefined,
+    right: isPinned === "right" ? `${column.getAfter("right")}px` : undefined,
+    position: isPinned ? "sticky" : "relative",
+    width: column.getSize(),
+    zIndex: isPinned ? 1 : 0,
+  };
 };
-
-// const columns: ColumnDef<Item>[] = [
-//   {
-//     id: "select",
-//     header: ({ table }) => (
-//       <Checkbox
-//         checked={
-//           table.getIsAllPageRowsSelected() ||
-//           (table.getIsSomePageRowsSelected() && "indeterminate")
-//         }
-//         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-//         aria-label="Select all"
-//       />
-//     ),
-//     cell: ({ row }) => (
-//       <Checkbox
-//         checked={row.getIsSelected()}
-//         onCheckedChange={(value) => row.toggleSelected(!!value)}
-//         aria-label="Select row"
-//       />
-//     ),
-//     size: 28,
-//     enableSorting: false,
-//     enableHiding: false,
-
-//   },
-//   {
-//     header: "Name",
-//     accessorKey: "name",
-//     cell: ({ row }) => (
-//       <div className="font-medium">{row.getValue("name")}</div>
-//     ),
-//     size: 180,
-//     filterFn: multiColumnFilterFn,
-//     enableHiding: false,
-
-//   },
-//   {
-//     header: "Email",
-//     accessorKey: "email",
-//     size: 220,
-//   },
-//   {
-//     header: "Location",
-//     accessorKey: "location",
-//     cell: ({ row }) => (
-//       <div>
-//         <span className="text-lg leading-none">{row.original.flag}</span>{" "}
-//         {row.getValue("location")}
-//       </div>
-//     ),
-//     size: 180,
-//   },
-//   {
-//     header: "Status",
-//     accessorKey: "status",
-//     cell: ({ row }) => (
-//       <Badge
-//         className={cn(
-//           row.getValue("status") === "Inactive" &&
-//             "bg-muted-foreground/60 text-primary-foreground"
-//         )}
-//       >
-//         {row.getValue("status")}
-//       </Badge>
-//     ),
-//     size: 100,
-//     filterFn: statusFilterFn,
-//   },
-//   {
-//     header: "Performance",
-//     accessorKey: "performance",
-//   },
-//   {
-//     header: "Balance",
-//     accessorKey: "balance",
-//     cell: ({ row }) => {
-//       const amount = parseFloat(row.getValue("balance"));
-//       const formatted = new Intl.NumberFormat("en-US", {
-//         style: "currency",
-//         currency: "USD",
-//       }).format(amount);
-//       return formatted;
-//     },
-//     size: 120,
-//   },
-// {
-//   id: "actions",
-//   header: () => <span className="sr-only">Actions</span>,
-//   cell: ({ row }) => <RowActions row={row} />,
-//   size: 60,
-//   enableHiding: false,
-// },
-// ];
 
 export default function TanStackTable({
   columns,
@@ -222,12 +134,12 @@ export default function TanStackTable({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // const [sorting, setSorting] = useState<SortingState>([
-  //   {
-  //     id: "Name",
-  //     desc: false,
-  //   },
-  // ]);
+  const [sorting, setSorting] = useState<SortingState>([
+    {
+      id: "Name",
+      desc: false,
+    },
+  ]);
 
   const [data, setData] = useState<any[]>(tableData);
 
@@ -257,7 +169,10 @@ export default function TanStackTable({
       columnFilters,
       columnVisibility,
       pagination: states.pagination,
+      sorting,
     },
+    onSortingChange: setSorting,
+    columnResizeMode: "onChange",
   });
 
   return (
@@ -388,14 +303,14 @@ export default function TanStackTable({
             </AlertDialog>
           )}
           {/* Add user button */}
-          <Button className="ml-auto" variant="outline">
+          {/* <Button className="ml-auto" variant="outline">
             <PlusIcon
               className="-ms-1 opacity-60"
               size={16}
               aria-hidden="true"
             />
-            Add user
-          </Button>
+            Add
+          </Button> */}
         </div>
       </div>
 
@@ -406,11 +321,32 @@ export default function TanStackTable({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="hover:bg-transparent">
                 {headerGroup.headers.map((header) => {
+                  const { column } = header;
+                  const isPinned = column.getIsPinned();
+
+                  const isLastLeftPinned =
+                    isPinned === "left" && column.getIsLastColumn("left");
+                  const isFirstRightPinned =
+                    isPinned === "right" && column.getIsFirstColumn("right");
+
                   return (
                     <TableHead
                       key={header.id}
-                      style={{ width: `${header.getSize()}px` }}
-                      className="h-11"
+                      // style={{ width: `${header.getSize()}px` }}
+                      className="h-11 relative border-t select-none last:[&>.cursor-col-resize]:opacity-0 bg-muted"
+                      colSpan={header.colSpan}
+                      style={{
+                        ...getPinningStyles(column),
+                        width: `${header.getSize()}px`,
+                      }}
+                      data-pinned={isPinned || undefined}
+                      data-last-col={
+                        isLastLeftPinned
+                          ? "left"
+                          : isFirstRightPinned
+                          ? "right"
+                          : undefined
+                      }
                     >
                       {header.isPlaceholder ? null : header.column.getCanSort() ? (
                         <div
@@ -435,22 +371,101 @@ export default function TanStackTable({
                             header.column.columnDef.header,
                             header.getContext()
                           )}
-                          {{
-                            asc: (
-                              <ChevronUpIcon
-                                className="shrink-0 opacity-60"
-                                size={16}
-                                aria-hidden="true"
-                              />
-                            ),
-                            desc: (
-                              <ChevronDownIcon
-                                className="shrink-0 opacity-60"
-                                size={16}
-                                aria-hidden="true"
-                              />
-                            ),
-                          }[header.column.getIsSorted() as string] ?? null}
+
+                          <div className=" flex items-center gap-1">
+                            {{
+                              asc: (
+                                <ChevronUpIcon
+                                  className="shrink-0 opacity-60"
+                                  size={16}
+                                  aria-hidden="true"
+                                />
+                              ),
+                              desc: (
+                                <ChevronDownIcon
+                                  className="shrink-0 opacity-60"
+                                  size={16}
+                                  aria-hidden="true"
+                                />
+                              ),
+                            }[header.column.getIsSorted() as string] ?? null}
+                            {header.column.getIsPinned() ? (
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                className="-mr-1 size-7 shadow-none"
+                                onClick={() => header.column.pin(false)}
+                                aria-label={`Unpin ${
+                                  header.column.columnDef.header as string
+                                } column`}
+                                title={`Unpin ${
+                                  header.column.columnDef.header as string
+                                } column`}
+                              >
+                                <PinOffIcon
+                                  className="opacity-60"
+                                  size={16}
+                                  aria-hidden="true"
+                                />
+                              </Button>
+                            ) : (
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    className="-mr-1 size-7 shadow-none"
+                                    aria-label={`Pin options for ${
+                                      header.column.columnDef.header as string
+                                    } column`}
+                                    title={`Pin options for ${
+                                      header.column.columnDef.header as string
+                                    } column`}
+                                  >
+                                    <EllipsisIcon
+                                      className="opacity-60"
+                                      size={16}
+                                      aria-hidden="true"
+                                    />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  <DropdownMenuItem
+                                    onClick={() => header.column.pin("left")}
+                                  >
+                                    <ArrowLeftToLineIcon
+                                      size={16}
+                                      className="opacity-60"
+                                      aria-hidden="true"
+                                    />
+                                    Stick to left
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() => header.column.pin("right")}
+                                  >
+                                    <ArrowRightToLineIcon
+                                      size={16}
+                                      className="opacity-60"
+                                      aria-hidden="true"
+                                    />
+                                    Stick to right
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            )}
+                          </div>
+
+                          {header.column.getCanResize() && (
+                            <div
+                              {...{
+                                onDoubleClick: () => header.column.resetSize(),
+                                onMouseDown: header.getResizeHandler(),
+                                onTouchStart: header.getResizeHandler(),
+                                className:
+                                  "absolute top-0 h-full w-4 cursor-col-resize user-select-none touch-none -right-2 z-10 flex justify-center before:absolute before:w-px before:inset-y-0 before:bg-border before:translate-x-px",
+                              }}
+                            />
+                          )}
                         </div>
                       ) : (
                         flexRender(
@@ -466,21 +481,47 @@ export default function TanStackTable({
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="last:py-0 border mx-8">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
+              table.getRowModel().rows.map((row) => {
+                return (
+                  row?.original?.id && (
+                    <TableRow
+                      key={row?.original?.id}
+                      data-state={row.getIsSelected() && "selected"}
+                    >
+                      {row.getVisibleCells().map((cell) => {
+                        const { column, row } = cell;
+                        const isPinned = column.getIsPinned();
+                        const isLastLeftPinned =
+                          isPinned === "left" && column.getIsLastColumn("left");
+                        const isFirstRightPinned =
+                          isPinned === "right" &&
+                          column.getIsFirstColumn("right");
+
+                        return (
+                          <TableCell
+                            key={cell.id}
+                            className=" [&[data-pinned][data-last-col]]:border-border data-pinned:bg-background/90 truncate data-pinned:backdrop-blur-xs [&[data-pinned=left][data-last-col=left]]:border-r [&[data-pinned=right][data-last-col=right]]:border-l border mx-8 p-3 align-middle"
+                            style={{ ...getPinningStyles(column) }}
+                            data-pinned={isPinned || undefined}
+                            data-last-col={
+                              isLastLeftPinned
+                                ? "left"
+                                : isFirstRightPinned
+                                ? "right"
+                                : undefined
+                            }
+                          >
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  )
+                );
+              })
             ) : (
               <TableRow>
                 <TableCell
@@ -612,6 +653,18 @@ export default function TanStackTable({
 }
 
 export function RowActions({ row }: { row: Row<any> }) {
+  const handleDelete = async (id: string) => {
+    console.log(id);
+
+    if (!id) return;
+    try {
+      await apiClient.delete(`/api/respondent/${id}`);
+      toast("respondent deleted !");
+    } catch (e) {
+      toast("failed to delete");
+    }
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -627,19 +680,17 @@ export function RowActions({ row }: { row: Row<any> }) {
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuGroup>
+        {/* <DropdownMenuGroup>
           <DropdownMenuItem>
             <span>Edit</span>
             <DropdownMenuShortcut>⌘E</DropdownMenuShortcut>
           </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        {/* <DropdownMenuGroup>
-          <DropdownMenuItem>Share</DropdownMenuItem>
-          <DropdownMenuItem>Add to favorites</DropdownMenuItem>
         </DropdownMenuGroup> */}
-        {/* <DropdownMenuSeparator /> */}
-        <DropdownMenuItem className="text-destructive focus:text-destructive">
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          onClick={() => handleDelete(row?.original?.id)}
+          className="text-destructive focus:text-destructive"
+        >
           <span>Delete</span>
           <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
         </DropdownMenuItem>

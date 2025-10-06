@@ -119,9 +119,8 @@ export const TextAlignButton = React.forwardRef<
         <TooltipTrigger asChild>
           <Button
             type="button"
-            className={`${isActive && 'bg-muted'}`}
             disabled={!canAlign}
-            variant={"ghost"}
+            variant={`${isActive ? "secondary" : "ghost"}`}
             size={"icon"}
             data-active-state={isActive ? "on" : "off"}
             data-disabled={!canAlign}

@@ -1,7 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
+import {
+  EditorContent,
+  EditorContext,
+  useCurrentEditor,
+  useEditor,
+} from "@tiptap/react";
 
 // --- Tiptap Core Extensions ---
 import { StarterKit } from "@tiptap/starter-kit";
@@ -12,7 +17,7 @@ import { Typography } from "@tiptap/extension-typography";
 import { Highlight } from "@tiptap/extension-highlight";
 import { Subscript } from "@tiptap/extension-subscript";
 import { Superscript } from "@tiptap/extension-superscript";
-import { Selection } from "@tiptap/extensions";
+import { Dropcursor, Focus, Selection, TrailingNode } from "@tiptap/extensions";
 
 // --- UI Primitives ---
 import { Spacer } from "@/components/tiptap-ui-primitive/spacer";
@@ -45,8 +50,7 @@ import {
   ColorHighlightPopoverButton,
 } from "@/components/tiptap-ui/color-highlight-popover";
 import { LinkContent } from "@/components/tiptap-ui/link-popover";
-import { MarkButton } from "@/components/tiptap-ui/mark-button";
-import { TextAlignButton } from "@/components/tiptap-ui/text-align-button";
+
 import { UndoRedoButton } from "@/components/tiptap-ui/undo-redo-button";
 
 // --- Icons ---
@@ -66,12 +70,15 @@ import { useCursorVisibility } from "@/hooks/use-cursor-visibility";
 import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils";
 
 // --- Styles ---
-import "@/components/tiptap-templates/simple/simple-editor.scss";
+import "@/components/tiptap-main/simple/simple-editor.scss";
 import { FieldValues, useForm, UseFormReturn } from "react-hook-form";
 import { Form } from "@/components/ui/form";
 import { shortInputNode } from "@/components/custom-extensions/shortinput/node";
 import { longInputNode } from "@/components/custom-extensions/longinput/node";
-import { multipleChoiceNode } from "@/components/custom-extensions/multiple-choices/node";
+import {
+  multipleChoiceNode,
+  optionNode,
+} from "@/components/custom-extensions/multiple-choices/node";
 import { CustomInputsDropdown } from "@/components/custom-input-dropdown";
 import { actionButtonNode } from "@/components/custom-extensions/action-btn/node";
 import { useEditorStore } from "@/stores/useEditorStore";
@@ -83,6 +90,10 @@ import { TiptapMarkDropdown } from "@/components/tiptap-mark-dropdown";
 import { TiptapTextAlignDropdown } from "@/components/tiptap-text-align-dropdown";
 import { PublishForm } from "@/app/dashboard/[workspaceId]/form/create/_components/PublishForm";
 import { EditForm } from "@/app/dashboard/[workspaceId]/form/edit/[formId]/_components/EditForm";
+import { TextStyle, FontFamily } from "@tiptap/extension-text-style";
+import { useEditorState } from "@tiptap/react";
+import { CutomizationPanel } from "@/components/custom-extensions/CutomizationPanel";
+import { toast } from "sonner";
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -97,8 +108,6 @@ const MainToolbarContent = ({
 
   return (
     <div className=" bg-card flex p-1 rounded-sm mx-auto  overflow-auto ">
-      <Spacer />
-
       <ToolbarGroup>
         <UndoRedoButton action="undo" />
         <UndoRedoButton action="redo" />
@@ -109,7 +118,7 @@ const MainToolbarContent = ({
       <ToolbarGroup>
         <HeadingDropdownMenu levels={[1, 2, 3]} portal={isMobile} />
         <ListDropdownMenu
-          types={["bulletList", "orderedList", "taskList"]}
+          types={["bulletList", "orderedList"]}
           portal={isMobile}
         />
         <BlockquoteButton />
@@ -130,13 +139,9 @@ const MainToolbarContent = ({
 
       <ToolbarSeparator />
 
-      <ToolbarSeparator />
+      {/* <ToolbarSeparator /> */}
 
       <ToolbarGroup>
-        {/* <TextAlignButton align="left" />
-        <TextAlignButton align="center" />
-        <TextAlignButton align="right" />
-        <TextAlignButton align="justify" /> */}
         <TiptapTextAlignDropdown />
       </ToolbarGroup>
 
@@ -164,11 +169,11 @@ const MainToolbarContent = ({
         {forEditPage ? <EditForm /> : <PublishForm />}
       </ToolbarGroup>
 
-      {isMobile && <ToolbarSeparator />}
+      {/* {isMobile && <ToolbarSeparator />} */}
 
-      {/* <ToolbarGroup>
-        <ThemeToggle />
-      </ToolbarGroup> */}
+      <ToolbarGroup>
+        <CutomizationPanel />
+      </ToolbarGroup>
     </div>
   );
 };
@@ -210,7 +215,6 @@ export function SimpleEditor({
   content?: any;
   isEditable?: boolean;
 }) {
-  // const form = useForm()
   const router = useRouter();
   const { formId } = useParams();
   const isMobile = useIsMobile();
@@ -220,7 +224,10 @@ export function SimpleEditor({
   >("main");
   const toolbarRef = React.useRef<HTMLDivElement>(null);
 
+  // form init
   const form = useForm();
+
+  // editor init
   const editor = useEditor({
     immediatelyRender: false,
     shouldRerenderOnTransaction: false,
@@ -247,33 +254,48 @@ export function SimpleEditor({
       TaskItem.configure({ nested: true }),
       Highlight.configure({ multicolor: true }),
       Image,
+      ImageUploadNode.configure({
+        accept: "png",
+      }),
       Typography,
       Superscript,
       Subscript,
       Selection,
-      ImageUploadNode.configure({
-        accept: "image/*",
-        maxSize: MAX_FILE_SIZE,
-        limit: 3,
-        upload: handleImageUpload,
-        onError: (error: any) => console.error("Upload failed:", error),
-      }),
       shortInputNode,
       longInputNode,
       multipleChoiceNode,
+      optionNode,
       actionButtonNode,
+      Focus.configure({
+        className: "has-focus",
+        mode: "all",
+      }),
+      TextStyle,
+      FontFamily.configure({
+        types: [
+          "heading",
+          "paragraph",
+          "shortInput",
+          "node-multipleChoiceInput",
+          "textStyle",
+        ],
+      }),
+      TrailingNode,
     ],
+    autofocus: true,
     editable: isEditable,
     content: content,
   });
 
   const rect = useCursorVisibility({
-    editor,
+    editor: editor ? editor : null,
     overlayHeight: toolbarRef.current?.getBoundingClientRect().height ?? 0,
   });
 
   const onSubmit = async (values: any) => {
-    if (!formId) return;
+    // if (!formId) return;
+    console.log(values);
+
     const res = await useFormStore
       .getState()
       .handleSubmit(values, formId as string);
@@ -292,7 +314,7 @@ export function SimpleEditor({
   React.useEffect(() => {
     useEditorStore.setState({ editor: editor });
     useFormStore.setState({ form: form });
-  }, [editor , form]);
+  }, [editor, form]);
 
   return (
     <div className="simple-editor-wrapper selection:bg-teal-200/30 dark:selection:bg-teal-700/40">

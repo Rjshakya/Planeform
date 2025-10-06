@@ -1,7 +1,13 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { ArrowUpRightIcon, Ellipsis, TrashIcon } from "lucide-react";
+import {
+  ArrowUpRightIcon,
+  CircleAlertIcon,
+  Ellipsis,
+  Loader,
+  TrashIcon,
+} from "lucide-react";
 import workspaceImg from "@/public/workspace-pic.jpg";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -18,6 +24,25 @@ import { toast } from "sonner";
 import { ArrowCircleUp2, Edit, Trash } from "iconsax-reactjs";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface workspaceCardProps {
   name: string;
@@ -85,13 +110,41 @@ export const WorkspaceCard = (props: workspaceCardProps) => {
               </span>
               <span>Edit</span>
             </DropdownMenuItem>
-            <DropdownMenuItem
-              className="w-full flex items-center gap-2"
-              onClick={async () => await handleDeleteWorkspace(props?.id)}
-            >
-              <Trash variant="Bulk" className=" size-5" />
-              <p>Delete</p>
-            </DropdownMenuItem>
+
+            <AlertDialog>
+              <AlertDialogTrigger className="hover:bg-accent focus:text-accent-foreground data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 dark:data-[variant=destructive]:focus:bg-destructive/20 data-[variant=destructive]:focus:text-destructive data-[variant=destructive]:*:[svg]:!text-destructive [&_svg:not([class*='text-'])]:text-muted-foreground relative cursor-default rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 w-full flex items-center gap-2">
+                <Trash variant="Bulk" className=" size-5" />
+                <p>Delete</p>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <div className="flex flex-col gap-2 max-sm:items-center sm:flex-row sm:gap-4">
+                  <div
+                    className="flex size-9 shrink-0 items-center justify-center rounded-full border"
+                    aria-hidden="true"
+                  >
+                    <CircleAlertIcon className="opacity-80" size={16} />
+                  </div>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Are you absolutely sure?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete
+                      workspace
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                </div>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => handleDeleteWorkspace(props?.id)}
+                  >
+                    {deleting && <Loader className=" animate-spin" />}
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </DropdownMenuContent>
         </DropdownMenu>
       </CardHeader>

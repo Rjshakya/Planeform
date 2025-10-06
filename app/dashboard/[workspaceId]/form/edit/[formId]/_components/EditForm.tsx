@@ -36,15 +36,13 @@ export const EditForm = () => {
 
     setCreating(true);
     try {
-      const promises = [
-        await apiClient.patch(`/api/form/`, {
-          formId,
-          formName,
-          form_schema: JSON.stringify(json),
-        }),
-        await apiClient.patch(`/api/formField`, { formId, fields }),
-      ];
-      await Promise.all(promises);
+      await apiClient.put(`/api/form/`, {
+        formId,
+        formName,
+        form_schema: JSON.stringify(json),
+        fields,
+      });
+
       toast(`form updated. successfully`);
       setOpen(false);
       router.push(`/dashboard/workspace/${workspaceId}`);

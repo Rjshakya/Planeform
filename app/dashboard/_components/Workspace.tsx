@@ -30,6 +30,7 @@ export default function Workspace() {
     `/api/workspace/${session?.user?.id}`,
     fetcher
   );
+  const [open, setOpen] = useState(false);
 
   if (sessionError) {
     signOut();
@@ -53,18 +54,23 @@ export default function Workspace() {
     }
 
     setCreating(false);
+    toast(`${params.name} created`);
+    setOpen(false);
     setWorkspaceName("");
   };
 
   return (
-    <div className="grid gap-16">
+    <div className="grid gap-16  max-w-4xl w-full mx-auto">
       <div className=" header w-full">
         <div className=" w-full flex items-center justify-between p-2">
           <div className=" w-full">
-            <h3 className=" text-3xl font-medium">Your Workspaces</h3>
+            <p>Hi ! {session?.user?.name}</p>
+            <h3 className=" text-3xl font-medium text-muted-foreground">
+              Your Workspaces
+            </h3>
           </div>
           <div className="">
-            <Dialog>
+            <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
                 <Button>
                   {" "}

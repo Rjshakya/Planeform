@@ -22,6 +22,11 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { url } from "node:inspector";
+import { apiClient } from "@/lib/axios";
+import useSWR from "swr";
+import { authClient } from "@/lib/auth-client";
+import { redirect } from "next/navigation";
 
 // This is sample data.
 const data = {
@@ -83,7 +88,17 @@ const data = {
   ],
 };
 
+const fetcher = (url: string) => apiClient.get(url);
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { data: session } = authClient.useSession();
+  const { data: workspaceData } = useSWR(
+    `/api/workspace/forms/${session?.user?.id}`,
+    fetcher
+  );
+
+
+
   return (
     <Sidebar className="border-r-0" {...props}>
       <SidebarHeader>
@@ -92,7 +107,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         {/* <NavFavorites favorites={data.favorites} /> */}
-        <NavWorkspaces workspaces={data.workspaces} />
+        <NavWorkspaces workspaces={workspaceData?.data?.workspace} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarRail />

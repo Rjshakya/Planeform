@@ -10,7 +10,7 @@ export interface IformStore {
   setHookForm: (form: UseFormReturn) => UseFormReturn;
   isSubmitting: boolean;
   handleSubmit: (
-    values: Record<string, string>,
+    values: Record<string, any>,
     formId: string
   ) => Promise<boolean>;
   isSuccess: boolean;
@@ -41,22 +41,40 @@ export const useFormStore = create<IformStore>((set, get) => ({
         form: formId,
       });
 
-      if (respondent.status === 200) {
-        const respondentId = respondent?.data?.respondent?.id;
-        const valuesData = Object.entries(values).map((o) => {
+      if (respondent.status !== 200) return false;
+
+      const respondentId = respondent?.data?.respondent?.id;
+      const valuesData = Object.entries(values).map((o) => {
+        // formating for day input value , which gives {} rather than string.
+
+        if (o[1]?.day) {
+          const dateObject = o[1];
           return {
             form: formId,
             form_field: o[0],
-            value: o[1],
+            value: `${dateObject?.day}-${dateObject?.month}-${dateObject?.year}`,
             respondent: respondentId,
           };
-        });
+        }
 
-        await apiClient.post(`/api/response/multiple`, valuesData);
-        return true;
+        return {
+          form: formId,
+          form_field: o[0],
+          value: o[1],
+          respondent: respondentId,
+        };
+      });
+
+      const response = await apiClient.post(
+        `/api/response/multiple`,
+        valuesData
+      );
+
+      if (response?.status !== 200) {
+        await apiClient?.delete(`/api/respondent/${respondentId}`);
+        return false;
       }
-
-      return false;
+      return true;
     } catch (e) {
       toast("failed to submit form please try again later;");
       return false;

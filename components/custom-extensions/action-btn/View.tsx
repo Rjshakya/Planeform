@@ -1,6 +1,6 @@
 import { NodeViewProps } from "@tiptap/core";
 import { InsertActionButtonParams } from "./node";
-import { NodeViewWrapper } from "@tiptap/react";
+import { NodeViewContent, NodeViewWrapper } from "@tiptap/react";
 import { Button } from "@/components/ui/button";
 import { Loader } from "lucide-react";
 import { useFormStore } from "@/stores/useformStore";
@@ -14,7 +14,7 @@ export const ActionButtonView = (props: NodeViewProps) => {
           <Loader className=" animate-spin" />
         )}
 
-        <p className="">{text}</p>
+        <NodeViewContent className="text-xl content" />
       </Button>
     </NodeViewWrapper>
   );

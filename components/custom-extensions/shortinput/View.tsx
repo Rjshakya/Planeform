@@ -12,24 +12,40 @@ import {
 import { Input } from "@/components/ui/input";
 import { useFormStore } from "@/stores/useformStore";
 import { parseDate } from "@internationalized/date";
+import { NodeViewContent } from "@tiptap/react";
 import { NodeViewWrapper, type NodeViewProps } from "@tiptap/react";
 import React from "react";
 
 const ShortInput = (props: NodeViewProps) => {
   const { label, id, type, isRequired, placeholder } = props?.node?.attrs;
+
   const form = useFormStore.getState().getHookForm();
+
 
   return (
     <>
       <NodeViewWrapper as={"div"}>
-        {form && (
+        {
           <FormField
             control={form?.control}
             name={id}
             render={({ field }) => (
-              <FormItem  className="mt-4 field">
-                <FormLabel htmlFor={label}  aria-label={label} className=" text-2xl" id={id}>
-                  {label}{" "}
+              <FormItem
+                className={`mt-4 field ${
+                  props?.selected && "outline-2 outline-primary"
+                }`}
+              >
+                <FormLabel
+                  htmlFor={label}
+                  aria-label={label}
+                  className=" text-2xl"
+                  id={id}
+               
+                >
+                  <NodeViewContent
+                    as="div"
+                    className="outline-none focus:outline-none inline-block min-w-[20px]"
+                  />
                 </FormLabel>
                 <FormControl>
                   {type === "phone" ? (
@@ -49,15 +65,13 @@ const ShortInput = (props: NodeViewProps) => {
                       type={type}
                       required={isRequired}
                       {...field}
-                      
-                      
                     />
                   )}
                 </FormControl>
               </FormItem>
             )}
           />
-        )}
+        }
       </NodeViewWrapper>
     </>
   );

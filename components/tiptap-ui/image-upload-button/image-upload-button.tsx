@@ -1,24 +1,29 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 
 // --- Lib ---
-import { parseShortcutKeys } from "@/lib/tiptap-utils"
+import { parseShortcutKeys } from "@/lib/tiptap-utils";
 
 // --- Hooks ---
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor"
+import { useTiptapEditor } from "@/hooks/use-tiptap-editor";
 
 // --- Tiptap UI ---
-import type { UseImageUploadConfig } from "@/components/tiptap-ui/image-upload-button"
+import type { UseImageUploadConfig } from "@/components/tiptap-ui/image-upload-button";
 import {
   IMAGE_UPLOAD_SHORTCUT_KEY,
   useImageUpload,
-} from "@/components/tiptap-ui/image-upload-button"
+} from "@/components/tiptap-ui/image-upload-button";
 
 // --- UI Primitives ---
-import type { ButtonProps } from "@/components/tiptap-ui-primitive/button"
-import { Button } from "@/components/tiptap-ui-primitive/button"
-import { Badge } from "@/components/tiptap-ui-primitive/badge"
+import type { ButtonProps } from "@/components/tiptap-ui-primitive/button";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export interface ImageUploadButtonProps
   extends Omit<ButtonProps, "type">,
@@ -26,20 +31,20 @@ export interface ImageUploadButtonProps
   /**
    * Optional text to display alongside the icon.
    */
-  text?: string
+  text?: string;
   /**
    * Optional show shortcut keys in the button.
    * @default false
    */
-  showShortcut?: boolean
+  showShortcut?: boolean;
 }
 
 export function ImageShortcutBadge({
   shortcutKeys = IMAGE_UPLOAD_SHORTCUT_KEY,
 }: {
-  shortcutKeys?: string
+  shortcutKeys?: string;
 }) {
-  return <Badge>{parseShortcutKeys({ shortcutKeys })}</Badge>
+  return <Badge>{parseShortcutKeys({ shortcutKeys })}</Badge>;
 }
 
 /**
@@ -64,7 +69,7 @@ export const ImageUploadButton = React.forwardRef<
     },
     ref
   ) => {
-    const { editor } = useTiptapEditor(providedEditor)
+    const { editor } = useTiptapEditor(providedEditor);
     const {
       isVisible,
       canInsert,
@@ -77,47 +82,53 @@ export const ImageUploadButton = React.forwardRef<
       editor,
       hideWhenUnavailable,
       onInserted,
-    })
+    });
 
     const handleClick = React.useCallback(
       (event: React.MouseEvent<HTMLButtonElement>) => {
-        onClick?.(event)
-        if (event.defaultPrevented) return
-        handleImage()
+        onClick?.(event);
+        if (event.defaultPrevented) return;
+        handleImage();
       },
       [handleImage, onClick]
-    )
+    );
 
     if (!isVisible) {
-      return null
+      return null;
     }
 
     return (
-      <Button
-        type="button"
-        data-style="ghost"
-        data-active-state={isActive ? "on" : "off"}
-        role="button"
-        tabIndex={-1}
-        disabled={!canInsert}
-        data-disabled={!canInsert}
-        aria-label={label}
-        aria-pressed={isActive}
-        tooltip={label}
-        onClick={handleClick}
-        {...buttonProps}
-        ref={ref}
-      >
-        {children ?? (
-          <>
-            <Icon className="tiptap-button-icon" />
-            {text && <span className="tiptap-button-text">{text}</span>}
-            {showShortcut && <ImageShortcutBadge shortcutKeys={shortcutKeys} />}
-          </>
-        )}
-      </Button>
-    )
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            data-active-state={isActive ? "on" : "off"}
+            variant={`${isActive ? "secondary" : "ghost"}`}
+            size={"sm"}
+            role="button"
+            tabIndex={-1}
+            disabled={!canInsert}
+            data-disabled={!canInsert}
+            aria-label={label}
+            aria-pressed={isActive}
+            onClick={handleClick}
+            {...buttonProps}
+            ref={ref}
+          >
+            {children ?? (
+              <>
+                <Icon className="tiptap-button-icon" />
+                {text && <span className="tiptap-button-text">{text}</span>}
+                {showShortcut && (
+                  <ImageShortcutBadge shortcutKeys={shortcutKeys} />
+                )}
+              </>
+            )}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>{label}</TooltipContent>
+      </Tooltip>
+    );
   }
-)
+);
 
-ImageUploadButton.displayName = "ImageUploadButton"
+ImageUploadButton.displayName = "ImageUploadButton";

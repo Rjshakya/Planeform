@@ -17,11 +17,10 @@ interface InsertShortInputParams {
 export const shortInputNode = Node.create({
   name: "shortInput",
   group: "block",
-  // atom: true,
-
   draggable: true,
-  // allowGapCursor: true,
-  selectable: true,
+  allowGapCursor: true,
+  content: "inline*",
+
   addAttributes() {
     return {
       id: { default: v4() },
@@ -52,6 +51,9 @@ export const shortInputNode = Node.create({
           return commands.insertContent({
             type: "shortInput",
             attrs: { label, id, type, isRequired, placeholder },
+            content: label
+              ? [{ type: "text", text: label }]
+              : [{ type: "text", text: "Label:" }],
           });
         },
     };
@@ -59,6 +61,38 @@ export const shortInputNode = Node.create({
 
   addNodeView() {
     return ReactNodeViewRenderer(ShortInput);
+  },
+
+  addKeyboardShortcuts() {
+    return {
+      Backspace: ({ editor }) => {
+        const { selection } = editor.state;
+        const { $from, empty } = selection;
+
+        // Check if cursor is at the start of the node content
+        if ($from.parent.type.name === this.name && $from.parentOffset === 0) {
+          // Delete the entire node
+          return editor.commands.deleteNode(this.name);
+        }
+
+        return false; // Let default behavior handle it
+      },
+      Delete: ({ editor }) => {
+        const { selection } = editor.state;
+        const { $from } = selection;
+
+        // Check if cursor is at the end of the node content
+        if (
+          $from.parent.type.name === this.name &&
+          $from.parentOffset === $from.parent.content.size
+        ) {
+          // Delete the entire node
+          return editor.commands.deleteNode(this.name);
+        }
+
+        return false;
+      },
+    };
   },
 });
 

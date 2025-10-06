@@ -23,7 +23,6 @@ export default function DateComponent({
 }) {
   return (
     <DatePicker
-      
       value={value}
       onChange={onValueChange}
       className="*:not-first:mt-2"

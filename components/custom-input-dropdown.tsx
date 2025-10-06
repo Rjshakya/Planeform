@@ -12,31 +12,36 @@ import { InsertShortInput } from "./custom-extensions/shortinput/Insert";
 import { InsertLongInput } from "./custom-extensions/longinput/Insert";
 import { InsertMultipleChoice } from "./custom-extensions/multiple-choices/Insert";
 import { Button } from "./ui/button";
-import { useMultiDialogStore } from "@/stores/useMultiDialogStore";
 import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
 import { InsertActionBtn } from "./custom-extensions/action-btn/Insert";
 import { InsertPhoneInput } from "./custom-extensions/phoneinput/Insert";
 import { InsertDateInput } from "./custom-extensions/date-input/Insert";
-import { useCurrentEditor } from "@tiptap/react";
+
+import { TextCursorInput } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 export const CustomInputsDropdown = () => {
-  const { setOpenMultiChoiceInput } = useMultiDialogStore();
+
   const [open, setOpen] = useState(false);
   const [dialog, setDialog] = useState("");
-  const { editor } = useCurrentEditor()
-  
 
   return (
     <>
-    
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant={"ghost"} size={"sm"}>
-            inputs
-          </Button>
-        </DropdownMenuTrigger>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <DropdownMenuTrigger asChild>
+              <Button variant={"ghost"} size={"sm"}>
+                <TextCursorInput />
+                Inputs
+              </Button>
+            </DropdownMenuTrigger>
+          </TooltipTrigger>
+          <TooltipContent>Input fields</TooltipContent>
+        </Tooltip>
+
         <DropdownMenuContent>
-          <Card className="py-1">
+          <Card className="py-1 border-0 shadow-none">
             <CardContent className="px-1 grid gap-1">
               <DropdownMenuItem
                 onClick={() => {
@@ -63,8 +68,6 @@ export const CustomInputsDropdown = () => {
                 Multiple choice
               </DropdownMenuItem>
 
-             
-
               <DropdownMenuItem
                 onClick={() => {
                   setOpen(true);
@@ -74,7 +77,7 @@ export const CustomInputsDropdown = () => {
                 Date input
               </DropdownMenuItem>
 
-               <DropdownMenuItem asChild>
+              <DropdownMenuItem asChild>
                 <InsertPhoneInput />
               </DropdownMenuItem>
 

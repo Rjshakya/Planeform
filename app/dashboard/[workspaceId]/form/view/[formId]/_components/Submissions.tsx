@@ -19,18 +19,14 @@ export const Submissions = () => {
   const { formId } = useParams();
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 2,
+    pageSize: 20,
   });
   useEffect(() => {
     console.log("Pagination state changed:", pagination);
   }, [pagination]);
   const { data, error, isLoading } = useSWR(
     `/api/response/form/${formId}?pageIndex=${pagination.pageIndex}&pageSize=${pagination.pageSize}`,
-    fetcher,
-    {
-      dedupingInterval: 0,
-      // revalidateIfStale
-    }
+    fetcher
   );
 
   const responses = data?.data?.responses;
@@ -50,18 +46,21 @@ export const Submissions = () => {
             const date = new Date(time);
             return (
               // @ts-ignore
-              <div className="font-medium">
+              <div className="font-medium ">
                 {date?.toDateString()}, {date?.toLocaleTimeString()}
               </div>
             );
           }
 
           return (
-            // @ts-ignore
-            <div className="font-medium">{row.getValue(h?.label)?.value}</div>
+            <div className="font-medium ">
+              {/* @ts-ignore */}
+              <p className=" text-wrap">{row.getValue(h?.label)?.value}</p>
+            </div>
           );
         },
-        size: 180,
+        
+        size: 200,
         enableHiding: true,
       };
     });
@@ -69,7 +68,7 @@ export const Submissions = () => {
     columnArr?.unshift({
       id: "select",
       header: ({ table }) => (
-        <div className=" grid place-content-center">
+        <div className=" grid place-content-center mr-1.5">
           <Checkbox
             checked={
               table.getIsAllPageRowsSelected() ||
@@ -84,13 +83,13 @@ export const Submissions = () => {
       ),
       cell: ({ row }) => (
         <Checkbox
-          className=""
+          className=" ml-1"
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
           aria-label="Select row"
         />
       ),
-      size: 28,
+      size: 46,
       enableSorting: false,
       enableHiding: false,
     });
@@ -106,7 +105,14 @@ export const Submissions = () => {
     return columnArr;
   }, [heads]);
 
-  if (error) return <p>error occurred</p>;
+  if (error)
+    return (
+      <div className=" w-full min-h-[50vh] grid place-content-center">
+        <p className=" text-wrap text-lg text-muted-foreground">
+          Internal Error , we are sorry for this
+        </p>
+      </div>
+    );
   if (isLoading)
     return (
       <div className=" w-full min-h-[50vh] grid place-content-center">
@@ -115,11 +121,16 @@ export const Submissions = () => {
     );
 
   return (
-    <TanStackTable
-      states={{ pagination, setPagination, pageCount: responses?.totalPages }}
-      tableData={data?.data?.responses?.res || []}
-      columns={columns}
-      formId={formId as string}
-    />
+    <>
+      {data?.status === 200 && (
+        <p className="">Your form submissions are here.</p>
+      )}
+      <TanStackTable
+        states={{ pagination, setPagination, pageCount: responses?.totalPages }}
+        tableData={data?.data?.responses?.res || []}
+        columns={columns}
+        formId={formId as string}
+      />
+    </>
   );
 };

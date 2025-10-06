@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/sidebar";
 
 import { signOut } from "@/lib/auth-client";
-import { ThemeToggle } from "./tiptap-templates/simple/theme-toggle";
+import { ThemeToggle } from "./tiptap-main/simple/theme-toggle";
 
 const data = [
   [

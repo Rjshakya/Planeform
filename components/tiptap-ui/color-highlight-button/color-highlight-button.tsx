@@ -116,12 +116,11 @@ export const ColorHighlightButton = React.forwardRef<
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
-            className={`${isActive && 'bg-muted'}`}
+            className={`py-1 px-2 `}
             type="button"
-            variant={"ghost"}
+            variant={`${isActive ? "secondary" : "ghost"}`}
             size={"sm"}
-            // data-active-state={isActive ? "on" : "off"}
-
+            data-active-state={isActive ? "on" : "off"}
             disabled={!canColorHighlight}
             data-disabled={!canColorHighlight}
             aria-label={label}
@@ -135,7 +134,7 @@ export const ColorHighlightButton = React.forwardRef<
             {children ?? (
               <>
                 <span
-                  className={`w-4 h-4 rounded-full`}
+                  className={`w-5 h-5 rounded-sm`}
                   style={{ backgroundColor: highlightColor }}
                 />
                 {text && <span className="tiptap-button-text">{text}</span>}

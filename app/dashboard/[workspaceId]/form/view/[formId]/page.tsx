@@ -2,14 +2,22 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Submissions } from "./_components/Submissions";
-import { Integrations } from "./_components/Integrations";
+import { apiClient } from "@/lib/axios";
+import useSWR from "swr";
+import { useParams } from "next/navigation";
+
+const fetcher = (url: string) => apiClient.get(url);
 export default function Page() {
+  const { formId } = useParams();
+
+  const { data } = useSWR(`/api/form/${formId}/meta_data`, fetcher);
+
   return (
-    <main className=" w-full">
+    <main className=" w-full max-w-4xl  mx-auto">
       <Tabs defaultValue="Submission" className="w-full">
-        <div className=" mb-4 ">
-          <p className=" text-muted-foreground text-6xl font-semibold tracking-tighter">
-            Form
+        <div className=" mb-8 ">
+          <p className=" text-muted-foreground text-5xl font-semibold tracking-tighter">
+            {data?.data?.form?.name || "form"}
           </p>
         </div>
         <TabsList className=" bg-background flex items-center gap-8">
@@ -33,14 +41,13 @@ export default function Page() {
           </TabsTrigger>
         </TabsList>
         <TabsContent className="px-1  grid gap-2 mt-4 " value="Submission">
-          <p className="">Your form submissions are here.</p>
           <Submissions />
         </TabsContent>
         <TabsContent className="px-1 mt-4" value="Analytics">
           See analytics of your form here .
         </TabsContent>
         <TabsContent className="px-1 mt-4" value="Integrations">
-          <Integrations />
+          See integrations of your form here .{/* <Integrations /> */}
         </TabsContent>
       </Tabs>
     </main>

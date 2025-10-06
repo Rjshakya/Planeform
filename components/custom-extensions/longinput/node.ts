@@ -15,11 +15,9 @@ export interface InsertLongInputParams {
 export const longInputNode = Node.create({
   name: "LongInput",
   group: "block",
-  // atom: true,
-
   draggable: true,
-  // allowGapCursor: true,
-  selectable: true,
+  allowGapCursor: true,
+  content: "inline*",
   addAttributes() {
     return {
       id: { default: v4() },
@@ -56,6 +54,9 @@ export const longInputNode = Node.create({
               placeholder,
               rows,
             },
+            content: label
+              ? [{ type: "text", text: label}]
+              : [{ type: "text", text: "Label:" }],
           });
         },
     };
@@ -63,6 +64,38 @@ export const longInputNode = Node.create({
 
   addNodeView() {
     return ReactNodeViewRenderer(LongInputView);
+  },
+
+  addKeyboardShortcuts() {
+    return {
+      Backspace: ({ editor }) => {
+        const { selection } = editor.state;
+        const { $from, empty } = selection;
+
+        // Check if cursor is at the start of the node content
+        if ($from.parent.type.name === this.name && $from.parentOffset === 0) {
+          // Delete the entire node
+          return editor.commands.deleteNode(this.name);
+        }
+
+        return false; // Let default behavior handle it
+      },
+      Delete: ({ editor }) => {
+        const { selection } = editor.state;
+        const { $from } = selection;
+
+        // Check if cursor is at the end of the node content
+        if (
+          $from.parent.type.name === this.name &&
+          $from.parentOffset === $from.parent.content.size
+        ) {
+          // Delete the entire node
+          return editor.commands.deleteNode(this.name);
+        }
+
+        return false;
+      },
+    };
   },
 });
 

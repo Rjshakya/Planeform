@@ -103,9 +103,8 @@ export const MarkButton = React.forwardRef<HTMLButtonElement, MarkButtonProps>(
         <TooltipTrigger asChild>
           <Button
             type="button"
-            className={`${isActive && 'bg-muted'}`}
             disabled={!canToggle}
-            variant={"ghost"}
+         
             size={"sm"}
             data-disabled={!canToggle}
             aria-label={label}
@@ -113,10 +112,12 @@ export const MarkButton = React.forwardRef<HTMLButtonElement, MarkButtonProps>(
             onClick={handleClick}
             {...buttonProps}
             ref={ref}
+            // className={`${isActive && " border bg-accent text-foreground"}`}
+            variant={`${isActive ? "secondary" : "ghost"}`}
           >
             {children ?? (
               <>
-                <Icon className="tiptap-button-icon" />
+                <Icon />
                 {text && <span className="tiptap-button-text">{text}</span>}
                 {showShortcut && (
                   <MarkShortcutBadge type={type} shortcutKeys={shortcutKeys} />

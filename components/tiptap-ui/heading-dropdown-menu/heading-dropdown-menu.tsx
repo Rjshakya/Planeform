@@ -15,7 +15,6 @@ import { useHeadingDropdownMenu } from "@/components/tiptap-ui/heading-dropdown-
 
 // --- UI Primitives ---
 import type { ButtonProps } from "@/components/tiptap-ui-primitive/button";
-import { ButtonGroup } from "@/components/tiptap-ui-primitive/button";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -30,6 +29,11 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+// import {
+//   Tooltip,
+//   TooltipContent,
+//   TooltipTrigger,
+// } from "@/components/ui/tooltip";
 
 export interface HeadingDropdownMenuProps
   extends Omit<ButtonProps, "type">,
@@ -88,35 +92,32 @@ export const HeadingDropdownMenu = React.forwardRef<
 
     return (
       <DropdownMenu open={isOpen} onOpenChange={handleOpenChange}>
-        <DropdownMenuTrigger asChild>
-          <Button
-            type="button"
-            variant={"ghost"}
-            data-active-state={isActive ? "on" : "off"}
-            // tabIndex={-1}
-            disabled={!canToggle}
-            data-disabled={!canToggle}
-            aria-label="Format text as heading"
-            aria-pressed={isActive}
-            {...buttonProps}
-            ref={ref}
-          >
-            <Icon className="tiptap-button-icon" />
-            <ChevronDownIcon className="tiptap-button-dropdown-small" />
-          </Button>
-          {/* <Tooltip>
-            <TooltipTrigger asChild>
-              
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Heading</p>
-            </TooltipContent>
-          </Tooltip> */}
-        </DropdownMenuTrigger>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <DropdownMenuTrigger asChild>
+              <Button
+                type="button"
+                 variant={`${isActive ? 'secondary' : 'ghost'}`}
+                data-active-state={isActive ? "on" : "off"}
+                // tabIndex={-1}
+                disabled={!canToggle}
+                data-disabled={!canToggle}
+                aria-label="Format text as heading"
+                aria-pressed={isActive}
+                {...buttonProps}
+                ref={ref}
+              >
+                <Icon className="tiptap-button-icon" />
+                <ChevronDownIcon className="tiptap-button-dropdown-small" />
+              </Button>
+            </DropdownMenuTrigger>
+          </TooltipTrigger>
+          <TooltipContent>Heading</TooltipContent>
+        </Tooltip>
 
         <DropdownMenuContent align="start">
-          <Card className=" py-1">
-            <CardContent className="px-1">
+          <Card className=" py-1 border-0 shadow-none w-full">
+            <CardContent className="px-1 w-full">
               {levels.map((level) => (
                 <DropdownMenuItem key={`heading-${level}`} asChild>
                   <HeadingButton

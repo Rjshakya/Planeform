@@ -7,6 +7,8 @@ import { use } from "react";
 import useSWR from "swr";
 import FormCard from "./_components/FormCard";
 import { useRouter } from "next/navigation";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FormsTab } from "./_components/FormsTab";
 
 const fetcher = (url: string) => apiClient.get(url).then((r) => r?.data);
 
@@ -16,24 +18,24 @@ export default function Page({
   params: Promise<{ workspaceId: string }>;
 }) {
   const { workspaceId } = use(params);
-  const {
-    data: formsData,
-    error,
-    isLoading,
-  } = useSWR(`/api/form/workspace/${workspaceId}`, fetcher);
+  const { data, error, isLoading } = useSWR(
+    `/api/form/workspace/${workspaceId}`,
+    fetcher
+  );
+
   const router = useRouter();
 
   if (error) return <p>error occurred</p>;
   if (isLoading) return <p>loading ...</p>;
 
-
   return (
-    <div className="grid gap-16">
-      <div className=" header w-full">
-        <div className=" w-full flex items-center justify-between p-2">
-          <div className=" w-full">
-            <h3 className=" text-3xl font-medium">Your Forms</h3>
-          </div>
+    <div className="grid gap-16 max-w-4xl w-full mx-auto">
+      <Tabs defaultValue="forms" className="w-full">
+        <div className=" mb-8  flex justify-between items-center">
+          <p className=" text-muted-foreground text-5xl font-semibold tracking-tighter">
+            {data?.workspace?.name || "Your workspace"}
+          </p>
+
           <div className="">
             <Button
               onClick={() =>
@@ -41,29 +43,31 @@ export default function Page({
               }
             >
               {" "}
-              <PlusIcon /> create
+              <PlusIcon /> create new form
             </Button>
           </div>
         </div>
-      </div>
-
-      <div className=" w-full grid md:grid-cols-3 px-2 gap-4">
-        {formsData?.forms &&
-          formsData?.forms?.length > 0 &&
-          formsData?.forms?.map((f: { name: string; shortId: string }) => {
-            return (
-              <FormCard name={f?.name} shortId={f?.shortId} key={f?.shortId} />
-            );
-          })}
-
-        {formsData?.forms?.length === 0 && (
-          <div className=" col-span-3 text-center ">
-            <p className=" text-2xl text-muted-foreground">
-              You dont have any forms , please create one
-            </p>
-          </div>
-        )}
-      </div>
+        <TabsList className=" bg-background flex items-center gap-8">
+          <TabsTrigger
+            className=" p-0 text-left text-lg py-3.5 w-full h-full data-[state=active]:underline  data-[state=active]:underline-offset-4 "
+            value="forms"
+          >
+            Forms
+          </TabsTrigger>
+          <TabsTrigger
+            className=" p-0 text-left text-lg py-3.5 w-full h-full data-[state=active]:underline  data-[state=active]:underline-offset-4"
+            value="settings"
+          >
+            Settings
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent className="px-1  grid gap-2 mt-4 " value="forms">
+          <FormsTab forms={data?.workspace?.forms || []} />
+        </TabsContent>
+        <TabsContent className="px-1 mt-4" value="settings">
+          settings
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
