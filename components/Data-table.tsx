@@ -134,12 +134,12 @@ export default function TanStackTable({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [sorting, setSorting] = useState<SortingState>([
-    {
-      id: "Name",
-      desc: false,
-    },
-  ]);
+  // const [sorting, setSorting] = useState<SortingState>([
+  //   {
+  //     id: "Name",
+  //     desc: false,
+  //   },
+  // ]);
 
   const [data, setData] = useState<any[]>(tableData);
 
@@ -169,9 +169,7 @@ export default function TanStackTable({
       columnFilters,
       columnVisibility,
       pagination: states.pagination,
-      sorting,
     },
-    onSortingChange: setSorting,
     columnResizeMode: "onChange",
   });
 
@@ -182,7 +180,8 @@ export default function TanStackTable({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-3 py-1.5">
           {/* Filter by name or email */}
-          <div className="relative">
+
+          {/* <div className="relative">
             <Input
               id={`${id}-input`}
               ref={inputRef}
@@ -217,7 +216,7 @@ export default function TanStackTable({
                 <CircleXIcon size={16} aria-hidden="true" />
               </button>
             )}
-          </div>
+          </div> */}
 
           {/* Toggle columns visibility */}
           <DropdownMenu>

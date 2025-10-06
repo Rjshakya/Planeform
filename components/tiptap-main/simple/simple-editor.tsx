@@ -333,11 +333,17 @@ export function SimpleEditor({
     };
 
     editorContentDiv?.addEventListener("focusin", handleFocus);
+    editorContentDiv?.addEventListener("focusout", () =>
+      setEditorIsFocused(false)
+    );
 
     return () => {
       editorContentDiv?.removeEventListener("focusin", handleFocus);
+      editorContentDiv?.removeEventListener("focusout", () =>
+        setEditorIsFocused(false)
+      );
     };
-  }, []);
+  }, [editorContentRef?.current, isMobile, mobileView]);
 
   return (
     <div className="simple-editor-wrapper selection:bg-teal-200/30 dark:selection:bg-teal-700/40">
@@ -347,11 +353,11 @@ export function SimpleEditor({
             className=""
             ref={toolbarRef}
             style={{
-              ...(isMobile
+              ...(isMobile && editorIsFocused
                 ? {
                     bottom: `calc(100% - ${height - rect.y}px)`,
                   }
-                : {}),
+                : { display: "none" }),
             }}
           >
             {mobileView === "main" ? (

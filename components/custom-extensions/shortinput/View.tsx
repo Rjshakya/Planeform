@@ -40,6 +40,7 @@ const ShortInput = (props: NodeViewProps) => {
                   className=" text-2xl"
                   id={id}
                 >
+                  {/* {field?.} */}
                   <NodeViewContent as="div" className=" min-w-[20px] w-full" />
                 </FormLabel>
                 <FormControl>
@@ -49,17 +50,17 @@ const ShortInput = (props: NodeViewProps) => {
                       valueChange={field?.onChange}
                       id={id}
                     />
-                  ) : type === "Date" ? (
-                    <DateComponent
-                      value={field?.value}
-                      onValueChange={field?.onChange}
-                    />
                   ) : (
                     <Input
                       placeholder={placeholder}
                       type={type}
                       required={isRequired}
-                      {...field}
+                      value={field?.value}
+                      onChange={field?.onChange}
+                      name={field?.name}
+                      disabled={field?.disabled}
+                      ref={field?.ref}
+                      onBlur={field?.onBlur}
                     />
                   )}
                 </FormControl>

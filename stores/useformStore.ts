@@ -2,6 +2,7 @@
 import { apiClient } from "@/lib/axios";
 import { FieldValues, useForm, UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
+import { mutate } from "swr";
 import { create } from "zustand";
 
 export interface IformStore {
@@ -35,19 +36,18 @@ export const useFormStore = create<IformStore>((set, get) => ({
     // console.log(values);
     // return false;
 
-    // set({ isSubmitting: true });
+    set({ isSubmitting: true });
 
     if (!values) return false;
 
     try {
-      // const respondent = await apiClient.post(`/api/respondent`, {
-      //   form: formId,
-      // });
+      const respondent = await apiClient.post(`/api/respondent`, {
+        form: formId,
+      });
 
-      // if (respondent.status !== 200) return false;
+      if (respondent.status !== 200) return false;
 
-      // const respondentId = respondent?.data?.respondent?.id;
-      const respondentId = 'id'
+      const respondentId = respondent?.data?.respondent?.id;
       const valuesData = Object.entries(values).map((o) => {
         // formating for day input value , which gives {} rather than string.
 
@@ -69,11 +69,9 @@ export const useFormStore = create<IformStore>((set, get) => ({
         };
 
         console.log(obj);
-        
+
         return obj;
       });
-
-      return false
 
       const response = await apiClient.post(
         `/api/response/multiple`,
@@ -84,12 +82,15 @@ export const useFormStore = create<IformStore>((set, get) => ({
         await apiClient?.delete(`/api/respondent/${respondentId}`);
         return false;
       }
+
+      mutate(`/api/response/form/${formId}?pageIndex=${0}&pageSize=${20}`)
       return true;
     } catch (e) {
       toast("failed to submit form please try again later;");
       return false;
     } finally {
       set({ isSubmitting: false });
+      
     }
   },
 }));
