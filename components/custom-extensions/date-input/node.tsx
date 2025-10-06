@@ -45,7 +45,7 @@ export const dateInputNode = Node.create({
 
   addCommands() {
     return {
-      insertShortInput:
+      insertDateInput:
         ({ label, id, type, isRequired, placeholder }) =>
         ({ commands }) => {
           return commands.insertContent({

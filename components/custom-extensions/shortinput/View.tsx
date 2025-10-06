@@ -44,7 +44,7 @@ const ShortInput = (props: NodeViewProps) => {
                 >
                   <NodeViewContent
                     as="div"
-                    className="outline-none focus:outline-none inline-block min-w-[20px] w-full"
+                    className=" min-w-[20px] w-full"
                   />
                 </FormLabel>
                 <FormControl>

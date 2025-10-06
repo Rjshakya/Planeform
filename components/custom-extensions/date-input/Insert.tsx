@@ -18,7 +18,7 @@ export const InsertDateInput = ({
   const handleInsert = (label: string) => {
     if (!editor) return;
 
-    editor?.commands?.insertShortInput({
+    editor?.commands?.insertDateInput({
       id: v4(),
       isRequired: true,
       label: label,
@@ -28,7 +28,7 @@ export const InsertDateInput = ({
 
     setOpen?.(false);
   };
-  
+
   return (
     <>
       <DialogTitle>Configure date input</DialogTitle>
