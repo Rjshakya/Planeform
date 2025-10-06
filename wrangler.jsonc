@@ -18,5 +18,9 @@
       // See https://developers.cloudflare.com/workers/wrangler/commands/#r2-bucket-create
       "binding": "NEXT_INC_CACHE_R2_BUCKET"
     }
-  ]
+  ],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  }
 }
