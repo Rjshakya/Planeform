@@ -25,9 +25,7 @@ export const InsertShortInput = ({
   const [placeholder, setPlaceHolder] = useState("");
   // const [open, setOpen] = useState(false);
   const handleInsert = (label: string, placeholder: string) => {
-
-    
-    editor?.commands?.insertShortInput({
+    editor?.commands?.insertDateInput({
       id: v4(),
       isRequired: false,
       label,

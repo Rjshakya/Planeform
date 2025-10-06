@@ -32,18 +32,22 @@ export const useFormStore = create<IformStore>((set, get) => ({
   },
   isSubmitting: false,
   handleSubmit: async (values, formId) => {
-    set({ isSubmitting: true });
+    // console.log(values);
+    // return false;
+
+    // set({ isSubmitting: true });
 
     if (!values) return false;
 
     try {
-      const respondent = await apiClient.post(`/api/respondent`, {
-        form: formId,
-      });
+      // const respondent = await apiClient.post(`/api/respondent`, {
+      //   form: formId,
+      // });
 
-      if (respondent.status !== 200) return false;
+      // if (respondent.status !== 200) return false;
 
-      const respondentId = respondent?.data?.respondent?.id;
+      // const respondentId = respondent?.data?.respondent?.id;
+      const respondentId = 'id'
       const valuesData = Object.entries(values).map((o) => {
         // formating for day input value , which gives {} rather than string.
 
@@ -57,13 +61,19 @@ export const useFormStore = create<IformStore>((set, get) => ({
           };
         }
 
-        return {
+        const obj = {
           form: formId,
           form_field: o[0],
           value: o[1],
           respondent: respondentId,
         };
+
+        console.log(obj);
+        
+        return obj;
       });
+
+      return false
 
       const response = await apiClient.post(
         `/api/response/multiple`,

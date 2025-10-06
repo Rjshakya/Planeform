@@ -29,7 +29,7 @@ export const LongInputView = (props: NodeViewProps) => {
               <FormLabel htmlFor={label} className=" text-2xl" id={id}>
                 <NodeViewContent
                   as="div"
-                  className="outline-none focus:outline-none inline-block min-w-[20px]"
+                  className="outline-none focus:outline-none inline-block min-w-[20px] w-full"
                 />
               </FormLabel>
               <FormControl>

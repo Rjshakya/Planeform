@@ -94,6 +94,7 @@ import { TextStyle, FontFamily } from "@tiptap/extension-text-style";
 import { useEditorState } from "@tiptap/react";
 import { CutomizationPanel } from "@/components/custom-extensions/CutomizationPanel";
 import { toast } from "sonner";
+import { dateInputNode } from "@/components/custom-extensions/date-input/node";
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -265,6 +266,7 @@ export function SimpleEditor({
       longInputNode,
       multipleChoiceNode,
       optionNode,
+      dateInputNode,
       actionButtonNode,
       Focus.configure({
         className: "has-focus",

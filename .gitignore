@@ -48,7 +48,7 @@ next-env.d.ts
 !.dev.vars.example
 .env*
 !.env.example
-
+.env
 # docker compose file
 docker-compose.yml
 
