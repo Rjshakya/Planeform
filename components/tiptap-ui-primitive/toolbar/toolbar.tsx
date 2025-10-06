@@ -91,7 +91,7 @@ export const Toolbar = React.forwardRef<HTMLDivElement, ToolbarProps>(
         role="toolbar"
         aria-label="toolbar"
         data-variant={variant}
-        className={cn("tiptap-toolbar", className)}
+        className={cn(className)}
         {...props}
       >
         {children}
@@ -106,7 +106,7 @@ export const ToolbarGroup = React.forwardRef<HTMLDivElement, BaseProps>(
     <div
       ref={ref}
       role="group"
-      className={cn("tiptap-toolbar-group", className)}
+      className={cn(" flex gap-1 items-center", className)}
       {...props}
     >
       {children}
