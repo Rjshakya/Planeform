@@ -185,28 +185,30 @@ const MobileToolbarContent = ({
 }: {
   type: "highlighter" | "link";
   onBack: () => void;
-}) => (
-  <>
-    <ToolbarGroup>
-      <Button data-style="ghost" onClick={onBack}>
-        <ArrowLeftIcon className="tiptap-button-icon" />
-        {type === "highlighter" ? (
-          <HighlighterIcon className="tiptap-button-icon" />
-        ) : (
-          <LinkIcon className="tiptap-button-icon" />
-        )}
-      </Button>
-    </ToolbarGroup>
+}) => {
+  return (
+    <>
+      <ToolbarGroup>
+        <Button data-style="ghost" onClick={onBack}>
+          <ArrowLeftIcon className="tiptap-button-icon" />
+          {type === "highlighter" ? (
+            <HighlighterIcon className="tiptap-button-icon" />
+          ) : (
+            <LinkIcon className="tiptap-button-icon" />
+          )}
+        </Button>
+      </ToolbarGroup>
 
-    <ToolbarSeparator />
+      <ToolbarSeparator />
 
-    {type === "highlighter" ? (
-      <ColorHighlightPopoverContent />
-    ) : (
-      <LinkContent />
-    )}
-  </>
-);
+      {type === "highlighter" ? (
+        <ColorHighlightPopoverContent />
+      ) : (
+        <LinkContent />
+      )}
+    </>
+  );
+};
 
 export function SimpleEditor({
   content,
@@ -224,6 +226,7 @@ export function SimpleEditor({
     "main" | "highlighter" | "link"
   >("main");
   const toolbarRef = React.useRef<HTMLDivElement>(null);
+  const editorContentRef = React.useRef<HTMLDivElement>(null);
 
   // form init
   const form = useForm();
@@ -294,9 +297,10 @@ export function SimpleEditor({
     overlayHeight: toolbarRef.current?.getBoundingClientRect().height ?? 0,
   });
 
+  const [editorIsFocused, setEditorIsFocused] = React.useState(false);
+
   const onSubmit = async (values: any) => {
-    // if (!formId) return;
-    console.log(values);
+    if (!formId) return;
 
     const res = await useFormStore
       .getState()
@@ -317,6 +321,23 @@ export function SimpleEditor({
     useEditorStore.setState({ editor: editor });
     useFormStore.setState({ form: form });
   }, [editor, form]);
+
+  React.useEffect(() => {
+    if (!isMobile) return;
+
+    const editorContentDiv = editorContentRef?.current;
+    const handleFocus = () => {
+      setEditorIsFocused(true);
+
+      console.log("in focus");
+    };
+
+    editorContentDiv?.addEventListener("focusin", handleFocus);
+
+    return () => {
+      editorContentDiv?.removeEventListener("focusin", handleFocus);
+    };
+  }, []);
 
   return (
     <div className="simple-editor-wrapper selection:bg-teal-200/30 dark:selection:bg-teal-700/40">
@@ -356,7 +377,8 @@ export function SimpleEditor({
             <EditorContent
               editor={editor}
               role="presentation"
-              className=" max-w-2xl w-full flex flex-col mx-auto mt-8 md:px-4"
+              className=" max-w-2xl w-full flex flex-col mx-auto mt-8 md:px-4 md:py-2 py-6"
+              ref={editorContentRef}
             />
           </form>
         </Form>

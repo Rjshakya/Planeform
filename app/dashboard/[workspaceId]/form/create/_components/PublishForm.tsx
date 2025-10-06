@@ -117,7 +117,8 @@ export const filterFormFields = (jsonDoc: JsonDoc, formId: string) => {
     return {
       id: f?.attrs?.id,
       form: formId,
-      label: f?.attrs?.label,
+      // @ts-ignore
+      label: f?.content?.[0]?.text,
       type: f?.type,
       subType: f?.attrs?.type,
       placeholder: f?.attrs?.placeholder,

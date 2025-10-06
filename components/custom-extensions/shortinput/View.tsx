@@ -21,7 +21,6 @@ const ShortInput = (props: NodeViewProps) => {
 
   const form = useFormStore.getState().getHookForm();
 
-
   return (
     <>
       <NodeViewWrapper as={"div"}>
@@ -40,12 +39,8 @@ const ShortInput = (props: NodeViewProps) => {
                   aria-label={label}
                   className=" text-2xl"
                   id={id}
-               
                 >
-                  <NodeViewContent
-                    as="div"
-                    className=" min-w-[20px] w-full"
-                  />
+                  <NodeViewContent as="div" className=" min-w-[20px] w-full" />
                 </FormLabel>
                 <FormControl>
                   {type === "phone" ? (
