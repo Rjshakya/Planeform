@@ -16,25 +16,25 @@ export default function Page() {
     <main className=" w-full max-w-4xl  mx-auto">
       <Tabs defaultValue="Submission" className="w-full">
         <div className=" mb-8 ">
-          <p className=" text-muted-foreground text-5xl font-semibold tracking-tighter">
+          <p className=" text-muted-foreground text-3xl md:text-5xl font-semibold tracking-tighter">
             {data?.data?.form?.name || "form"}
           </p>
         </div>
         <TabsList className=" bg-background flex items-center gap-8">
           <TabsTrigger
-            className=" p-0 text-left text-lg py-3.5 w-full h-full data-[state=active]:underline  data-[state=active]:underline-offset-4 "
+            className=" p-0 text-left md:text-lg py-3.5 w-full h-full data-[state=active]:underline  data-[state=active]:underline-offset-4 "
             value="Submission"
           >
             Submission
           </TabsTrigger>
           <TabsTrigger
-            className=" p-0 text-left text-lg py-3.5 w-full h-full data-[state=active]:underline  data-[state=active]:underline-offset-4"
+            className=" p-0 text-left md:text-lg py-3.5 w-full h-full data-[state=active]:underline  data-[state=active]:underline-offset-4"
             value="Analytics"
           >
             Analytics
           </TabsTrigger>
           <TabsTrigger
-            className=" p-0 text-left text-lg py-3.5 w-full h-full data-[state=active]:underline  data-[state=active]:underline-offset-4"
+            className=" p-0 text-left md:text-lg py-3.5 w-full h-full data-[state=active]:underline  data-[state=active]:underline-offset-4"
             value="Integrations"
           >
             Integrations

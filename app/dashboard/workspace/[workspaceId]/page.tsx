@@ -31,10 +31,10 @@ export default function Page({
   return (
     <div className="grid gap-16 max-w-4xl w-full mx-auto">
       <Tabs defaultValue="forms" className="w-full">
-        <div className=" mb-8  flex justify-between items-center">
-          <p className=" text-muted-foreground text-5xl font-semibold tracking-tighter">
+        <div className=" mb-8  flex justify-between items-center gap-2">
+          <div className=" text-muted-foreground text-3xl md:text-5xl font-semibold tracking-tighter">
             {data?.workspace?.name || "Your workspace"}
-          </p>
+          </div>
 
           <div className="">
             <Button
@@ -43,19 +43,19 @@ export default function Page({
               }
             >
               {" "}
-              <PlusIcon /> create new form
+              <PlusIcon /> form
             </Button>
           </div>
         </div>
         <TabsList className=" bg-background flex items-center gap-8">
           <TabsTrigger
-            className=" p-0 text-left text-lg py-3.5 w-full h-full data-[state=active]:underline  data-[state=active]:underline-offset-4 "
+            className=" p-0 text-left md:text-lg py-3.5 w-full h-full data-[state=active]:underline  data-[state=active]:underline-offset-4 "
             value="forms"
           >
             Forms
           </TabsTrigger>
           <TabsTrigger
-            className=" p-0 text-left text-lg py-3.5 w-full h-full data-[state=active]:underline  data-[state=active]:underline-offset-4"
+            className=" p-0 text-left md:text-lg py-3.5 w-full h-full data-[state=active]:underline  data-[state=active]:underline-offset-4"
             value="settings"
           >
             Settings

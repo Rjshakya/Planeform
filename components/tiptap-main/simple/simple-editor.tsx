@@ -242,7 +242,7 @@ export function SimpleEditor({
         autocorrect: "off",
         autocapitalize: "on",
         "aria-label": "Main content area, start typing to enter text.",
-        class: "simple-editor min-h-[80vh]",
+        class: "simple-editor min-h-[60vh]",
       },
     },
     extensions: [
@@ -353,7 +353,7 @@ export function SimpleEditor({
           <Toolbar
             className={cn(
               " w-full z-10  mb-2 px-4",
-              `${isMobile ? "absolute  inset-x-0" : "sticky top-0"}`
+              `${isMobile ? "absolute  inset-x-0" : "sticky top-0 pt-2"}`
             )}
             ref={toolbarRef}
             style={{
@@ -389,7 +389,7 @@ export function SimpleEditor({
             <EditorContent
               editor={editor}
               role="presentation"
-              className=" max-w-2xl w-full flex flex-col mx-auto mt-8 md:px-4 md:py-2 py-6"
+              className=" max-w-2xl w-full flex flex-col mx-auto mt-8 md:px-4 md:py-2 py-6 "
               ref={editorContentRef}
             />
           </form>
