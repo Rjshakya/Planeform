@@ -359,7 +359,7 @@ export function SimpleEditor({
             style={{
               ...(isMobile
                 ? {
-                    bottom: `calc(100% - ${height}px)`,
+                    bottom: `calc(100% - ${height - rect.y}px)`,
                   }
                 : {}),
             }}
