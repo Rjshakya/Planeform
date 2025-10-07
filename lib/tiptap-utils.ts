@@ -168,11 +168,11 @@ export function isExtensionAvailable(
     editor.extensionManager.extensions.some((ext) => ext.name === name)
   )
 
-  if (!found) {
-    console.warn(
-      `None of the extensions [${names.join(", ")}] were found in the editor schema. Ensure they are included in the editor configuration.`
-    )
-  }
+  // if (!found) {
+  //   console.warn(
+  //     `None of the extensions [${names.join(", ")}] were found in the editor schema. Ensure they are included in the editor configuration.`
+  //   )
+  // }
 
   return found
 }

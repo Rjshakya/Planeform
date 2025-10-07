@@ -1,12 +1,7 @@
 "use client";
 
 import * as React from "react";
-import {
-  EditorContent,
-  EditorContext,
-  useCurrentEditor,
-  useEditor,
-} from "@tiptap/react";
+import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
 
 // --- Tiptap Core Extensions ---
 import { StarterKit } from "@tiptap/starter-kit";
@@ -28,7 +23,7 @@ import {
 } from "@/components/tiptap-ui-primitive/toolbar";
 
 // --- Tiptap Node ---
-// import { ImageUploadNode } from "@/components/tiptap-node/image-upload-node/image-upload-node-extension";
+
 import { HorizontalRule } from "@/components/tiptap-node/horizontal-rule-node/horizontal-rule-node-extension";
 import "@/components/tiptap-node/blockquote-node/blockquote-node.scss";
 import "@/components/tiptap-node/code-block-node/code-block-node.scss";
@@ -63,12 +58,6 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useWindowSize } from "@/hooks/use-window-size";
 import { useCursorVisibility } from "@/hooks/use-cursor-visibility";
 
-// --- Components ---
-// import { ThemeToggle } from "@/components/tiptap-templates/simple/theme-toggle";
-
-// --- Lib ---
-import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils";
-
 // --- Styles ---
 import "@/components/tiptap-main/simple/simple-editor.scss";
 import { FieldValues, useForm, UseFormReturn } from "react-hook-form";
@@ -91,12 +80,21 @@ import { TiptapTextAlignDropdown } from "@/components/tiptap-text-align-dropdown
 import { PublishForm } from "@/app/dashboard/[workspaceId]/form/create/_components/PublishForm";
 import { EditForm } from "@/app/dashboard/[workspaceId]/form/edit/[formId]/_components/EditForm";
 import { TextStyle, FontFamily } from "@tiptap/extension-text-style";
-import { useEditorState } from "@tiptap/react";
 import { CutomizationPanel } from "@/components/custom-extensions/CutomizationPanel";
 import { toast } from "sonner";
 import { dateInputNode } from "@/components/custom-extensions/date-input/node";
 import { cn } from "@/lib/utils";
-import GlobalDragHandle from 'tiptap-extension-global-drag-handle'
+import DragHandle from "@tiptap/extension-drag-handle-react";
+import { GripVertical } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Node, ResolvedPos } from "@tiptap/pm/model";
+import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -248,25 +246,17 @@ export function SimpleEditor({
     },
     extensions: [
       StarterKit.configure({
-        horizontalRule: false,
         link: {
           openOnClick: true,
           enableClickSelection: true,
         },
       }) as any,
-      GlobalDragHandle?.configure({
-        dragHandleWidth: 20,
-          scrollTreshold: 100,
-      }),
       HorizontalRule,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       TaskList,
       TaskItem.configure({ nested: true }),
       Highlight.configure({ multicolor: true }),
       Image,
-      // ImageUploadNode.configure({
-      //   accept: "png",
-      // }),
       Typography,
       Superscript,
       Subscript,
@@ -291,7 +281,6 @@ export function SimpleEditor({
           "textStyle",
         ],
       }),
-      TrailingNode,
     ],
     autofocus: true,
     editable: isEditable,
@@ -303,7 +292,11 @@ export function SimpleEditor({
     overlayHeight: toolbarRef.current?.getBoundingClientRect().height ?? 0,
   });
 
-  const [editorIsFocused, setEditorIsFocused] = React.useState(false);
+  const [isInputNode, setIsInputNode] = React.useState(false);
+  const [nodePosition, setNodePosition] = React.useState<number | null>(null);
+  const [currentNode, setCurrentNode] = React?.useState<any>(null);
+
+  // editor?.state?.doc?.nodeAt(nodePosition || 0);
 
   const onSubmit = async (values: any) => {
     if (!formId) return;
@@ -328,37 +321,14 @@ export function SimpleEditor({
     useFormStore.setState({ form: form });
   }, [editor, form]);
 
-  React.useEffect(() => {
-    if (!isMobile) return;
-
-    const editorContentDiv = editorContentRef?.current;
-    const handleFocus = () => {
-      setEditorIsFocused(true);
-
-      console.log("in focus");
-    };
-
-    editorContentDiv?.addEventListener("focusin", handleFocus);
-    editorContentDiv?.addEventListener("focusout", () =>
-      setEditorIsFocused(false)
-    );
-
-    return () => {
-      editorContentDiv?.removeEventListener("focusin", handleFocus);
-      editorContentDiv?.removeEventListener("focusout", () =>
-        setEditorIsFocused(false)
-      );
-    };
-  }, [editorContentRef?.current, isMobile, mobileView]);
-
   return (
     <div className="simple-editor-wrapper selection:bg-teal-200/30 dark:selection:bg-teal-700/40">
       <EditorContext.Provider value={{ editor }}>
         {isEditable && (
           <Toolbar
             className={cn(
-              " w-full z-10  mb-2 px-4",
-              `${isMobile ? "absolute  inset-x-0" : "sticky top-0 pt-2"}`
+              " w-full z-10  mb-2 px-1",
+              `${isMobile ? "sticky top-0  inset-x-0" : "sticky top-0 pt-2"}`
             )}
             ref={toolbarRef}
             style={{
@@ -391,6 +361,115 @@ export function SimpleEditor({
             onSubmit={form?.handleSubmit?.(onSubmit)}
             className=" w-full h-full px-2"
           >
+            <DragHandle
+              onNodeChange={({ node, pos, editor }) => {
+                if (node?.type?.name?.includes("Input")) {
+                  setIsInputNode(true);
+                  setNodePosition(pos);
+                  setCurrentNode(node);
+                 
+                } else {
+                  setIsInputNode(false);
+                  setNodePosition(null);
+                  setCurrentNode(null);
+                }
+              }}
+              editor={editor!}
+              className=" flex"
+            >
+              <div className="px-2 cursor-pointer pt-1 flex items-center gap-1 w-full">
+                {isInputNode && currentNode && (
+                  <Popover>
+                    <PopoverTrigger>p</PopoverTrigger>
+                    <PopoverContent align="center" side="left" className=" w-80 shadow-xl">
+                      <div className=" grid gap-2 w-full">
+                        {Object?.entries?.(currentNode?.attrs)?.map?.(
+                          (o: any, i) => {
+                            if (o?.[0] === "isRequired") {
+                              return (
+                                <div
+                                  key={i}
+                                  className="flex items-center gap-2 w-full justify-between text-wrap py-2"
+                                >
+                                  <span>{o?.[0]}</span>
+                                  <Checkbox
+                                    checked={o[1]}
+                                    onCheckedChange={(c) => {
+                                      console.log(
+                                        "Node type name:",
+                                        currentNode?.type?.name
+                                      );
+                                      console.log(
+                                        "Updating attribute:",
+                                        o[1],
+                                        "to:",
+                                        c
+                                      );
+
+                                      editor
+                                        ?.chain()
+                                        ?.setNodeSelection(nodePosition!)
+                                        ?.updateAttributes(
+                                          currentNode?.type?.name,
+                                          { [o[0]]: c }
+                                        )
+                                        .run();
+                                    }}
+                                  />
+                                </div>
+                              );
+                            }
+
+                            if (o[0] === "placeholder") {
+                              return (
+                                <div
+                                  key={i}
+                                  className="flex items-center justify-between gap-2 w-full  text-wrap "
+                                >
+                                  <div className="w-full flex-1">{o[0]}</div>
+                                  <input
+                                    className={cn("h-6 w-36", "outline-none")}
+                                    placeholder={o[1]}
+                                    onKeyDown={(e) => {
+                                      if (e.key === "Enter") {
+                                        e.preventDefault();
+
+                                        editor
+                                          ?.chain()
+                                          .setNodeSelection(nodePosition!)
+                                          ?.updateAttributes(
+                                            currentNode?.type?.name,
+                                            { [o[0]]: e?.currentTarget?.value }
+                                          )
+                                          .run();
+
+                                        // editor
+                                        //   ?.chain()
+                                        //   ?.updateAttributes(
+                                        //     currentNode?.type?.name,
+                                        //     { [o[0]]: e?.currentTarget?.value }
+                                        //   )
+                                        //   .run();
+
+                                        // setForceUpdate((prev) => prev + 1);
+                                      }
+                                    }}
+                                  />
+                                </div>
+                              );
+                            }
+                          }
+                        )}
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                )}
+
+                <div className="handler">
+                  <GripVertical size={20} />
+                </div>
+              </div>
+            </DragHandle>
             <EditorContent
               editor={editor}
               role="presentation"

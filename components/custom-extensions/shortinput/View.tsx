@@ -30,9 +30,7 @@ const ShortInput = (props: NodeViewProps) => {
             name={id}
             render={({ field }) => (
               <FormItem
-                className={`mt-4 field ${
-                  props?.selected && "outline-2 outline-primary"
-                }`}
+                className={`mt-4 field`}
               >
                 <FormLabel
                   htmlFor={label}
