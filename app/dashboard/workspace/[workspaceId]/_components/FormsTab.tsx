@@ -1,5 +1,6 @@
 import React from "react";
 import FormCard from "./FormCard";
+import { ItemGroup, ItemSeparator } from "@/components/ui/item";
 
 interface Iform {
   shortId: string;
@@ -8,11 +9,15 @@ interface Iform {
 
 export const FormsTab = ({ forms }: { forms: Iform[] }) => {
   return (
-    <div className=" w-full grid md:grid-cols-3  gap-4 mt-4">
+    <ItemGroup className=" w-full gap-4">
       {forms?.length > 0 &&
         forms?.map((f: { name: string; shortId: string }) => {
           return (
-            <FormCard name={f?.name} shortId={f?.shortId} key={f?.shortId} />
+            <>
+             <FormCard name={f?.name} shortId={f?.shortId} key={f?.shortId} />
+            
+            </>
+           
           );
         })}
 
@@ -23,6 +28,6 @@ export const FormsTab = ({ forms }: { forms: Iform[] }) => {
           </p>
         </div>
       )}
-    </div>
+    </ItemGroup>
   );
 };

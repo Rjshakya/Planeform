@@ -119,7 +119,7 @@ export const InsertMultipleChoice = ({
       </Label>
 
       {options && options?.length > 0 && (
-        <div className="grid gap-2">
+        <div className="grid gap-2 max-h-48 overflow-y-auto">
           {options?.map((o, i) => {
             return (
               <div key={i} className=" flex items-center justify-between gap-2">

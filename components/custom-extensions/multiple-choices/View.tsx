@@ -38,7 +38,10 @@ export const MultipleChoiceView = (props: NodeViewProps) => {
                 className=" text-2xl "
                 id={id}
               >
-                <NodeViewContent className="content" />
+                <NodeViewContent
+                  onKeyDown={(e) => e?.key === "Enter" && e?.preventDefault()}
+                  className="content"
+                />
               </FormLabel>
             </FormItem>
           )}
@@ -50,6 +53,7 @@ export const MultipleChoiceView = (props: NodeViewProps) => {
 
 export const Option = (props: NodeViewProps) => {
   const { parentId, id, label, type } = props?.node?.attrs;
+  const contentLabel = props?.node?.content?.content[0]?.text;
 
   return (
     <NodeViewWrapper>
@@ -60,17 +64,17 @@ export const Option = (props: NodeViewProps) => {
             <FormControl>
               {type === "single" ? (
                 <Input
-                  id={label}
+                  id={contentLabel}
                   className=" size-4"
                   type="radio"
-                  value={label}
-                  checked={field?.value === label}
+                  value={contentLabel}
+                  checked={field?.value === contentLabel}
                   onChange={(e) => field?.onChange?.(e?.target?.value)}
                 />
               ) : (
                 <Checkbox
-                  id={label}
-                  checked={field?.value?.includes?.(label)}
+                  id={contentLabel}
+                  checked={field?.value?.includes?.(contentLabel)}
                   className=""
                   onCheckedChange={(checked) => {
                     if (!field.value) {
@@ -78,20 +82,27 @@ export const Option = (props: NodeViewProps) => {
                     }
 
                     return checked
-                      ? field?.onChange([...field?.value, label])
+                      ? field?.onChange([...field?.value, contentLabel])
                       : field?.onChange(
-                          field?.value?.filter((v: any) => v !== label)
+                          field?.value?.filter((v: any) => v !== contentLabel)
                         );
                   }}
                 />
               )}
             </FormControl>
             <FormLabel
-              htmlFor={label}
-              aria-label={label}
+              htmlFor={contentLabel}
+              aria-label={contentLabel}
               className=" text-2xl "
             >
-              <NodeViewContent className="content" />
+              <NodeViewContent
+                onKeyDown={(e) => {
+                  if (e?.key === "Enter") {
+                    e?.preventDefault();
+                  }
+                }}
+                className="content"
+              />
             </FormLabel>
           </FormItem>
         )}

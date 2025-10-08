@@ -49,26 +49,12 @@ export const useFormStore = create<IformStore>((set, get) => ({
 
       const respondentId = respondent?.data?.respondent?.id;
       const valuesData = Object.entries(values).map((o) => {
-        // formating for day input value , which gives {} rather than string.
-
-        if (o[1]?.day) {
-          const dateObject = o[1];
-          return {
-            form: formId,
-            form_field: o[0],
-            value: `${dateObject?.day}-${dateObject?.month}-${dateObject?.year}`,
-            respondent: respondentId,
-          };
-        }
-
         const obj = {
           form: formId,
           form_field: o[0],
-          value: o[1],
+          value: Array?.isArray(o[1]) ? o[1]?.join(",") : o[1],
           respondent: respondentId,
         };
-
-        console.log(obj);
 
         return obj;
       });
@@ -83,14 +69,13 @@ export const useFormStore = create<IformStore>((set, get) => ({
         return false;
       }
 
-      mutate(`/api/response/form/${formId}?pageIndex=${0}&pageSize=${20}`)
+      mutate(`/api/response/form/${formId}?pageIndex=${0}&pageSize=${20}`);
       return true;
     } catch (e) {
       toast("failed to submit form please try again later;");
       return false;
     } finally {
       set({ isSubmitting: false });
-      
     }
   },
 }));

@@ -12,7 +12,13 @@ import { Typography } from "@tiptap/extension-typography";
 import { Highlight } from "@tiptap/extension-highlight";
 import { Subscript } from "@tiptap/extension-subscript";
 import { Superscript } from "@tiptap/extension-superscript";
-import { Dropcursor, Focus, Selection, TrailingNode } from "@tiptap/extensions";
+import {
+  Dropcursor,
+  Focus,
+  Placeholder,
+  Selection,
+  TrailingNode,
+} from "@tiptap/extensions";
 
 // --- UI Primitives ---
 import { Spacer } from "@/components/tiptap-ui-primitive/spacer";
@@ -95,6 +101,25 @@ import { Node, ResolvedPos } from "@tiptap/pm/model";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Slash,
+  enableKeyboardNavigation,
+  createSuggestionsItems,
+  SlashCmdProvider,
+  SlashCmd,
+} from "@harshtalks/slash-tiptap";
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemFooter,
+  ItemGroup,
+  ItemHeader,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item";
+import { v4 } from "uuid";
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -108,7 +133,7 @@ const MainToolbarContent = ({
   const forEditPage = usePathname().includes(`/edit/`);
 
   return (
-    <div className=" bg-card flex p-1 rounded-sm mx-auto  overflow-x-auto overflow-y-hidden pb-3 select-none">
+    <div className="bg-muted flex px-1 rounded-sm mx-auto  overflow-x-auto overflow-y-hidden pt-2 pb-3 select-none">
       <ToolbarGroup>
         <UndoRedoButton action="undo" />
         <UndoRedoButton action="redo" />
@@ -210,6 +235,160 @@ const MobileToolbarContent = ({
   );
 };
 
+const suggestions = createSuggestionsItems([
+  {
+    title: "ShortInput",
+    searchTerms: ["shortinput", "input", "text", "single line"],
+    command: ({ editor, range }) => {
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .insertShortInput({
+          id: v4(),
+          isRequired: true,
+          label: "Short Input",
+          placeholder: "",
+          type: "text",
+        })
+        .run();
+    },
+    description: "Insert a short input field",
+  },
+
+  {
+    title: "LongInput",
+    searchTerms: ["longinput", "input", "text", "single line"],
+    command: ({ editor, range }) => {
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .insertLongInput({
+          id: v4(),
+          isRequired: true,
+          label: "Long Input",
+          placeholder: "",
+          rows: 6,
+        })
+        .run();
+    },
+    description: "Insert a long input field",
+  },
+
+  {
+    title: "Phone Input",
+    searchTerms: ["phoneinput", "input", "text", "single line"],
+    command: ({ editor, range }) => {
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .insertShortInput({
+          id: v4(),
+          isRequired: true,
+          label: "Phone no",
+          placeholder: "",
+          type: "phone",
+        })
+        .run();
+    },
+    description: "Insert a phone no input field",
+  },
+
+  {
+    title: "Single Choice",
+    searchTerms: ["single choice", "input", "text", "single line"],
+    command: ({ editor, range }) => {
+      const id = v4();
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .insertmultipleChoiceInput({
+          id,
+          label: "Single Choice",
+          type: "single",
+        })
+        .insertOption({
+          parentId: id,
+          id: "1",
+          label: "1",
+          type: "single",
+        })
+        .insertOption({
+          parentId: id,
+          id: "2",
+          label: "2",
+          type: "single",
+        })
+        .run();
+    },
+    description: "Insert a single choice input field",
+  },
+
+  {
+    title: "Multiple Choice",
+    searchTerms: ["Multiple choice", "input", "text", "single line"],
+    command: ({ editor, range }) => {
+      const id = v4();
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .insertmultipleChoiceInput({
+          id,
+          label: "Multiple Choice",
+          type: "multiple",
+        })
+        .insertOption({
+          parentId: id,
+          id: "1",
+          label: "1",
+          type: "multiple",
+        })
+        .insertOption({
+          parentId: id,
+          id: "2",
+          label: "2",
+          type: "multiple",
+        })
+        .run();
+    },
+    description: "Insert a multiple choice input field",
+  },
+
+  {
+    title: "Text",
+    searchTerms: ["paragraph"],
+    command: ({ editor, range }) => {
+      editor
+        .chain()
+        .focus()
+        .deleteRange(range)
+        .toggleNode("paragraph", "paragraph")
+        .run();
+    },
+    description: "Start typing with text",
+  },
+  {
+    title: "Bullet List",
+    searchTerms: ["unordered", "point"],
+    command: ({ editor, range }) => {
+      editor.chain().focus().deleteRange(range).toggleBulletList().run();
+    },
+    description: "Create a simple bullet list",
+  },
+  {
+    title: "Ordered List",
+    searchTerms: ["ordered", "point", "numbers"],
+    command: ({ editor, range }) => {
+      editor.chain().focus().deleteRange(range).toggleOrderedList().run();
+    },
+    description: "Create a simple ordered list",
+  },
+]);
+
 export function SimpleEditor({
   content,
   isEditable,
@@ -251,6 +430,11 @@ export function SimpleEditor({
           enableClickSelection: true,
         },
       }) as any,
+      Slash.configure({
+        suggestion: {
+          items: () => suggestions,
+        },
+      }),
       HorizontalRule,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       TaskList,
@@ -272,14 +456,9 @@ export function SimpleEditor({
         mode: "all",
       }),
       TextStyle,
-      FontFamily.configure({
-        types: [
-          "heading",
-          "paragraph",
-          "shortInput",
-          "node-multipleChoiceInput",
-          "textStyle",
-        ],
+      FontFamily,
+      Placeholder.configure({
+        placeholder: "Press / to see available commands",
       }),
     ],
     autofocus: true,
@@ -305,9 +484,9 @@ export function SimpleEditor({
       .getState()
       .handleSubmit(values, formId as string);
     if (res) {
+      form.reset();
       router.push(`/thank-you`);
     }
-    form.reset();
   };
 
   React.useEffect(() => {
@@ -327,8 +506,8 @@ export function SimpleEditor({
         {isEditable && (
           <Toolbar
             className={cn(
-              " w-full z-10  mb-2 px-1",
-              `${isMobile ? "sticky top-0  inset-x-0" : "sticky top-0 pt-2"}`
+              " w-full h-20 z-10   mb-2 px-1",
+              `${isMobile ? "sticky top-0  pt-2" : "sticky top-0 "}`
             )}
             ref={toolbarRef}
             style={{
@@ -339,7 +518,7 @@ export function SimpleEditor({
                 : {}),
             }}
           >
-            <div className="bg-card flex flex-wrap items-center gap-2">
+            <div className=" flex flex-wrap items-center gap-2">
               {mobileView === "main" ? (
                 <MainToolbarContent
                   onHighlighterClick={() => setMobileView("highlighter")}
@@ -367,7 +546,6 @@ export function SimpleEditor({
                   setIsInputNode(true);
                   setNodePosition(pos);
                   setCurrentNode(node);
-                 
                 } else {
                   setIsInputNode(false);
                   setNodePosition(null);
@@ -377,11 +555,15 @@ export function SimpleEditor({
               editor={editor!}
               className=" flex"
             >
-              <div className="px-2 cursor-pointer pt-1 flex items-center gap-1 w-full">
+              <div className="px-2 cursor-pointer pt-1 hidden md:flex items-center gap-1 w-full">
                 {isInputNode && currentNode && (
                   <Popover>
                     <PopoverTrigger>p</PopoverTrigger>
-                    <PopoverContent align="center" side="left" className=" w-80 shadow-xl">
+                    <PopoverContent
+                      align="center"
+                      side="left"
+                      className=" w-80 shadow-xl"
+                    >
                       <div className=" grid gap-2 w-full">
                         {Object?.entries?.(currentNode?.attrs)?.map?.(
                           (o: any, i) => {
@@ -470,12 +652,49 @@ export function SimpleEditor({
                 </div>
               </div>
             </DragHandle>
-            <EditorContent
-              editor={editor}
-              role="presentation"
-              className=" max-w-2xl w-full flex flex-col mx-auto mt-8 md:px-4 md:py-2 py-6 "
-              ref={editorContentRef}
-            />
+            <SlashCmdProvider>
+              <EditorContent
+                editor={editor}
+                role="presentation"
+                className=" max-w-2xl w-full flex flex-col mx-auto mt-8 md:px-4 md:py-2 py-6 "
+                ref={editorContentRef}
+              />
+
+              <SlashCmd.Root editor={editor}>
+                <SlashCmd.Cmd>
+                  <SlashCmd.Empty>No commands available</SlashCmd.Empty>
+                  <SlashCmd.List className="">
+                    <ItemGroup className="bg-popover w-80 p-1 rounded-md max-h-40 overflow-y-auto gap-2 shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
+                      {suggestions.map((item) => {
+                        return (
+                          <SlashCmd.Item
+                            value={item.title}
+                            onCommand={(val) => {
+                              item.command(val);
+                            }}
+                            key={item.title}
+                          >
+                            <Item
+                              key={item.title}
+                              variant={"outline"}
+                              size={"sm"}
+                              className=" w-full"
+                            >
+                              <ItemContent>
+                                <ItemTitle>{item?.title}</ItemTitle>
+                                <ItemDescription>
+                                  {item?.description}
+                                </ItemDescription>
+                              </ItemContent>
+                            </Item>
+                          </SlashCmd.Item>
+                        );
+                      })}
+                    </ItemGroup>
+                  </SlashCmd.List>
+                </SlashCmd.Cmd>
+              </SlashCmd.Root>
+            </SlashCmdProvider>
           </form>
         </Form>
       </EditorContext.Provider>

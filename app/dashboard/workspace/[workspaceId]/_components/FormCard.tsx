@@ -30,6 +30,17 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { apiClient } from "@/lib/axios";
 import { mutate } from "swr";
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemFooter,
+  ItemHeader,
+  ItemMedia,
+  ItemSeparator,
+  ItemTitle,
+} from "@/components/ui/item";
 
 interface formProps {
   shortId: string;
@@ -57,17 +68,23 @@ export default function FormCard(props: formProps) {
   };
 
   return (
-    <Card
+    <Item
       // onClick={() => router.push(`/dashboard/workspace/${props?.id}`)}
       className=" py-2.5 px-2 cursor-pointer"
+      variant={"default"}
+      size={"default"}
     >
-      <CardHeader className=" px-0.5 flex items-center justify-between gap-1">
-        <Link
-          className=" hover:underline-offset-2 hover:underline"
-          href={`/dashboard/${workspace}/form/view/${props.shortId}`}
-        >
-          <p className=" capitalize">{props?.name || "workspace"}</p>
-        </Link>
+      <ItemContent className=" px-0 ">
+        <ItemTitle>
+          <Link
+            className=" hover:underline-offset-2 hover:underline"
+            href={`/dashboard/${workspace}/form/view/${props.shortId}`}
+          >
+            <p className=" capitalize">{props?.name || "form"}</p>
+          </Link>
+        </ItemTitle>
+      </ItemContent>
+      <ItemActions>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button size={"icon"} variant={"ghost"}>
@@ -143,50 +160,8 @@ export default function FormCard(props: formProps) {
             </Dialog>
           </DropdownMenuContent>
         </DropdownMenu>
-      </CardHeader>
-      <CardContent className=" px-0 ">
-        <div className=" bg-muted w-full h-44 relative overflow-hidden rounded-2xl">
-          <svg
-            className="absolute inset-0 w-full h-full pointer-events-none opacity-95 mix-blend-overlay"
-            preserveAspectRatio="none"
-            viewBox="0 0 100 100"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-          >
-            <defs>
-              <filter id="noiseFilter">
-                {/* fractalNoise produces the grain */}
-                <feTurbulence
-                  type="fractalNoise"
-                  baseFrequency="0.9" /* tweak for grain size */
-                  numOctaves="2" /* tweak for complexity */
-                  stitchTiles="stitch"
-                />
-                {/* desaturate (make it grayscale) */}
-                <feColorMatrix type="saturate" values="0" />
-                {/* control alpha so noise is translucent */}
-                <feComponentTransfer>
-                  <feFuncA type="table" tableValues="0 0.35" />
-                </feComponentTransfer>
-              </filter>
-            </defs>
-
-            {/* the rect gets the noise filter applied */}
-            <rect
-              width="100%"
-              height="100%"
-              filter="url(#noiseFilter)"
-              fill="#000"
-            />
-          </svg>
-
-          <div className="relative z-10 w-full h-full ">
-            <p className="w-full absolute bottom-2 right-2 leading-24 opacity-25 text-9xl font-bold tracking-[-0.10em] capitalize -rotate-6 pr-10  ">
-              {props.name}
-            </p>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+      </ItemActions>
+   
+    </Item>
   );
 }

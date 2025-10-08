@@ -29,9 +29,7 @@ const ShortInput = (props: NodeViewProps) => {
             control={form?.control}
             name={id}
             render={({ field }) => (
-              <FormItem
-                className={`mt-4 field`}
-              >
+              <FormItem className={`mt-4 field`}>
                 <FormLabel
                   htmlFor={label}
                   aria-label={label}
@@ -39,7 +37,11 @@ const ShortInput = (props: NodeViewProps) => {
                   id={id}
                 >
                   {/* {field?.} */}
-                  <NodeViewContent as="div" className=" min-w-[20px] w-full" />
+                  <NodeViewContent
+                    onKeyDown={(e) => e?.key === "Enter" && e?.preventDefault()}
+                    as="div"
+                    className=" min-w-[20px] w-full"
+                  />
                 </FormLabel>
                 <FormControl>
                   {type === "phone" ? (

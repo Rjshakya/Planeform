@@ -5,12 +5,15 @@ import {
   ArrowDown,
   ArrowUp,
   Bell,
+  CheckCheck,
   Link,
   LogOut,
+  Mail,
   MoreHorizontal,
   Settings2,
   Star,
   Trash,
+  User,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -29,61 +32,57 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-import { signOut } from "@/lib/auth-client";
+import { authClient, signOut } from "@/lib/auth-client";
 import { ThemeToggle } from "./tiptap-main/simple/theme-toggle";
-
-const data = [
-  [
-    {
-      label: "Customize Page",
-      icon: Settings2,
-    },
-  ],
-  [
-    {
-      label: "Copy Link",
-      icon: Link,
-    },
-  ],
-  [
-    {
-      label: "Show delete pages",
-      icon: Trash,
-    },
-    {
-      label: "Notifications",
-      icon: Bell,
-    },
-  ],
-  [
-    {
-      label: "Import",
-      icon: ArrowUp,
-    },
-    {
-      label: "Export",
-      icon: ArrowDown,
-    },
-    {
-      label: "Log out",
-      icon: LogOut,
-    },
-  ],
-];
+import { useParams } from "next/navigation";
+import { fi } from "date-fns/locale";
 
 export function NavActions() {
   const [isOpen, setIsOpen] = React.useState(false);
+  const { formId } = useParams();
+  const appUrl = process.env.NEXT_PUBLIC_CLIENT_URL;
+  const [isCopyied, setIsCopied] = React.useState(false);
+  const { data: session } = authClient?.useSession();
 
+  const [data, setData] = React?.useState([
+    [
+      {
+        label: "Copy Link",
+        icon: Link,
+      },
+    ],
+    [
+      {
+        label: "Log out",
+        icon: LogOut,
+      },
+    ],
+  ]);
+
+  React.useEffect(() => {
+    if (session?.user) {
+      const copy = [...data];
+      copy?.[1]?.unshift({ label: session?.user?.email, icon: Mail });
+      copy?.[1]?.unshift({ label: session?.user?.name, icon: User });
+
+      setData(copy);
+    }
+  }, [session?.user]);
 
   return (
     <div className="flex items-center gap-2 text-sm">
-
       <Button variant="ghost" size="icon" className="h-7 w-7">
         <Star />
       </Button>
       <ThemeToggle />
 
-      <Popover open={isOpen} onOpenChange={setIsOpen}>
+      <Popover
+        open={isOpen}
+        onOpenChange={(o) => {
+          setIsOpen(o);
+          setIsCopied(false);
+        }}
+      >
         <PopoverTrigger asChild>
           <Button
             variant="ghost"
@@ -109,12 +108,27 @@ export function NavActions() {
                             onClick={async () => {
                               if (item.label === "Log out") {
                                 await signOut();
-                              } else {
-                                return;
+                              }
+
+                              if (item.label === "Copy Link" && formId) {
+                                window.navigator.clipboard.writeText(
+                                  `${appUrl}/${formId}`
+                                );
+                                setIsCopied(true);
                               }
                             }}
                           >
-                            <item.icon /> <span>{item.label}</span>
+                            {item.label === "Copy Link" ? (
+                              isCopyied ? (
+                                <CheckCheck className=" dark:text-green-400 text-green-600" />
+                              ) : (
+                                <item.icon />
+                              )
+                            ) : (
+                              <item.icon />
+                            )}
+
+                            <span>{item.label}</span>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                       ))}

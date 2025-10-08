@@ -8,13 +8,13 @@ import { useFormStore } from "@/stores/useformStore";
 export const ActionButtonView = (props: NodeViewProps) => {
   const { id, text, type } = props?.node?.attrs as InsertActionButtonParams;
   return (
-    <NodeViewWrapper as={"div"}>
-      <Button className=" mt-6 py-6 w-28" id={id} type={"submit"}>
+    <NodeViewWrapper className={"mt-6"}>
+      <Button className="  px-6 py-6 w-fit" id={id} type={"submit"}>
         {useFormStore.getState().isSubmitting && (
           <Loader className=" animate-spin" />
         )}
 
-        <NodeViewContent className="text-xl content" />
+        <NodeViewContent as="div" className="text-xl content " />
       </Button>
     </NodeViewWrapper>
   );

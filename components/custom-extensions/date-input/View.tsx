@@ -45,6 +45,7 @@ export const DateInputView = (props: NodeViewProps) => {
               id={id}
             >
               <NodeViewContent
+                onKeyDown={(e) => e?.key === "Enter" && e?.preventDefault()}
                 as="div"
                 className="outline-none focus:outline-none inline-block min-w-[20px] w-full"
               />
