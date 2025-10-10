@@ -3,21 +3,17 @@
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import { apiClient } from "@/lib/axios";
-import { use } from "react";
+
 import useSWR from "swr";
 import FormCard from "./_components/FormCard";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FormsTab } from "./_components/FormsTab";
 
 const fetcher = (url: string) => apiClient.get(url).then((r) => r?.data);
 
-export default function Page({
-  params,
-}: {
-  params: Promise<{ workspaceId: string }>;
-}) {
-  const { workspaceId } = use(params);
+export default function Page() {
+  const { workspaceId } = useParams();
   const { data, error, isLoading } = useSWR(
     `/api/form/workspace/${workspaceId}`,
     fetcher

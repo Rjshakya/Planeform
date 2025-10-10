@@ -20,11 +20,20 @@ export const signIn = async () => {
     const session = await authClient.getSession();
     useUserStore.setState({ user: session?.data?.user });
   } catch (e) {
-    toast("failed to authenticate");
+    toast("failed to initiate sign in");
   }
 };
 
 export const signOut = async () => {
   await authClient.signOut({});
   redirect("/");
+};
+
+export const linkGoogleSheet = async () => {
+  try {
+    await authClient.linkSocial({
+      provider: "google",
+      scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+    });
+  } catch (e) {}
 };

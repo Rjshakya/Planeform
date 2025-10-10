@@ -134,12 +134,6 @@ export default function TanStackTable({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // const [sorting, setSorting] = useState<SortingState>([
-  //   {
-  //     id: "Name",
-  //     desc: false,
-  //   },
-  // ]);
 
   const [data, setData] = useState<any[]>(tableData);
 
