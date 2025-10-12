@@ -48,7 +48,7 @@ export default function Page() {
           See analytics of your form here .
         </TabsContent>
         <TabsContent className="px-1 mt-4" value="Integrations">
-          <p className="mb-4">See integrations of your form here .</p>
+          {/* <p className="mb-4">See integrations of your form here .</p> */}
           <Integrations />
         </TabsContent>
       </Tabs>
