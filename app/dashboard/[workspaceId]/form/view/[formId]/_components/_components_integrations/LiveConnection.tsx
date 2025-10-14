@@ -33,7 +33,7 @@ export const LiveConnection = ({ metaData }: { metaData: any }) => {
         ref={inputRef}
         className="pe-9"
         type="text"
-        defaultValue={metaData?.spreadSheetUrl || "url"}
+        defaultValue={metaData?.url || "url"}
         readOnly
       />
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -21,6 +21,7 @@ import { Label } from "@/components/ui/label";
 import { apiClient } from "@/lib/axios";
 import useSWR from "swr";
 import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
 
 const fetcher = (url: string) => apiClient.get(url);
 export const IntegrationCard = ({
@@ -57,6 +58,38 @@ export const IntegrationCard = ({
         provider: "notion",
         callbackURL: `${clientUrl}/dashboard/${workspaceId}/form/view/${formId}`,
       });
+    }
+  };
+
+  const [title, setTitle] = useState("");
+
+  const createNotion = async (title: string) => {
+    try {
+      if (!title) return;
+      const res = await apiClient.post(`/api/integration/notion/page`, {
+        formId,
+        title,
+      });
+
+      console.log(res?.data?.data);
+    } catch (e) {
+      toast("failed to create notion page");
+    }
+  };
+
+  const createSheet = async (title: string) => {
+    try {
+      if (!title) return;
+      const metaData = JSON.stringify({ title });
+      const res = await apiClient.post(`/api/integration/sheet`, {
+        type: "google",
+        formId,
+        metaData,
+      });
+
+      console.log(res?.data?.data);
+    } catch (e) {
+      toast("failed to create sheet");
     }
   };
 
@@ -97,6 +130,32 @@ export const IntegrationCard = ({
                   {provider === "google" && "integrate new sheet"}
                   {provider === "notion" && "integrate new page"}
                 </DialogDescription>
+
+                {provider === "google" ||
+                  (provider === "notion" && (
+                    <div className="w-full grid gap-4">
+                      <Label>Title</Label>
+                      <Input
+                        value={title}
+                        onChange={(e) => setTitle(e?.currentTarget?.value)}
+                      />
+                    </div>
+                  ))}
+                <DialogFooter>
+                  <Button
+                    onClick={() => {
+                      if (provider === "google") {
+                        createSheet(title);
+                      }
+                      if (provider === "notion") {
+                        createNotion(title);
+                      }
+                    }}
+                    variant={"default"}
+                  >
+                    Submit
+                  </Button>
+                </DialogFooter>
               </DialogContent>
             </Dialog>
           </div>

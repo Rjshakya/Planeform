@@ -22,34 +22,18 @@ export const Integrations = () => {
     fetcher
   );
 
-  const createSheet = async (title: string) => {
-    try {
-      if (!title) return;
-      const metaData = JSON.stringify({ title });
-      const res = await apiClient.post(`/api/integration/sheet`, {
-        type: "google",
-        formId,
-        metaData,
-      });
-
-      console.log(res?.data?.data);
-    } catch (e) {
-      toast("failed to create sheet");
-    }
-  };
-
   const integrations = [
     {
       id: 1,
       provider: "google",
-      isConnectedUri: `/api/integration/sheet/isConnected?provider=google&scope=spreadsheets&scope=drive.file`,
+      isConnectedUri: `/api/integration/isConnected?provider=google&scope=spreadsheets&scope=drive.file`,
       workspaceId,
       formId,
     },
     {
       id: 2,
       provider: "notion",
-      isConnectedUri: `/api/integration/sheet/isConnected?provider=notion`,
+      isConnectedUri: `/api/integration/isConnected?provider=notion`,
       workspaceId,
       formId,
     },
@@ -74,8 +58,10 @@ export const Integrations = () => {
           {data?.data?.integrations &&
             data?.data?.integrations?.length > 0 &&
             data?.data?.integrations?.map((i: any, index: number) => {
-              const metaData = JSON.parse(i?.metaData || "");
-              return <LiveConnection key={index} metaData={metaData} />;
+              if (i?.metaData) {
+                const metaData = JSON.parse(i?.metaData || "");
+                return <LiveConnection key={index} metaData={metaData} />;
+              }
             })}
         </CardContent>
       </Card>
