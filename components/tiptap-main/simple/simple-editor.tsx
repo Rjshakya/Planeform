@@ -91,7 +91,14 @@ import { toast } from "sonner";
 import { dateInputNode } from "@/components/custom-extensions/date-input/node";
 import { cn } from "@/lib/utils";
 import DragHandle from "@tiptap/extension-drag-handle-react";
-import { GripVertical } from "lucide-react";
+import {
+  Equal,
+  GripVertical,
+  List,
+  ListOrdered,
+  Phone,
+  Settings,
+} from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -120,6 +127,7 @@ import {
   ItemTitle,
 } from "@/components/ui/item";
 import { v4 } from "uuid";
+import { Text } from "lucide-react";
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -254,6 +262,7 @@ const suggestions = createSuggestionsItems([
         .run();
     },
     description: "Insert a short input field",
+    icon: <Text />,
   },
 
   {
@@ -274,6 +283,7 @@ const suggestions = createSuggestionsItems([
         .run();
     },
     description: "Insert a long input field",
+    icon: <Text />,
   },
 
   {
@@ -294,6 +304,7 @@ const suggestions = createSuggestionsItems([
         .run();
     },
     description: "Insert a phone no input field",
+    icon: <Phone />,
   },
 
   {
@@ -325,6 +336,7 @@ const suggestions = createSuggestionsItems([
         .run();
     },
     description: "Insert a single choice input field",
+    icon: <Equal />,
   },
 
   {
@@ -356,6 +368,7 @@ const suggestions = createSuggestionsItems([
         .run();
     },
     description: "Insert a multiple choice input field",
+    icon: <Equal />,
   },
 
   {
@@ -370,6 +383,7 @@ const suggestions = createSuggestionsItems([
         .run();
     },
     description: "Start typing with text",
+    icon: <Text />,
   },
   {
     title: "Bullet List",
@@ -378,6 +392,7 @@ const suggestions = createSuggestionsItems([
       editor.chain().focus().deleteRange(range).toggleBulletList().run();
     },
     description: "Create a simple bullet list",
+    icon: <List />,
   },
   {
     title: "Ordered List",
@@ -386,6 +401,7 @@ const suggestions = createSuggestionsItems([
       editor.chain().focus().deleteRange(range).toggleOrderedList().run();
     },
     description: "Create a simple ordered list",
+    icon: <ListOrdered />,
   },
 ]);
 
@@ -421,6 +437,9 @@ export function SimpleEditor({
         autocapitalize: "on",
         "aria-label": "Main content area, start typing to enter text.",
         class: "simple-editor min-h-[60vh]",
+      },
+      handleDOMEvents: {
+        keydown: (_, v) => enableKeyboardNavigation(v),
       },
     },
     extensions: [
@@ -474,7 +493,7 @@ export function SimpleEditor({
   const [isInputNode, setIsInputNode] = React.useState(false);
   const [nodePosition, setNodePosition] = React.useState<number | null>(null);
   const [currentNode, setCurrentNode] = React?.useState<any>(null);
-
+  const [openPopover, setOpenPopover] = React.useState(false);
   // editor?.state?.doc?.nodeAt(nodePosition || 0);
 
   const onSubmit = async (values: any) => {
@@ -553,51 +572,56 @@ export function SimpleEditor({
                 }
               }}
               editor={editor!}
-              className=" flex"
+              className=""
             >
-              <div className="px-2 cursor-pointer pt-1 hidden md:flex items-center gap-1 w-full">
-                {isInputNode && currentNode && (
-                  <Popover>
-                    <PopoverTrigger>p</PopoverTrigger>
-                    <PopoverContent
-                      align="center"
-                      side="left"
-                      className=" w-80 shadow-xl"
-                    >
-                      <div className=" grid gap-2 w-full">
+              <div className="pt-1  pl-5 md:px-2">
+                <div
+                  onClick={() => setOpenPopover(!openPopover)}
+                  className="handler"
+                >
+                  <Popover open={openPopover} onOpenChange={setOpenPopover}>
+                    <PopoverTrigger className=" cursor-pointer">
+                      <GripVertical size={16} />
+                    </PopoverTrigger>
+                    {isInputNode && currentNode && (
+                      <PopoverContent className=" w-56  shadow-xl py-2 px-2 grid gap-3 text-sm mx-4">
                         {Object?.entries?.(currentNode?.attrs)?.map?.(
                           (o: any, i) => {
                             if (o?.[0] === "isRequired") {
                               return (
                                 <div
                                   key={i}
-                                  className="flex items-center gap-2 w-full justify-between text-wrap py-2"
+                                  className="flex items-center justify-between gap-2 w-full"
                                 >
-                                  <span>{o?.[0]}</span>
-                                  <Checkbox
-                                    checked={o[1]}
-                                    onCheckedChange={(c) => {
-                                      console.log(
-                                        "Node type name:",
-                                        currentNode?.type?.name
-                                      );
-                                      console.log(
-                                        "Updating attribute:",
-                                        o[1],
-                                        "to:",
-                                        c
-                                      );
+                                  <div className=" ">
+                                    <span className=" ">{"Required"}</span>
+                                  </div>
+                                  <div className="">
+                                    <Checkbox
+                                      checked={o[1]}
+                                      onCheckedChange={(c) => {
+                                        console.log(
+                                          "Node type name:",
+                                          currentNode?.type?.name
+                                        );
+                                        console.log(
+                                          "Updating attribute:",
+                                          o[1],
+                                          "to:",
+                                          c
+                                        );
 
-                                      editor
-                                        ?.chain()
-                                        ?.setNodeSelection(nodePosition!)
-                                        ?.updateAttributes(
-                                          currentNode?.type?.name,
-                                          { [o[0]]: c }
-                                        )
-                                        .run();
-                                    }}
-                                  />
+                                        editor
+                                          ?.chain()
+                                          ?.setNodeSelection(nodePosition!)
+                                          ?.updateAttributes(
+                                            currentNode?.type?.name,
+                                            { [o[0]]: c }
+                                          )
+                                          .run();
+                                      }}
+                                    />
+                                  </div>
                                 </div>
                               );
                             }
@@ -606,11 +630,16 @@ export function SimpleEditor({
                               return (
                                 <div
                                   key={i}
-                                  className="flex items-center justify-between gap-2 w-full  text-wrap "
+                                  className="flex items-center justify-between gap-6 w-full "
                                 >
-                                  <div className="w-full flex-1">{o[0]}</div>
-                                  <input
-                                    className={cn("h-6 w-36", "outline-none")}
+                                  <div className="w-full flex-1">
+                                    {"Placeholder"}
+                                  </div>
+                                  <Input
+                                    className={cn(
+                                      "h-5 text-xs md:text-xs rounded-sm",
+                                      "focus-visible:outline-none focus-visible:ring-0"
+                                    )}
                                     placeholder={o[1]}
                                     onKeyDown={(e) => {
                                       if (e.key === "Enter") {
@@ -621,19 +650,11 @@ export function SimpleEditor({
                                           .setNodeSelection(nodePosition!)
                                           ?.updateAttributes(
                                             currentNode?.type?.name,
-                                            { [o[0]]: e?.currentTarget?.value }
+                                            {
+                                              [o[0]]: e?.currentTarget?.value,
+                                            }
                                           )
                                           .run();
-
-                                        // editor
-                                        //   ?.chain()
-                                        //   ?.updateAttributes(
-                                        //     currentNode?.type?.name,
-                                        //     { [o[0]]: e?.currentTarget?.value }
-                                        //   )
-                                        //   .run();
-
-                                        // setForceUpdate((prev) => prev + 1);
                                       }
                                     }}
                                   />
@@ -642,13 +663,9 @@ export function SimpleEditor({
                             }
                           }
                         )}
-                      </div>
-                    </PopoverContent>
+                      </PopoverContent>
+                    )}
                   </Popover>
-                )}
-
-                <div className="handler">
-                  <GripVertical size={20} />
                 </div>
               </div>
             </DragHandle>
@@ -664,7 +681,7 @@ export function SimpleEditor({
                 <SlashCmd.Cmd>
                   <SlashCmd.Empty>No commands available</SlashCmd.Empty>
                   <SlashCmd.List className="">
-                    <ItemGroup className="bg-popover w-80 p-1 rounded-md max-h-40 overflow-y-auto gap-2 shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
+                    <ItemGroup className="bg-popover w-72 p-2 rounded-md max-h-40 overflow-y-auto gap-2 shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
                       {suggestions.map((item) => {
                         return (
                           <SlashCmd.Item
@@ -680,6 +697,9 @@ export function SimpleEditor({
                               size={"sm"}
                               className=" w-full"
                             >
+                              <ItemMedia className=" size-4">
+                                {item.icon}
+                              </ItemMedia>
                               <ItemContent>
                                 <ItemTitle>{item?.title}</ItemTitle>
                                 <ItemDescription>

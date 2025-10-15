@@ -11,11 +11,13 @@ export const ActionButtonView = (props: NodeViewProps) => {
     <NodeViewWrapper className={"mt-6"}>
       <Button className="  px-6 py-6 w-fit" id={id} type={"submit"}>
         {useFormStore.getState().isSubmitting && (
-          <div className="">
+          <div className="w-full">
             <Loader className=" animate-spin" />
           </div>
         )}
-
+        {/* <div className="w-full">
+          <Loader className=" animate-spin" />
+        </div> */}
         <NodeViewContent as="div" className="text-xl content " />
       </Button>
     </NodeViewWrapper>

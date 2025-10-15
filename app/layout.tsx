@@ -35,6 +35,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
+      <head>
+        <script
+          async
+          crossOrigin="anonymous"
+          src="https://tweakcn.com/live-preview.min.js"
+        />
+      </head>
       <body className={`${dmSans.variable} ${geistMono.variable}antialiased`}>
         <div className=" font-sans max-w-6xl mx-auto">{children}</div>
         <Toaster position="top-right" />
