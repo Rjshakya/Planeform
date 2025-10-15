@@ -6,9 +6,11 @@ import {
   ArrowUp,
   Bell,
   CheckCheck,
+  Edit,
   Link,
   LogOut,
   Mail,
+  MailIcon,
   MoreHorizontal,
   Settings2,
   Star,
@@ -34,40 +36,34 @@ import {
 
 import { authClient, signOut } from "@/lib/auth-client";
 import { ThemeToggle } from "./tiptap-main/simple/theme-toggle";
-import { useParams } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { fi } from "date-fns/locale";
 
 export function NavActions() {
   const [isOpen, setIsOpen] = React.useState(false);
-  const { formId } = useParams();
+  const { workspaceId, formId } = useParams();
   const appUrl = process.env.NEXT_PUBLIC_CLIENT_URL;
   const [isCopyied, setIsCopied] = React.useState(false);
   const { data: session } = authClient?.useSession();
+  const path = usePathname();
+  const router = useRouter();
 
   const [data, setData] = React?.useState([
     [
       {
-        label: "Copy Link",
-        icon: Link,
+        label: "name",
+        icon: User,
       },
-    ],
-    [
+      {
+        label: "email",
+        icon: MailIcon,
+      },
       {
         label: "Log out",
         icon: LogOut,
       },
     ],
   ]);
-
-  React.useEffect(() => {
-    if (session?.user) {
-      const copy = [...data];
-      copy?.[1]?.unshift({ label: session?.user?.email, icon: Mail });
-      copy?.[1]?.unshift({ label: session?.user?.name, icon: User });
-
-      setData(copy);
-    }
-  }, [session?.user]);
 
   return (
     <div className="flex items-center gap-2 text-sm">
@@ -98,6 +94,49 @@ export function NavActions() {
         >
           <Sidebar collapsible="none" className="bg-transparent">
             <SidebarContent>
+              {formId && path.includes("view") && (
+                <SidebarGroup>
+                  {" "}
+                  <SidebarGroupContent>
+                    <SidebarMenu>
+                      <SidebarMenuItem>
+                        <SidebarMenuButton
+                          className="w-full flex items-center gap-2"
+                          onClick={() => {
+                            window.navigator.clipboard.writeText(
+                              `${appUrl}/${formId}`
+                            );
+                            setIsCopied(true);
+                            setTimeout(() => setIsCopied(false), 1000);
+                          }}
+                        >
+                          {isCopyied ? (
+                            <CheckCheck className=" dark:text-green-400 text-green-600" />
+                          ) : (
+                            <Link />
+                          )}
+                          <span>copy</span>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                      <SidebarMenuItem>
+                        <SidebarMenuButton
+                          className="w-full flex items-center gap-2"
+                          onClick={() =>
+                            router.push(
+                              `/dashboard/${workspaceId}/form/edit/${formId}`
+                            )
+                          }
+                        >
+                          <span>
+                            <Edit size={15} />
+                          </span>
+                          <span>Edit</span>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    </SidebarMenu>
+                  </SidebarGroupContent>
+                </SidebarGroup>
+              )}
               {data.map((group, index) => (
                 <SidebarGroup key={index} className="border-b last:border-none">
                   <SidebarGroupContent className="gap-0">
@@ -105,30 +144,24 @@ export function NavActions() {
                       {group.map((item, index) => (
                         <SidebarMenuItem key={index}>
                           <SidebarMenuButton
+                            className="w-full flex items-center  gap-2"
                             onClick={async () => {
                               if (item.label === "Log out") {
                                 await signOut();
                               }
-
-                              if (item.label === "Copy Link" && formId) {
-                                window.navigator.clipboard.writeText(
-                                  `${appUrl}/${formId}`
-                                );
-                                setIsCopied(true);
-                              }
                             }}
                           >
-                            {item.label === "Copy Link" ? (
-                              isCopyied ? (
-                                <CheckCheck className=" dark:text-green-400 text-green-600" />
-                              ) : (
-                                <item.icon />
-                              )
-                            ) : (
-                              <item.icon />
+                            <span>{<item.icon size={15} />}</span>
+                            {item.label === "name" && (
+                              <span>{session?.user?.name || ""}</span>
+                            )}
+                            {item.label === "email" && (
+                              <span>{session?.user?.email || ""}</span>
                             )}
 
-                            <span>{item.label}</span>
+                            {item.label === "Log out" && (
+                              <span>{item.label}</span>
+                            )}
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                       ))}

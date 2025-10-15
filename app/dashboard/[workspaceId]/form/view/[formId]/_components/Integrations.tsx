@@ -11,16 +11,25 @@ import useSWR from "swr";
 import { IntegrationCard } from "./_components_integrations/IntegrationCard";
 import { LiveConnection } from "./_components_integrations/LiveConnection";
 import { AnimatedBackground } from "@/components/ui/animated-background";
+import { Loader, TriangleAlert } from "lucide-react";
 
 const fetcher = (url: string) => apiClient.get(url);
-export const Integrations = () => {
+
+export const Integrations = ({
+  data,
+  error,
+  isLoading,
+}: {
+  data: any;
+  error: any;
+  isLoading: boolean;
+}) => {
   const { workspaceId, formId } = useParams();
 
-  const [sheetTitle, setSheetTitle] = useState("");
-  const { data, error, isLoading } = useSWR(
-    `/api/integration/${formId}`,
-    fetcher
-  );
+  // const { data, error, isLoading } = useSWR(
+  //   `/api/integration/${formId}`,
+  //   fetcher
+  // );
 
   const integrations = [
     {
@@ -40,10 +49,21 @@ export const Integrations = () => {
   ];
 
   if (error) {
-    return <div className=" text-red-500">failed to load</div>;
+    return (
+      <div className="w-full h-screen flex items-center justify-center">
+        <span>
+          <TriangleAlert className=" text-destructive" />
+        </span>
+        <p>failed to get your integrations</p>
+      </div>
+    );
   }
   if (isLoading) {
-    return <div className=" text-gray-500">loading...</div>;
+    return (
+      <div className="w-full h-screen flex items-center justify-center">
+        <Loader className="animate-spin" />
+      </div>
+    );
   }
 
   return (
@@ -55,9 +75,9 @@ export const Integrations = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className=" flex flex-col  gap-5 ">
-          {data?.data?.integrations &&
-            data?.data?.integrations?.length > 0 &&
-            data?.data?.integrations?.map((i: any, index: number) => {
+          {data &&
+            data?.length > 0 &&
+            data?.map((i: any, index: number) => {
               if (i?.metaData) {
                 const metaData = JSON.parse(i?.metaData || "");
                 return <LiveConnection key={index} metaData={metaData} />;

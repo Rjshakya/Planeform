@@ -76,7 +76,9 @@ export const LiveConnection = ({ metaData }: { metaData: any }) => {
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-        <Button size={"sm"} variant={"ghost"}>sync</Button>
+        <Button size={"sm"} variant={"ghost"}>
+          sync
+        </Button>
       </div>
     </div>
   );

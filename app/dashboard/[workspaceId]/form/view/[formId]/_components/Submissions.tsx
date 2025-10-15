@@ -3,7 +3,7 @@ import useSWR from "swr";
 import TanStackTable, { RowActions } from "@/components/Data-table";
 import { apiClient } from "@/lib/axios";
 import { useParams } from "next/navigation";
-import { Loader } from "lucide-react";
+import { Loader, TriangleAlert } from "lucide-react";
 import { ColumnDef, PaginationState } from "@tanstack/react-table";
 
 import { useEffect, useMemo, useState } from "react";
@@ -21,9 +21,7 @@ export const Submissions = () => {
     pageIndex: 0,
     pageSize: 20,
   });
-  useEffect(() => {
-    console.log("Pagination state changed:", pagination);
-  }, [pagination]);
+
   const { data, error, isLoading } = useSWR(
     `/api/response/form/${formId}?pageIndex=${pagination.pageIndex}&pageSize=${pagination.pageSize}`,
     fetcher
@@ -59,7 +57,7 @@ export const Submissions = () => {
             </div>
           );
         },
-        
+
         size: 200,
         enableHiding: true,
       };
@@ -105,20 +103,23 @@ export const Submissions = () => {
     return columnArr;
   }, [heads]);
 
-  if (error)
+  if (error) {
     return (
-      <div className=" w-full min-h-[50vh] grid place-content-center">
-        <p className=" text-wrap text-lg text-muted-foreground">
-          Internal Error , we are sorry for this
-        </p>
+      <div className="w-full h-screen flex items-center justify-center">
+        <span>
+          <TriangleAlert className=" text-destructive" />
+        </span>
+        <p>failed to get submissions</p>
       </div>
     );
-  if (isLoading)
+  }
+  if (isLoading) {
     return (
-      <div className=" w-full min-h-[50vh] grid place-content-center">
-        <Loader className=" animate-spin" />
+      <div className="w-full h-screen flex items-center justify-center">
+        <Loader className="animate-spin" />
       </div>
     );
+  }
 
   return (
     <>

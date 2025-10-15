@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { PlusIcon } from "lucide-react";
+import { Loader, PlusIcon, TriangleAlert } from "lucide-react";
 import { apiClient } from "@/lib/axios";
 
 import useSWR from "swr";
@@ -21,8 +21,22 @@ export default function Page() {
 
   const router = useRouter();
 
-  if (error) return <p>error occurred</p>;
-  if (isLoading) return <p>loading ...</p>;
+  if (error) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center">
+        <span>
+          <TriangleAlert className=" text-destructive" /> failed to get forms
+        </span>
+      </div>
+    );
+  }
+  if (isLoading) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center">
+        <Loader className="animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="grid gap-16 max-w-4xl w-full mx-auto">

@@ -13,11 +13,7 @@ export const FormsTab = ({ forms }: { forms: Iform[] }) => {
       {forms?.length > 0 &&
         forms?.map((f: { name: string; shortId: string }) => {
           return (
-            <>
-             <FormCard name={f?.name} shortId={f?.shortId} key={f?.shortId} />
-            
-            </>
-           
+            <FormCard name={f?.name} shortId={f?.shortId} key={f?.shortId} />
           );
         })}
 

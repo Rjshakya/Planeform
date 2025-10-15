@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 
-import { Loader, PlusIcon } from "lucide-react";
+import { Loader, PlusIcon, TriangleAlert } from "lucide-react";
 import { WorkspaceCard } from "./WorkspaceCard";
 import useSWR from "swr";
 import { apiClient } from "@/lib/axios";
@@ -35,8 +35,23 @@ export default function Workspace() {
   if (sessionError) {
     signOut();
   }
-  if (error) return <p>error</p>;
-  if (isLoading) return <p>loading ...</p>;
+  if (error) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center">
+        <span>
+          <TriangleAlert className=" text-destructive" />
+        </span>
+        <p>failed to get workspaces</p>
+      </div>
+    );
+  }
+  if (isLoading) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center">
+        <Loader className="animate-spin" />
+      </div>
+    );
+  }
 
   const handleCreateWorkspace = async (params: createWorkspaceParams) => {
     if (!params.owner || !params.name) {
@@ -105,7 +120,7 @@ export default function Workspace() {
         </div>
       </div>
 
-      <div className=" w-full grid md:grid-cols-3 px-2 gap-4">
+      <div className=" w-full flex-col gap-4">
         {data?.workspace && data?.workspace?.length > 0 ? (
           data?.workspace?.map((w: { id: string; name: string }) => (
             <WorkspaceCard id={w?.id} name={w?.name} key={w?.id} />

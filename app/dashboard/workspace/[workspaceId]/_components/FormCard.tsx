@@ -1,15 +1,24 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { ArrowUpRightIcon, Ellipsis, Loader } from "lucide-react";
 import {
-  ArrowCircleUp,
-  ArrowCircleUp2,
-  ArrowUp,
-  Chart2,
+  ArrowUpRightIcon,
+  ChartColumnIncreasing,
+  CircleAlertIcon,
   Edit,
+  Ellipsis,
+  Link2,
+  Loader,
+  MoveUpRight,
   Trash,
-} from "iconsax-reactjs";
+} from "lucide-react";
+// import {
+//   ArrowCircleUp,
+//   ArrowCircleUp2,
+//   ArrowUp,
+//   Chart2,
+//   Edit,
+//   Trash,
+// } from "iconsax-reactjs";
 import { useParams, useRouter } from "next/navigation";
 import {
   DropdownMenu,
@@ -41,6 +50,17 @@ import {
   ItemSeparator,
   ItemTitle,
 } from "@/components/ui/item";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface formProps {
   shortId: string;
@@ -66,6 +86,7 @@ export default function FormCard(props: formProps) {
     toast(`${props.name} deleted!`);
     mutate(`/api/form/workspace/${workspace}`);
   };
+  const url = process.env.NEXT_PUBLIC_CLIENT_URL;
 
   return (
     <Item
@@ -93,18 +114,20 @@ export default function FormCard(props: formProps) {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="">
             <DropdownMenuItem
-              onClick={() => router.push(`/${props.shortId}`)}
-              className="w-full flex items-center gap-2"
+              // onClick={() => router.push(`/${props.shortId}`)}
+              className=""
             >
-              <span className=" ">
-                <ArrowCircleUp2
-                  // size={"60"}
-                  variant="Bulk"
-                  className=" rotate-45 size-5 "
-                />
-              </span>
-
-              <span>Go to</span>
+              <Link
+                className="w-full flex items-center gap-2"
+                target="_blank"
+                href={`${url}/${props.shortId}`}
+              >
+                {" "}
+                <span className=" ">
+                  <MoveUpRight />
+                </span>
+                <span>Go to</span>
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() =>
@@ -115,7 +138,7 @@ export default function FormCard(props: formProps) {
               className="w-full flex items-center gap-2"
             >
               <span className=" ">
-                <Chart2 className=" size-5 " variant="Bulk" />
+                <ChartColumnIncreasing />
               </span>
 
               <span>Responses</span>
@@ -129,39 +152,49 @@ export default function FormCard(props: formProps) {
               className="w-full flex items-center gap-2"
             >
               <span>
-                <Edit className=" size-5" variant="Bulk" />
+                <Edit />
               </span>
               <span>Edit</span>
             </DropdownMenuItem>
 
-            <Dialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
-              <DialogTrigger className=" hover:bg-accent focus:text-accent-foreground data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 dark:data-[variant=destructive]:focus:bg-destructive/20 data-[variant=destructive]:focus:text-destructive data-[variant=destructive]:*:[svg]:!text-destructive [&_svg:not([class*='text-'])]:text-muted-foreground relative cursor-default rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 w-full flex items-center gap-2">
-                <Trash variant="Bulk" className=" size-5" />
+            <AlertDialog
+              open={openDeleteDialog}
+              onOpenChange={setOpenDeleteDialog}
+            >
+              <AlertDialogTrigger className="hover:bg-accent focus:text-accent-foreground data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 dark:data-[variant=destructive]:focus:bg-destructive/20 data-[variant=destructive]:focus:text-destructive data-[variant=destructive]:*:[svg]:!text-destructive [&_svg:not([class*='text-'])]:text-muted-foreground relative cursor-default rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 w-full flex items-center gap-2">
+                <Trash />
                 <p>Delete</p>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Delete {props.name}</DialogTitle>
-                  Are you sure , you want to delete this form ?
-                </DialogHeader>
-                <DialogFooter>
-                  <Button
-                    onClick={() => setOpenDeleteDialog(false)}
-                    variant={"secondary"}
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <div className="flex flex-col gap-2 max-sm:items-center sm:flex-row sm:gap-4">
+                  <div
+                    className="flex size-9 shrink-0 items-center justify-center rounded-full border"
+                    aria-hidden="true"
                   >
-                    cancel
-                  </Button>
-                  <Button onClick={handleDelete} variant={"destructive"}>
+                    <CircleAlertIcon />
+                  </div>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Are you absolutely sure?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete
+                      form
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                </div>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => handleDelete()}>
                     {deleting && <Loader className=" animate-spin" />}
-                    <p>Yes go ahead</p>
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </DropdownMenuContent>
         </DropdownMenu>
       </ItemActions>
-   
     </Item>
   );
 }

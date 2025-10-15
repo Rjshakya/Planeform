@@ -11,7 +11,10 @@ const fetcher = (url: string) => apiClient.get(url);
 export default function Page() {
   const { formId } = useParams();
 
-  const { data } = useSWR(`/api/form/${formId}/meta_data`, fetcher);
+  const { data, error, isLoading } = useSWR(
+    `/api/form/${formId}/meta_data`,
+    fetcher
+  );
 
   return (
     <main className=" w-full max-w-4xl  mx-auto">
@@ -48,8 +51,11 @@ export default function Page() {
           See analytics of your form here .
         </TabsContent>
         <TabsContent className="px-1 mt-4" value="Integrations">
-          {/* <p className="mb-4">See integrations of your form here .</p> */}
-          <Integrations />
+          <Integrations
+            data={data?.data?.form?.integrations}
+            error={error}
+            isLoading={isLoading}
+          />
         </TabsContent>
       </Tabs>
     </main>

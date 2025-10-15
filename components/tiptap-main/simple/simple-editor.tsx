@@ -484,8 +484,8 @@ export function SimpleEditor({
       .getState()
       .handleSubmit(values, formId as string);
     if (res) {
-      form.reset();
       router.push(`/thank-you`);
+      form.reset();
     }
   };
 

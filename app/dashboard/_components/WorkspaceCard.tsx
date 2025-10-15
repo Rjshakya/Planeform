@@ -1,15 +1,15 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+
 import {
-  ArrowUpRightIcon,
   CircleAlertIcon,
+  Edit,
   Ellipsis,
   Loader,
-  TrashIcon,
+  MoveUpRight,
+  Trash,
 } from "lucide-react";
-import workspaceImg from "@/public/workspace-pic.jpg";
-import Image from "next/image";
+
 import { useRouter } from "next/navigation";
 import {
   DropdownMenu,
@@ -21,17 +21,9 @@ import { useState } from "react";
 import { apiClient } from "@/lib/axios";
 import useSWR from "swr";
 import { toast } from "sonner";
-import { ArrowCircleUp2, Edit, Trash } from "iconsax-reactjs";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -43,6 +35,17 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemFooter,
+  ItemHeader,
+  ItemMedia,
+  ItemSeparator,
+  ItemTitle,
+} from "@/components/ui/item";
 
 interface workspaceCardProps {
   name: string;
@@ -72,17 +75,21 @@ export const WorkspaceCard = (props: workspaceCardProps) => {
   };
 
   return (
-    <Card
+    <Item
       // onClick={() => router.push(`/dashboard/workspace/${props?.id}`)}
-      className=" py-1.5 px-2 cursor-pointer"
+      className=" py-2.5 px-2 cursor-pointer"
     >
-      <CardHeader className=" px-0.5 flex items-center justify-between gap-1">
-        <Link
-          className=" hover:underline-offset-2 hover:underline"
-          href={`/dashboard/workspace/${props?.id}`}
-        >
-          <p className=" capitalize">{props?.name || "workspace"}</p>
-        </Link>
+      <ItemContent className=" px-0.5 ">
+        <ItemTitle>
+          <Link
+            className=" hover:underline-offset-2 hover:underline"
+            href={`/dashboard/workspace/${props?.id}`}
+          >
+            <p className=" capitalize">{props?.name || "workspace"}</p>
+          </Link>
+        </ItemTitle>
+      </ItemContent>
+      <ItemActions className=" px-0 ">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button size={"icon"} variant={"ghost"}>
@@ -95,25 +102,21 @@ export const WorkspaceCard = (props: workspaceCardProps) => {
               onClick={() => router.push(`/dashboard/workspace/${props?.id}`)}
             >
               <span className=" ">
-                <ArrowCircleUp2
-                  // size={"60"}
-                  variant="Bulk"
-                  className=" rotate-45 size-5 "
-                />
+                <MoveUpRight />
               </span>
 
               <span>Go to</span>
             </DropdownMenuItem>
             <DropdownMenuItem className="w-full flex items-center gap-2">
               <span>
-                <Edit className=" size-5" variant="Bulk" />
+                <Edit />
               </span>
               <span>Edit</span>
             </DropdownMenuItem>
 
             <AlertDialog>
               <AlertDialogTrigger className="hover:bg-accent focus:text-accent-foreground data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 dark:data-[variant=destructive]:focus:bg-destructive/20 data-[variant=destructive]:focus:text-destructive data-[variant=destructive]:*:[svg]:!text-destructive [&_svg:not([class*='text-'])]:text-muted-foreground relative cursor-default rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 w-full flex items-center gap-2">
-                <Trash variant="Bulk" className=" size-5" />
+                <Trash />
                 <p>Delete</p>
               </AlertDialogTrigger>
               <AlertDialogContent>
@@ -147,50 +150,7 @@ export const WorkspaceCard = (props: workspaceCardProps) => {
             </AlertDialog>
           </DropdownMenuContent>
         </DropdownMenu>
-      </CardHeader>
-      <CardContent className=" px-0 ">
-        <div className=" bg-muted w-full h-44 relative overflow-hidden rounded-2xl">
-          <svg
-            className="absolute inset-0 w-full h-full pointer-events-none opacity-95 mix-blend-overlay"
-            preserveAspectRatio="none"
-            viewBox="0 0 100 100"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-          >
-            <defs>
-              <filter id="noiseFilter">
-                {/* fractalNoise produces the grain */}
-                <feTurbulence
-                  type="fractalNoise"
-                  baseFrequency="0.9" /* tweak for grain size */
-                  numOctaves="2" /* tweak for complexity */
-                  stitchTiles="stitch"
-                />
-                {/* desaturate (make it grayscale) */}
-                <feColorMatrix type="saturate" values="0" />
-                {/* control alpha so noise is translucent */}
-                <feComponentTransfer>
-                  <feFuncA type="table" tableValues="0 0.35" />
-                </feComponentTransfer>
-              </filter>
-            </defs>
-
-            {/* the rect gets the noise filter applied */}
-            <rect
-              width="100%"
-              height="100%"
-              filter="url(#noiseFilter)"
-              fill="#000"
-            />
-          </svg>
-
-          <div className="relative z-10 w-full h-full">
-            <p className="w-full absolute bottom-0 right-2 leading-24 opacity-25 text-9xl font-bold tracking-[-0.10em] capitalize -rotate-6 pr-10  ">
-              {props.name}
-            </p>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+      </ItemActions>
+    </Item>
   );
 };
