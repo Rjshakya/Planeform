@@ -32,12 +32,30 @@ export const longInputNode = Node.create({
     return [
       {
         tag: "long-input",
+        getAttrs: (element) => {
+          if (typeof element === "string") return {};
+
+          return {
+            id: element.getAttribute("data-id") || v4(),
+            label: element.getAttribute("data-label") || "Label:",
+            placeholder: element.getAttribute("data-placeholder") || "",
+            rows: element.getAttribute("data-rows") || "text",
+            isRequired: element.getAttribute("data-required") === "true",
+          };
+        },
       },
     ];
   },
 
-  renderHTML({ HTMLAttributes }) {
-    return ["long-input", mergeAttributes(HTMLAttributes)];
+  renderHTML({ HTMLAttributes , node }) {
+    return ["long-input",  mergeAttributes(HTMLAttributes, {
+        "data-id": node.attrs.id,
+        "data-label": node.attrs.label,
+        "data-placeholder": node.attrs.placeholder,
+        "data-rows": node.attrs.rows,
+        "data-required": node.attrs.isRequired,
+      }),
+      0,];
   },
 
   addCommands() {

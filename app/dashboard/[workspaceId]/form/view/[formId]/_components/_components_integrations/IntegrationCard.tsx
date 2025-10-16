@@ -12,6 +12,7 @@ import {
   DialogContent,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -22,6 +23,7 @@ import { apiClient } from "@/lib/axios";
 import useSWR from "swr";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
+import { Loader } from "lucide-react";
 
 const fetcher = (url: string) => apiClient.get(url);
 export const IntegrationCard = ({
@@ -62,8 +64,10 @@ export const IntegrationCard = ({
   };
 
   const [title, setTitle] = useState("");
-
+  const [creating, setCreating] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const createNotion = async (title: string) => {
+    setCreating(true);
     try {
       if (!title) return;
       const res = await apiClient.post(`/api/integration/notion/page`, {
@@ -75,9 +79,13 @@ export const IntegrationCard = ({
     } catch (e) {
       toast("failed to create notion page");
     }
+
+    setCreating(false);
+    setDialogOpen(false);
   };
 
   const createSheet = async (title: string) => {
+    setCreating(true);
     try {
       if (!title) return;
       const metaData = JSON.stringify({ title });
@@ -91,10 +99,13 @@ export const IntegrationCard = ({
     } catch (e) {
       toast("failed to create sheet");
     }
+
+    setCreating(false);
+    setDialogOpen(false);
   };
 
   if (error) {
-    return <div>Error loading integration status</div>;
+    return <div>Error loading integrations</div>;
   }
 
   return (
@@ -114,7 +125,7 @@ export const IntegrationCard = ({
         <div className=" w-full flex items-center justify-between gap-2 ">
           <div className="w-full">
             {" "}
-            <Dialog>
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
               <DialogTrigger asChild>
                 <Button className="w-full" variant={"ghost"}>
                   {provider === "google" && "Add sheet"}
@@ -122,27 +133,38 @@ export const IntegrationCard = ({
                 </Button>
               </DialogTrigger>
               <DialogContent>
-                <DialogTitle>
-                  {provider === "google" && "sheet"}
-                  {provider === "notion" && "page"}
-                </DialogTitle>
-                <DialogDescription>
-                  {provider === "google" && "integrate new sheet"}
-                  {provider === "notion" && "integrate new page"}
-                </DialogDescription>
+                <DialogHeader>
+                  <DialogTitle>
+                    {provider === "google" && "Sheet"}
+                    {provider === "notion" && "Page"}
+                  </DialogTitle>
+                  <DialogDescription>
+                    {provider === "google" && "Integrate new sheet"}
+                    {provider === "notion" && "Integrate new page"}
+                  </DialogDescription>
+                </DialogHeader>
 
-                {provider === "google" ||
-                  (provider === "notion" && (
-                    <div className="w-full grid gap-4">
-                      <Label>Title</Label>
-                      <Input
-                        value={title}
-                        onChange={(e) => setTitle(e?.currentTarget?.value)}
-                      />
-                    </div>
-                  ))}
+                {provider === "notion" && (
+                  <div className="w-full grid gap-4 pt-2">
+                    <Label>Title</Label>
+                    <Input
+                      value={title}
+                      onChange={(e) => setTitle(e?.currentTarget?.value)}
+                    />
+                  </div>
+                )}
+                {provider === "google" && (
+                  <div className="w-full grid gap-4 pt-2">
+                    <Label>Title</Label>
+                    <Input
+                      value={title}
+                      onChange={(e) => setTitle(e?.currentTarget?.value)}
+                    />
+                  </div>
+                )}
                 <DialogFooter>
                   <Button
+                    className="flex items-center gap-2"
                     onClick={() => {
                       if (provider === "google") {
                         createSheet(title);
@@ -153,7 +175,12 @@ export const IntegrationCard = ({
                     }}
                     variant={"default"}
                   >
-                    Submit
+                    {creating && (
+                      <div>
+                        <Loader className="animate-spin" />
+                      </div>
+                    )}
+                    <div>Submit</div>
                   </Button>
                 </DialogFooter>
               </DialogContent>

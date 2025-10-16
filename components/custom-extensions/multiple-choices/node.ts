@@ -37,12 +37,31 @@ export const multipleChoiceNode = Node.create({
     return [
       {
         tag: "multipleChoice-input",
+        getAttrs: (element) => {
+          if (typeof element === "string") return {};
+
+          return {
+            id: element.getAttribute("data-id") || v4(),
+            label: element.getAttribute("data-label") || "Label:",
+            type: element.getAttribute("data-type") || "text",
+            isRequired: element.getAttribute("data-required") === "true",
+          };
+        },
       },
     ];
   },
 
-  renderHTML({ HTMLAttributes }) {
-    return ["multipleChoice-input", mergeAttributes(HTMLAttributes)];
+  renderHTML({ HTMLAttributes, node }) {
+    return [
+      "multipleChoice-input",
+      mergeAttributes(HTMLAttributes, {
+        "data-id": node.attrs.id,
+        "data-label": node.attrs.label,
+        "data-type": node.attrs.type,
+        "data-required": node.attrs.isRequired,
+      }),
+      0,
+    ];
   },
 
   addCommands() {
@@ -126,12 +145,31 @@ export const optionNode = Node.create({
     return [
       {
         tag: "option-node",
+        getAttrs: (element) => {
+          if (typeof element === "string") return {};
+
+          return {
+            id: element.getAttribute("data-id") || v4(),
+            label: element.getAttribute("data-label") || "Label:",
+            type: element.getAttribute("data-type") || "text",
+            parentId: element.getAttribute("data-parent-id") || "parentId",
+          };
+        },
       },
     ];
   },
 
-  renderHTML({ HTMLAttributes }) {
-    return ["option-node", mergeAttributes(HTMLAttributes)];
+  renderHTML({ HTMLAttributes, node }) {
+    return [
+      "option-node",
+      mergeAttributes(HTMLAttributes, {
+        "data-id": node.attrs.id,
+        "data-label": node.attrs.label,
+        "data-type": node.attrs.type,
+        "data-parent-id": node.attrs.parentId,
+      }),
+      0,
+    ];
   },
 
   addCommands() {

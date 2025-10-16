@@ -31,11 +31,11 @@ export const MultipleChoiceView = (props: NodeViewProps) => {
           control={form?.control}
           name={id}
           render={({ field }) => (
-            <FormItem className="mt-4 field mb-3">
+            <FormItem className="mt-4 field mb-3 gap-3">
               <FormLabel
                 htmlFor={label}
                 aria-label={label}
-                className=" text-2xl "
+                className=" text-md "
                 id={id}
               >
                 <NodeViewContent
@@ -93,7 +93,7 @@ export const Option = (props: NodeViewProps) => {
             <FormLabel
               htmlFor={contentLabel}
               aria-label={contentLabel}
-              className=" text-2xl "
+              className=" text-md "
             >
               <NodeViewContent
                 onKeyDown={(e) => {

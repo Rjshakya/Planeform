@@ -14,7 +14,7 @@ export const InsertPhoneInput = () => {
       id: v4(),
       isRequired: true,
       label: "Phone no:",
-      placeholder: "",
+      placeholder: "Enter phone no.",
       type: "phone",
     });
   };

@@ -105,11 +105,11 @@ export const Submissions = () => {
 
   if (error) {
     return (
-      <div className="w-full h-screen flex items-center justify-center">
+      <div className="w-full h-[50vh] flex items-center justify-center gap-4">
         <span>
           <TriangleAlert className=" text-destructive" />
         </span>
-        <p>failed to get submissions</p>
+        <p>failed to get form submissions</p>
       </div>
     );
   }

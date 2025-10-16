@@ -25,8 +25,8 @@ export const LongInputView = (props: NodeViewProps) => {
           control={form?.control}
           name={id}
           render={({ field }) => (
-            <FormItem className="mt-4 field">
-              <FormLabel htmlFor={label} className=" text-2xl" id={id}>
+            <FormItem className="mt-4 field gap-3">
+              <FormLabel htmlFor={label} className=" text-md" id={id}>
                 <NodeViewContent
                   onKeyDown={(e) => e?.key === "Enter" && e?.preventDefault()}
                   as="div"

@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export default function Component({value , valueChange , id}:{value:string ; valueChange:()=> void , id:string}) {
+export default function Component({value , valueChange , id ,placeholder}:{value:string ; valueChange:()=> void , id:string , placeholder:string}) {
   // const [value, setValue] = useState("");
 
   return (
@@ -22,7 +22,7 @@ export default function Component({value , valueChange , id}:{value:string ; val
         countrySelectComponent={CountrySelect}
         inputComponent={PhoneInput}
         id={id}
-        placeholder="Enter phone number"
+        placeholder={placeholder || "Enter phone number"}
         value={value}
         onChange={valueChange}
       />

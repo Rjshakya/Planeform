@@ -37,11 +37,11 @@ export default function Workspace() {
   }
   if (error) {
     return (
-      <div className="w-full h-screen flex items-center justify-center">
+      <div className="w-full h-[50vh] flex items-center justify-center gap-4">
         <span>
           <TriangleAlert className=" text-destructive" />
         </span>
-        <p>failed to get workspaces</p>
+        <p>failed to get your workspaces</p>
       </div>
     );
   }

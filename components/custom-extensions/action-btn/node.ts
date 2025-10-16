@@ -27,12 +27,29 @@ export const actionButtonNode = Node.create({
     return [
       {
         tag: "action-button",
+        getAttrs: (element) => {
+          if (typeof element === "string") return {};
+
+          return {
+            id: element.getAttribute("data-id") || v4(),
+            type: element.getAttribute("data-type") || "text",
+            text: element.getAttribute("data-text") || "submit",
+          };
+        },
       },
     ];
   },
 
-  renderHTML({ HTMLAttributes }) {
-    return ["action-button", mergeAttributes(HTMLAttributes)];
+  renderHTML({ HTMLAttributes, node }) {
+    return [
+      "action-button",
+      mergeAttributes(HTMLAttributes, {
+        "data-id": node.attrs.id,
+        "data-type": node.attrs.type,
+        "data-text": node.attrs.text,
+      }),
+      0,
+    ];
   },
 
   addCommands() {

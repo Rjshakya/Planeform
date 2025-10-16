@@ -37,7 +37,7 @@ export const PreviewForm = () => {
         <SheetHeader>
           <SheetTitle>Preview form</SheetTitle>
           <FormEditor
-            className=" mx-auto max-w-2xl w-full rounded-2xl"
+            className=" mx-auto max-w-lg w-full rounded-2xl bg-accent/20"
             isEditable={false}
             content={jsonContent}
           />

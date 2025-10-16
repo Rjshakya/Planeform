@@ -19,7 +19,7 @@ const dmSans = DM_Sans({
 });
 
 const inter = Inter({
-  variable: "--font-Inter",
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
@@ -42,7 +42,9 @@ export default function RootLayout({
           src="https://tweakcn.com/live-preview.min.js"
         />
       </head>
-      <body className={`${dmSans.variable} ${geistMono.variable}antialiased`}>
+      <body
+        className={`${dmSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}
+      >
         <div className=" font-sans max-w-6xl mx-auto">{children}</div>
         <Toaster position="top-right" />
       </body>

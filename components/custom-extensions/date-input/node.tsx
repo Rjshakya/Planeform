@@ -35,12 +35,33 @@ export const dateInputNode = Node.create({
     return [
       {
         tag: "date-input",
+        getAttrs: (element) => {
+          if (typeof element === "string") return {};
+
+          return {
+            id: element.getAttribute("data-id") || v4(),
+            label: element.getAttribute("data-label") || "Label:",
+            placeholder: element.getAttribute("data-placeholder") || "",
+            type: element.getAttribute("data-type") || "text",
+            isRequired: element.getAttribute("data-required") === "true",
+          };
+        },
       },
     ];
   },
 
-  renderHTML({ HTMLAttributes }) {
-    return ["date-input", mergeAttributes(HTMLAttributes)];
+  renderHTML({ HTMLAttributes, node }) {
+    return [
+      "date-input",
+      mergeAttributes(HTMLAttributes, {
+        "data-id": node.attrs.id,
+        "data-label": node.attrs.label,
+        "data-placeholder": node.attrs.placeholder,
+        "data-type": node.attrs.type,
+        "data-required": node.attrs.isRequired,
+      }),
+      0,
+    ];
   },
 
   addCommands() {

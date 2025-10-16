@@ -98,6 +98,7 @@ import {
   ListOrdered,
   Phone,
   Settings,
+  Voicemail,
 } from "lucide-react";
 import {
   Popover,
@@ -141,10 +142,15 @@ const MainToolbarContent = ({
   const forEditPage = usePathname().includes(`/edit/`);
 
   return (
-    <div className="bg-muted flex px-1 rounded-sm mx-auto  overflow-x-auto overflow-y-hidden pt-2 pb-3 select-none">
+    <div className="bg-muted flex pr-4 pl-2 rounded-sm mx-auto  overflow-x-auto overflow-y-hidden pt-2 pb-3 select-none">
       <ToolbarGroup>
         <UndoRedoButton action="undo" />
         <UndoRedoButton action="redo" />
+      </ToolbarGroup>
+
+      <ToolbarSeparator />
+      <ToolbarGroup>
+        <CustomInputsDropdown />
       </ToolbarGroup>
 
       <ToolbarSeparator />
@@ -188,7 +194,7 @@ const MainToolbarContent = ({
       <ToolbarSeparator />
 
       <ToolbarGroup>
-        <CustomInputsDropdown />
+        <CutomizationPanel />
       </ToolbarGroup>
 
       <ToolbarSeparator />
@@ -204,10 +210,6 @@ const MainToolbarContent = ({
       </ToolbarGroup>
 
       {/* {isMobile && <ToolbarSeparator />} */}
-
-      <ToolbarGroup>
-        <CutomizationPanel />
-      </ToolbarGroup>
     </div>
   );
 };
@@ -245,7 +247,7 @@ const MobileToolbarContent = ({
 
 const suggestions = createSuggestionsItems([
   {
-    title: "ShortInput",
+    title: "Short Input",
     searchTerms: ["shortinput", "input", "text", "single line"],
     command: ({ editor, range }) => {
       editor
@@ -266,7 +268,7 @@ const suggestions = createSuggestionsItems([
   },
 
   {
-    title: "LongInput",
+    title: "Long Input",
     searchTerms: ["longinput", "input", "text", "single line"],
     command: ({ editor, range }) => {
       editor
@@ -304,7 +306,7 @@ const suggestions = createSuggestionsItems([
         .run();
     },
     description: "Insert a phone no input field",
-    icon: <Phone />,
+    icon: <Voicemail />,
   },
 
   {
@@ -370,39 +372,6 @@ const suggestions = createSuggestionsItems([
     description: "Insert a multiple choice input field",
     icon: <Equal />,
   },
-
-  {
-    title: "Text",
-    searchTerms: ["paragraph"],
-    command: ({ editor, range }) => {
-      editor
-        .chain()
-        .focus()
-        .deleteRange(range)
-        .toggleNode("paragraph", "paragraph")
-        .run();
-    },
-    description: "Start typing with text",
-    icon: <Text />,
-  },
-  {
-    title: "Bullet List",
-    searchTerms: ["unordered", "point"],
-    command: ({ editor, range }) => {
-      editor.chain().focus().deleteRange(range).toggleBulletList().run();
-    },
-    description: "Create a simple bullet list",
-    icon: <List />,
-  },
-  {
-    title: "Ordered List",
-    searchTerms: ["ordered", "point", "numbers"],
-    command: ({ editor, range }) => {
-      editor.chain().focus().deleteRange(range).toggleOrderedList().run();
-    },
-    description: "Create a simple ordered list",
-    icon: <ListOrdered />,
-  },
 ]);
 
 export function SimpleEditor({
@@ -436,7 +405,7 @@ export function SimpleEditor({
         autocorrect: "off",
         autocapitalize: "on",
         "aria-label": "Main content area, start typing to enter text.",
-        class: "simple-editor min-h-[60vh]",
+        class: "simple-editor",
       },
       handleDOMEvents: {
         keydown: (_, v) => enableKeyboardNavigation(v),
@@ -477,7 +446,7 @@ export function SimpleEditor({
       TextStyle,
       FontFamily,
       Placeholder.configure({
-        placeholder: "Press / to see available commands",
+        placeholder: "Press / to add inputs",
       }),
     ],
     autofocus: true,
@@ -673,15 +642,15 @@ export function SimpleEditor({
               <EditorContent
                 editor={editor}
                 role="presentation"
-                className=" max-w-2xl w-full flex flex-col mx-auto mt-8 md:px-4 md:py-2 py-6 "
+                className=" max-w-2xl w-full flex flex-col mx-auto  md:px-4 md:py-2  "
                 ref={editorContentRef}
               />
 
               <SlashCmd.Root editor={editor}>
-                <SlashCmd.Cmd>
+                <SlashCmd.Cmd className="bg-popover rounded-lg overflow-y-auto">
                   <SlashCmd.Empty>No commands available</SlashCmd.Empty>
                   <SlashCmd.List className="">
-                    <ItemGroup className="bg-popover w-72 p-2 rounded-md max-h-40 overflow-y-auto gap-2 shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
+                    <ItemGroup className=" w-72 p-2 max-h-44 overflow-y-auto gap-2 shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
                       {suggestions.map((item) => {
                         return (
                           <SlashCmd.Item
@@ -695,17 +664,22 @@ export function SimpleEditor({
                               key={item.title}
                               variant={"outline"}
                               size={"sm"}
-                              className=" w-full"
+                              className=" w-full p-0  "
+                              asChild
                             >
-                              <ItemMedia className=" size-4">
-                                {item.icon}
-                              </ItemMedia>
-                              <ItemContent>
-                                <ItemTitle>{item?.title}</ItemTitle>
-                                <ItemDescription>
-                                  {item?.description}
-                                </ItemDescription>
-                              </ItemContent>
+                              <div className="w-full flex gap-2 items-center py-2 px-4">
+                                <div>
+                                  <ItemMedia className="size-5">
+                                    {item.icon}
+                                  </ItemMedia>
+                                </div>
+                                <ItemContent className="">
+                                  <ItemTitle>{item?.title}</ItemTitle>
+                                  {/* <ItemDescription>
+                                    {item?.description}
+                                  </ItemDescription> */}
+                                </ItemContent>
+                              </div>
                             </Item>
                           </SlashCmd.Item>
                         );

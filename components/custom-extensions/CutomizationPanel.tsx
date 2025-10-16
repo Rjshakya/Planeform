@@ -15,7 +15,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Label } from "../ui/label";
 
@@ -24,18 +24,18 @@ export const CutomizationPanel = () => {
 
   const {
     isSerif = false,
-    isMonospace = false,
     isGiestMono = false,
+    isInter = false,
   } = useEditorState({
     editor,
     selector: (ctx) => {
       return {
         isSerif: editor?.isActive("textStyle", { fontFamily: "serif" }),
-        isMonospace: editor?.isActive("textStyle", {
-          fontFamily: "monospace",
-        }),
         isGiestMono: editor?.isActive("textStyle", {
           fontFamily: "var(--font-geist-mono)",
+        }),
+        isInter: editor?.isActive("textStyle", {
+          fontFamily: "var(--font-inter)",
         }),
       };
     },
@@ -50,14 +50,6 @@ export const CutomizationPanel = () => {
       className: "",
     },
     {
-      name: "Monospace",
-      onclick: () =>
-        editor?.chain().selectAll().setFontFamily("monospace").run(),
-      isMonospace,
-      variant: isMonospace ? "secondary" : "ghost",
-      className: "",
-    },
-    {
       name: "geist-mono",
       onclick: () =>
         editor
@@ -67,6 +59,14 @@ export const CutomizationPanel = () => {
           .run(),
       isGiestMono,
       variant: isGiestMono ? "secondary" : "ghost",
+      className: "",
+    },
+    {
+      name: "inter",
+      onclick: () =>
+        editor?.chain().selectAll().setFontFamily("var(--font-inter)").run(),
+      isInter,
+      variant: isInter ? "secondary" : "ghost",
       className: "",
     },
     {
@@ -88,33 +88,9 @@ export const CutomizationPanel = () => {
       </SheetTrigger>
       <SheetContent>
         <SheetTitle className="p-3">Customization Panel</SheetTitle>
-        {/* <div className="button-group grid gap-2 px-4 py-2">
-          <div>
-            {" "}
-            <p className="">Font family</p>
-          </div>
-          <div className=" w-full  gap-1 grid border rounded-md px-1 py-2">
-            
-            {fontFamilies?.map((f, i) => {
-              return (
-                <div key={i} className="w-full text-left">
-                  <Button
-                    key={i}
-                    variant={f?.variant as any}
-                    onClick={f?.onclick}
-                    size={"sm"}
-                    className=" w-full"
-                  >
-                    <p className="w-full text-left">{f?.name}</p>
-                  </Button>
-                </div>
-              );
-            })}
-          </div>
-        </div> */}
 
         <div className=" px-2 grid gap-4">
-          <Label className=" text-md">Font family</Label>
+          <Label className=" text-sm pl-1">Font family</Label>
           <FontFamilyBox families={fontFamilies} />
         </div>
       </SheetContent>
@@ -125,6 +101,7 @@ export const CutomizationPanel = () => {
 export const FontFamilyBox = ({ families }: { families: any[] }) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -134,6 +111,7 @@ export const FontFamilyBox = ({ families }: { families: any[] }) => {
           role="combobox"
           aria-expanded={open}
           className=" w-full justify-between text-sm"
+          ref={buttonRef}
         >
           {value
             ? families.find((family) => family?.name === value)?.name
@@ -141,9 +119,12 @@ export const FontFamilyBox = ({ families }: { families: any[] }) => {
           <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[365px] p-0 mt-2">
-        <Command className="">
-          <CommandInput placeholder="Search framework..." />
+      <PopoverContent
+        className={cn(`p-0 mt-2`)}
+        style={{ width: `${buttonRef?.current?.offsetWidth}px` }}
+      >
+        <Command className="w-full">
+          <CommandInput placeholder="Search font..." />
           <CommandList>
             <CommandEmpty>No framework found.</CommandEmpty>
             <CommandGroup>

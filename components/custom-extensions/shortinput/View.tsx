@@ -29,11 +29,11 @@ const ShortInput = (props: NodeViewProps) => {
             control={form?.control}
             name={id}
             render={({ field }) => (
-              <FormItem className={`mt-4 field`}>
+              <FormItem className={`mt-4 field gap-3`}>
                 <FormLabel
                   htmlFor={label}
                   aria-label={label}
-                  className=" text-2xl"
+                  className=" text-md tracking-tighter"
                   id={id}
                 >
                   {/* {field?.} */}
@@ -49,6 +49,7 @@ const ShortInput = (props: NodeViewProps) => {
                       value={field?.value}
                       valueChange={field?.onChange}
                       id={id}
+                      placeholder={placeholder}
                     />
                   ) : (
                     <Input

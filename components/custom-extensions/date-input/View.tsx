@@ -34,14 +34,14 @@ export const DateInputView = (props: NodeViewProps) => {
         name={id}
         render={({ field }) => (
           <FormItem
-            className={`mt-4 field ${
+            className={`mt-4 field gap-3 ${
               props?.selected && "outline-2 outline-primary"
             }`}
           >
             <FormLabel
               htmlFor={label}
               aria-label={label}
-              className=" text-2xl"
+              className=" text-md "
               id={id}
             >
               <NodeViewContent
@@ -56,7 +56,7 @@ export const DateInputView = (props: NodeViewProps) => {
                   <Button
                     variant={"outline"}
                     className={cn(
-                      "w-[240px] pl-3 text-left font-normal",
+                      "w-full pl-3 text-left font-normal",
                       !field.value && "text-muted-foreground"
                     )}
                   >
