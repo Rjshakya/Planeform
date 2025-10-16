@@ -35,7 +35,7 @@ export const RenderForm = () => {
 
   return (
     <FormEditor
-      className="mx-auto max-w-lg w-full rounded-2xl bg-accent/50 dark:bg-accent/20 my-3"
+      className="mx-auto max-w-lg w-full rounded-2xl bg-accent/50 dark:bg-accent/20 my-3 "
       isEditable={false}
       content={form_schema}
     />

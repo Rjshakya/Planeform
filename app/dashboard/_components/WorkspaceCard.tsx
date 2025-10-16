@@ -96,7 +96,7 @@ export const WorkspaceCard = (props: workspaceCardProps) => {
               <Ellipsis />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="">
+          <DropdownMenuContent align="end" className="">
             <DropdownMenuItem
               className="w-full flex items-center gap-2"
               onClick={() => router.push(`/dashboard/workspace/${props?.id}`)}

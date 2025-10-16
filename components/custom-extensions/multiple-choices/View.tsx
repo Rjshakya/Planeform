@@ -54,28 +54,30 @@ export const MultipleChoiceView = (props: NodeViewProps) => {
 export const Option = (props: NodeViewProps) => {
   const { parentId, id, label, type } = props?.node?.attrs;
   const contentLabel = props?.node?.content?.content[0]?.text;
+  const isEditable = props.editor.isEditable;
 
   return (
     <NodeViewWrapper>
       <FormField
         name={parentId}
         render={({ field }) => (
-          <FormItem className=" flex items-center">
+          <FormItem className=" relative flex w-full items-center gap-2 rounded-md border border-input p-4 shadow-xs outline-none has-data-[state=checked]:bg-primary/50 my-2">
             <FormControl>
               {type === "single" ? (
                 <Input
                   id={contentLabel}
-                  className=" size-4"
+                  className=" size-4 after:absolute after:inset-0"
                   type="radio"
                   value={contentLabel}
                   checked={field?.value === contentLabel}
                   onChange={(e) => field?.onChange?.(e?.target?.value)}
+                  disabled={isEditable}
                 />
               ) : (
                 <Checkbox
                   id={contentLabel}
                   checked={field?.value?.includes?.(contentLabel)}
-                  className=""
+                  className=" after:absolute after:inset-0"
                   onCheckedChange={(checked) => {
                     if (!field.value) {
                       field.value = [];
@@ -87,21 +89,18 @@ export const Option = (props: NodeViewProps) => {
                           field?.value?.filter((v: any) => v !== contentLabel)
                         );
                   }}
+                  disabled={isEditable}
                 />
               )}
             </FormControl>
             <FormLabel
               htmlFor={contentLabel}
               aria-label={contentLabel}
-              className=" text-md "
+              className=" text-md w-full"
             >
               <NodeViewContent
-                onKeyDown={(e) => {
-                  if (e?.key === "Enter") {
-                    e?.preventDefault();
-                  }
-                }}
-                className="content"
+                onKeyDown={(e) => e?.key === "Enter" && e?.preventDefault()}
+                className=" w-full"
               />
             </FormLabel>
           </FormItem>

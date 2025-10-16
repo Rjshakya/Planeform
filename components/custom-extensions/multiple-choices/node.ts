@@ -30,6 +30,7 @@ export const multipleChoiceNode = Node.create({
       label: { default: "Label:" },
       type: { default: "multiple" },
       isRequired: { default: true },
+      
     };
   },
 

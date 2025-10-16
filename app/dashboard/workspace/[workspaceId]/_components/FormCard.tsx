@@ -112,7 +112,7 @@ export default function FormCard(props: formProps) {
               <Ellipsis />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="">
+          <DropdownMenuContent align="end" className="">
             <DropdownMenuItem
               // onClick={() => router.push(`/${props.shortId}`)}
               className=""

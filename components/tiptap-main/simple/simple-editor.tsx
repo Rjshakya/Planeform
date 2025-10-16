@@ -97,6 +97,7 @@ import {
   List,
   ListOrdered,
   Phone,
+  Plus,
   Settings,
   Voicemail,
 } from "lucide-react";
@@ -405,7 +406,7 @@ export function SimpleEditor({
         autocorrect: "off",
         autocapitalize: "on",
         "aria-label": "Main content area, start typing to enter text.",
-        class: "simple-editor",
+        class: "simple-editor ",
       },
       handleDOMEvents: {
         keydown: (_, v) => enableKeyboardNavigation(v),
@@ -488,6 +489,10 @@ export function SimpleEditor({
     useFormStore.setState({ form: form });
   }, [editor, form]);
 
+  if (!editor) {
+    return null;
+  }
+
   return (
     <div className="simple-editor-wrapper selection:bg-teal-200/30 dark:selection:bg-teal-700/40">
       <EditorContext.Provider value={{ editor }}>
@@ -495,7 +500,7 @@ export function SimpleEditor({
           <Toolbar
             className={cn(
               " w-full h-20 z-10   mb-2 px-1",
-              `${isMobile ? "sticky top-0  pt-2" : "sticky top-0 "}`
+              `${isMobile ? "fixed top-0 inset-x-0" : "sticky top-0 "}`
             )}
             ref={toolbarRef}
             style={{
@@ -569,17 +574,6 @@ export function SimpleEditor({
                                     <Checkbox
                                       checked={o[1]}
                                       onCheckedChange={(c) => {
-                                        console.log(
-                                          "Node type name:",
-                                          currentNode?.type?.name
-                                        );
-                                        console.log(
-                                          "Updating attribute:",
-                                          o[1],
-                                          "to:",
-                                          c
-                                        );
-
                                         editor
                                           ?.chain()
                                           ?.setNodeSelection(nodePosition!)
@@ -632,6 +626,33 @@ export function SimpleEditor({
                             }
                           }
                         )}
+                        {currentNode?.type?.name === "multipleChoiceInput" && (
+                          <div className="flex items-center justify-between gap-2 w-full">
+                            <div className=" ">
+                              <span className=" ">{"Add Option"}</span>
+                            </div>
+                            <div className="">
+                              <Button
+                                onClick={() => {
+                                  editor
+                                    ?.chain()
+                                    ?.insertOption({
+                                      id: currentNode?.attrs["type"],
+                                      label: "option",
+                                      parentId: currentNode?.attrs["id"],
+                                      type: currentNode?.attrs["type"],
+                                    })
+                                    .run();
+                                }}
+                                variant={"ghost"}
+                                size={"icon"}
+                              >
+                                <Plus />
+                                {/* {currentNode?.attrs["type"]} */}
+                              </Button>
+                            </div>
+                          </div>
+                        )}
                       </PopoverContent>
                     )}
                   </Popover>
@@ -642,12 +663,12 @@ export function SimpleEditor({
               <EditorContent
                 editor={editor}
                 role="presentation"
-                className=" max-w-2xl w-full flex flex-col mx-auto  md:px-4 md:py-2  "
+                className=" max-w-2xl w-full flex flex-col mx-auto  md:px-4 md:py-2 px-2  "
                 ref={editorContentRef}
               />
 
               <SlashCmd.Root editor={editor}>
-                <SlashCmd.Cmd className="bg-popover rounded-lg overflow-y-auto">
+                <SlashCmd.Cmd className="bg-popover rounded-lg overflow-y-auto z-50">
                   <SlashCmd.Empty>No commands available</SlashCmd.Empty>
                   <SlashCmd.List className="">
                     <ItemGroup className=" w-72 p-2 max-h-44 overflow-y-auto gap-2 shadow-[0_3px_10px_rgb(0,0,0,0.2)]">

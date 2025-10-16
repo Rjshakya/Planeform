@@ -9,7 +9,7 @@ export default function Page() {
       <div className="w-fit fixed bottom-4 right-1 z-30 ">
         <ThemeToggle variant={"secondary"} />
       </div>
-      <div className={cn(` max-w-6xl w-full mx-auto `)}>
+      <div className={cn(` max-w-6xl w-full mx-auto px-2`)}>
         <RenderForm />
       </div>
     </div>
