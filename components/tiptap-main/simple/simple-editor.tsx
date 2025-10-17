@@ -520,7 +520,7 @@ export function SimpleEditor({
           <Toolbar
             className={cn(
               " w-full h-20 z-10   mb-2 px-1",
-              `${isMobile ? "fixed top-0 inset-x-0" : "sticky top-0 "}`
+              `${isMobile ? "fixed top-0 inset-x-0 z-50" : "sticky top-0 "}`
             )}
             ref={toolbarRef}
             style={{
