@@ -61,7 +61,7 @@ export const Option = (props: NodeViewProps) => {
       <FormField
         name={parentId}
         render={({ field }) => (
-          <FormItem className=" relative flex w-full items-center gap-2 rounded-md border border-input p-4 shadow-xs outline-none has-data-[state=checked]:bg-primary/50 my-2">
+          <FormItem className=" relative flex w-full items-center gap-2 rounded-md border-2 border-secondary bg-input/80 dark:bg-input/50 p-4 shadow-xs outline-none has-data-[state=checked]:border-secondary my-3 has-data-[state=checked]:ring-[4px] has-data-[state=checked]:ring-ring/50 ">
             <FormControl>
               {type === "single" ? (
                 <Input
@@ -96,7 +96,7 @@ export const Option = (props: NodeViewProps) => {
             <FormLabel
               htmlFor={contentLabel}
               aria-label={contentLabel}
-              className=" text-md w-full"
+              className=" text-sm w-full"
             >
               <NodeViewContent
                 onKeyDown={(e) => e?.key === "Enter" && e?.preventDefault()}

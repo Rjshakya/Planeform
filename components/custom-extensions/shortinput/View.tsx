@@ -33,7 +33,7 @@ const ShortInput = (props: NodeViewProps) => {
                 <FormLabel
                   htmlFor={label}
                   aria-label={label}
-                  className=" text-md tracking-tighter"
+                  className=" text-md pl-1"
                   id={id}
                 >
                   {/* {field?.} */}
@@ -59,9 +59,10 @@ const ShortInput = (props: NodeViewProps) => {
                       value={field?.value}
                       onChange={field?.onChange}
                       name={field?.name}
-                      disabled={field?.disabled}
+                      disabled={props?.editor?.isEditable}
                       ref={field?.ref}
                       onBlur={field?.onBlur}
+                    
                     />
                   )}
                 </FormControl>

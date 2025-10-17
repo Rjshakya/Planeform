@@ -26,7 +26,7 @@ export const LongInputView = (props: NodeViewProps) => {
           name={id}
           render={({ field }) => (
             <FormItem className="mt-4 field gap-3">
-              <FormLabel htmlFor={label} className=" text-md" id={id}>
+              <FormLabel htmlFor={label} className=" text-md pl-1" id={id}>
                 <NodeViewContent
                   onKeyDown={(e) => e?.key === "Enter" && e?.preventDefault()}
                   as="div"
@@ -39,6 +39,7 @@ export const LongInputView = (props: NodeViewProps) => {
                   placeholder={placeholder}
                   {...field}
                   rows={rows}
+                  disabled={props?.editor?.isEditable}
                 />
               </FormControl>
               {/* <FormDescription>{placeholder?.toString()}</FormDescription> */}

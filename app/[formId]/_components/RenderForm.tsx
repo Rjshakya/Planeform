@@ -25,7 +25,7 @@ export const RenderForm = () => {
   if (isLoading) {
     return (
       <div className="w-full h-screen flex items-center justify-center">
-        <Loader className="animate-spin" />
+        <Loader className="animate-spin " />
       </div>
     );
   }
@@ -35,7 +35,7 @@ export const RenderForm = () => {
 
   return (
     <FormEditor
-      className="mx-auto max-w-lg w-full rounded-2xl bg-accent/50 dark:bg-accent/20 my-3 "
+      className="mx-auto max-w-lg w-full rounded-2xl   my-3 "
       isEditable={false}
       content={form_schema}
     />

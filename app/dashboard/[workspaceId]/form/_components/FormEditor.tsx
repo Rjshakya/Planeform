@@ -14,9 +14,8 @@ export const FormEditor = ({
 }: // hookForm,
 {
   isEditable: boolean;
-  content?:JsonDoc;
+  content?: JsonDoc;
   className?: string;
-  
 }) => {
   const form = useFormStore.getState().form;
 

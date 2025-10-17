@@ -21,7 +21,6 @@ import {
 } from "@tiptap/extensions";
 
 // --- UI Primitives ---
-import { Spacer } from "@/components/tiptap-ui-primitive/spacer";
 import {
   Toolbar,
   ToolbarGroup,
@@ -87,26 +86,16 @@ import { PublishForm } from "@/app/dashboard/[workspaceId]/form/create/_componen
 import { EditForm } from "@/app/dashboard/[workspaceId]/form/edit/[formId]/_components/EditForm";
 import { TextStyle, FontFamily } from "@tiptap/extension-text-style";
 import { CutomizationPanel } from "@/components/custom-extensions/CutomizationPanel";
-import { toast } from "sonner";
+
 import { dateInputNode } from "@/components/custom-extensions/date-input/node";
 import { cn } from "@/lib/utils";
 import DragHandle from "@tiptap/extension-drag-handle-react";
-import {
-  Equal,
-  GripVertical,
-  List,
-  ListOrdered,
-  Phone,
-  Plus,
-  Settings,
-  Voicemail,
-} from "lucide-react";
+import { Equal, GripVertical, Plus, Voicemail } from "lucide-react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Node, ResolvedPos } from "@tiptap/pm/model";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -117,19 +106,10 @@ import {
   SlashCmdProvider,
   SlashCmd,
 } from "@harshtalks/slash-tiptap";
-import {
-  Item,
-  ItemActions,
-  ItemContent,
-  ItemDescription,
-  ItemFooter,
-  ItemGroup,
-  ItemHeader,
-  ItemMedia,
-  ItemTitle,
-} from "@/components/ui/item";
+
 import { v4 } from "uuid";
 import { Text } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -248,75 +228,84 @@ const MobileToolbarContent = ({
 
 const suggestions = createSuggestionsItems([
   {
-    title: "Short Input",
-    searchTerms: ["shortinput", "input", "text", "single line"],
+    title: "Short Answer",
+    searchTerms: [
+      "short",
+      "text",
+      "single line",
+      "name",
+      "email",
+      "short answer",
+    ],
     command: ({ editor, range }) => {
       editor
-        .chain()
+        ?.chain()
         .focus()
         .deleteRange(range)
         .insertShortInput({
           id: v4(),
           isRequired: true,
-          label: "Short Input",
+          label: "Short Answer",
           placeholder: "",
           type: "text",
         })
         .run();
     },
-    description: "Insert a short input field",
-    icon: <Text />,
+    description:
+      "Add a one-line text field — great for names, emails, or short responses.",
+    icon: <Text size={16} />,
   },
 
   {
-    title: "Long Input",
-    searchTerms: ["longinput", "input", "text", "single line"],
+    title: "Long Answer",
+    searchTerms: ["long", "paragraph", "text area", "feedback", "description"],
     command: ({ editor, range }) => {
       editor
-        .chain()
+        ?.chain()
         .focus()
         .deleteRange(range)
         .insertLongInput({
           id: v4(),
           isRequired: true,
-          label: "Long Input",
+          label: "Long Answer",
           placeholder: "",
           rows: 6,
         })
         .run();
     },
-    description: "Insert a long input field",
-    icon: <Text />,
+    description:
+      "Add a larger text box for longer responses, feedback, or descriptions.",
+    icon: <Text size={16} />,
   },
 
   {
-    title: "Phone Input",
-    searchTerms: ["phoneinput", "input", "text", "single line"],
+    title: "Phone Number",
+    searchTerms: ["phone", "contact", "number", "mobile"],
     command: ({ editor, range }) => {
       editor
-        .chain()
+        ?.chain()
         .focus()
         .deleteRange(range)
         .insertShortInput({
           id: v4(),
           isRequired: true,
-          label: "Phone no",
+          label: "Phone Number",
           placeholder: "",
           type: "phone",
         })
         .run();
     },
-    description: "Insert a phone no input field",
-    icon: <Voicemail />,
+    description: "Add a field for collecting phone numbers from users.",
+    icon: <Voicemail size={16} />,
   },
 
   {
     title: "Single Choice",
-    searchTerms: ["single choice", "input", "text", "single line"],
+    searchTerms: ["single choice", "radio", "select one", "yes no", "option"],
     command: ({ editor, range }) => {
       const id = v4();
       editor
-        .chain()
+        ?.chain()
         .focus()
         .deleteRange(range)
         .insertmultipleChoiceInput({
@@ -327,28 +316,35 @@ const suggestions = createSuggestionsItems([
         .insertOption({
           parentId: id,
           id: "1",
-          label: "1",
+          label: "Option 1",
           type: "single",
         })
         .insertOption({
           parentId: id,
           id: "2",
-          label: "2",
+          label: "Option 2",
           type: "single",
         })
         .run();
     },
-    description: "Insert a single choice input field",
-    icon: <Equal />,
+    description:
+      "Add a question where users can select only one answer from multiple options.",
+    icon: <Equal size={16} />,
   },
 
   {
     title: "Multiple Choice",
-    searchTerms: ["Multiple choice", "input", "text", "single line"],
+    searchTerms: [
+      "multiple choice",
+      "checkbox",
+      "select many",
+      "choose all",
+      "options",
+    ],
     command: ({ editor, range }) => {
       const id = v4();
       editor
-        .chain()
+        ?.chain()
         .focus()
         .deleteRange(range)
         .insertmultipleChoiceInput({
@@ -359,19 +355,19 @@ const suggestions = createSuggestionsItems([
         .insertOption({
           parentId: id,
           id: "1",
-          label: "1",
+          label: "Option 1",
           type: "multiple",
         })
         .insertOption({
           parentId: id,
           id: "2",
-          label: "2",
+          label: "Option 2",
           type: "multiple",
         })
         .run();
     },
-    description: "Insert a multiple choice input field",
-    icon: <Equal />,
+    description: "Add a question where users can select more than one answer.",
+    icon: <Equal size={16} />,
   },
 ]);
 
@@ -421,10 +417,34 @@ export function SimpleEditor({
       }) as any,
       Slash.configure({
         suggestion: {
-          items: () => suggestions,
+          items: ({ query }) => {
+            console.log("Query:", query);
+            console.log("All suggestions:", suggestions);
+
+            if (!query) {
+              console.log("Returning all suggestions");
+              return suggestions;
+            }
+
+            const lowerQuery = query.toLowerCase();
+            const filtered = suggestions.filter((item) => {
+              if (!item || !item.title) {
+                console.warn("Invalid item:", item);
+                return false;
+              }
+              return (
+                item.title.toLowerCase().includes(lowerQuery) ||
+                item.searchTerms?.some((term) =>
+                  term.toLowerCase().includes(lowerQuery)
+                )
+              );
+            });
+
+            console.log("Filtered suggestions:", filtered);
+            return filtered;
+          },
         },
       }),
-      HorizontalRule,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       TaskList,
       TaskItem.configure({ nested: true }),
@@ -527,6 +547,8 @@ export function SimpleEditor({
             </div>
           </Toolbar>
         )}
+
+        
 
         <Form {...form!}>
           <form
@@ -668,44 +690,38 @@ export function SimpleEditor({
               />
 
               <SlashCmd.Root editor={editor}>
-                <SlashCmd.Cmd className="bg-popover rounded-lg overflow-y-auto z-50">
-                  <SlashCmd.Empty>No commands available</SlashCmd.Empty>
-                  <SlashCmd.List className="">
-                    <ItemGroup className=" w-72 p-2 max-h-44 overflow-y-auto gap-2 shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
-                      {suggestions.map((item) => {
-                        return (
-                          <SlashCmd.Item
-                            value={item.title}
-                            onCommand={(val) => {
-                              item.command(val);
-                            }}
-                            key={item.title}
-                          >
-                            <Item
-                              key={item.title}
-                              variant={"outline"}
-                              size={"sm"}
-                              className=" w-full p-0  "
-                              asChild
-                            >
-                              <div className="w-full flex gap-2 items-center py-2 px-4">
-                                <div>
-                                  <ItemMedia className="size-5">
-                                    {item.icon}
-                                  </ItemMedia>
-                                </div>
-                                <ItemContent className="">
-                                  <ItemTitle>{item?.title}</ItemTitle>
-                                  {/* <ItemDescription>
-                                    {item?.description}
-                                  </ItemDescription> */}
-                                </ItemContent>
-                              </div>
-                            </Item>
-                          </SlashCmd.Item>
-                        );
-                      })}
-                    </ItemGroup>
+                <SlashCmd.Cmd className=" rounded-lg bg-secondary overflow-y-auto z-50 border-2 dark:border-0">
+                  <SlashCmd.Empty className="px-4 py-2">
+                    No commands available
+                  </SlashCmd.Empty>
+                  <SlashCmd.List className=" w-72 p-2 max-h-44  overflow-y-auto gap-4 shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
+                    {/* <ItemGroup className=" w-72 p-2 max-h-44 overflow-y-auto gap-2 shadow-[0_3px_10px_rgb(0,0,0,0.2)]"> */}
+                    {suggestions?.map?.((item) => {
+                      if (!item || !item.title) return null;
+                      return (
+                        <SlashCmd.Item
+                          value={item?.title}
+                          onCommand={(val) => {
+                            item?.command(val);
+                          }}
+                          key={item.title}
+                          className=""
+                        >
+                          <div className="flex gap-4 items-start border-0 my-2 py-2 px-2 bg-secondary dark:bg-card/50 rounded-md">
+                            <div className="h-full pt-2 pl-1">{item.icon}</div>
+                            <div className=" ">
+                              <p className="text-md font-medium">
+                                {item.title}
+                              </p>
+                              <p className=" text-xs font-medium text-muted-foreground mt-2">
+                                {item?.description}
+                              </p>
+                            </div>
+                          </div>
+                        </SlashCmd.Item>
+                      );
+                    })}
+                    {/* </ItemGroup> */}
                   </SlashCmd.List>
                 </SlashCmd.Cmd>
               </SlashCmd.Root>
