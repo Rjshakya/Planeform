@@ -155,7 +155,11 @@ const MobileToolbarContent = ({
   );
 };
 
-export const TiptapToolBar = memo(({ editor }: { editor: Editor | null }) => {
+export const TiptapToolBar = memo(function ToolBarComp({
+  editor,
+}: {
+  editor: Editor | null;
+}) {
   const isMobile = useIsMobile();
   const { height } = useWindowSize();
   const [mobileView, setMobileView] = React.useState<

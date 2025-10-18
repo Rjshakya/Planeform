@@ -49,7 +49,7 @@ export const PreviewForm = () => {
       alldocs.push({ type: "doc", content: stepContent });
     });
     setDocs(alldocs);
-  }, [editor, jsonContent]);
+  }, [ jsonContent]);
 
   return (
     <Sheet>
