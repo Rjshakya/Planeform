@@ -61,12 +61,12 @@ export const Option = (props: NodeViewProps) => {
       <FormField
         name={parentId}
         render={({ field }) => (
-          <FormItem className=" relative flex w-full items-center gap-2 rounded-md border-2 border-secondary bg-input/80 dark:bg-input/50 p-4 shadow-xs outline-none has-data-[state=checked]:border-secondary my-3 has-data-[state=checked]:ring-[4px] has-data-[state=checked]:ring-ring/50 ">
+          <FormItem className=" relative flex w-full items-center gap-2 rounded-md border-2 border-secondary bg-input/80 dark:bg-input/50 p-4 shadow-xs outline-none  my-3 has-[:checked]:border-secondary has-[:checked]:ring-[4px] has-[:checked]:ring-ring/50 ">
             <FormControl>
               {type === "single" ? (
                 <Input
                   id={contentLabel}
-                  className=" size-4 after:absolute after:inset-0"
+                  className=" size-0  after:absolute after:inset-0 "
                   type="radio"
                   value={contentLabel}
                   checked={field?.value === contentLabel}
@@ -77,7 +77,7 @@ export const Option = (props: NodeViewProps) => {
                 <Checkbox
                   id={contentLabel}
                   checked={field?.value?.includes?.(contentLabel)}
-                  className=" after:absolute after:inset-0"
+                  className=" after:absolute after:inset-0 appearance-none "
                   onCheckedChange={(checked) => {
                     if (!field.value) {
                       field.value = [];
@@ -99,7 +99,7 @@ export const Option = (props: NodeViewProps) => {
               className=" text-sm w-full"
             >
               <NodeViewContent
-                onKeyDown={(e) => e?.key === "Enter" && e?.preventDefault()}
+                // onKeyDown={(e) => e?.key === "Enter" && e?.preventDefault()}
                 className=" w-full"
               />
             </FormLabel>

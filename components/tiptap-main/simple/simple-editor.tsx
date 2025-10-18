@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
+import { Editor, EditorContent, EditorContext, useEditor } from "@tiptap/react";
 
 // --- Tiptap Core Extensions ---
 import { StarterKit } from "@tiptap/starter-kit";
@@ -12,59 +12,8 @@ import { Typography } from "@tiptap/extension-typography";
 import { Highlight } from "@tiptap/extension-highlight";
 import { Subscript } from "@tiptap/extension-subscript";
 import { Superscript } from "@tiptap/extension-superscript";
-import {
-  Dropcursor,
-  Focus,
-  Placeholder,
-  Selection,
-  TrailingNode,
-} from "@tiptap/extensions";
+import { Focus, Placeholder, Selection } from "@tiptap/extensions";
 
-// --- UI Primitives ---
-import {
-  Toolbar,
-  ToolbarGroup,
-  ToolbarSeparator,
-} from "@/components/tiptap-ui-primitive/toolbar";
-
-// --- Tiptap Node ---
-
-import { HorizontalRule } from "@/components/tiptap-node/horizontal-rule-node/horizontal-rule-node-extension";
-import "@/components/tiptap-node/blockquote-node/blockquote-node.scss";
-import "@/components/tiptap-node/code-block-node/code-block-node.scss";
-import "@/components/tiptap-node/horizontal-rule-node/horizontal-rule-node.scss";
-import "@/components/tiptap-node/list-node/list-node.scss";
-import "@/components/tiptap-node/image-node/image-node.scss";
-import "@/components/tiptap-node/heading-node/heading-node.scss";
-import "@/components/tiptap-node/paragraph-node/paragraph-node.scss";
-
-// --- Tiptap UI ---
-import { HeadingDropdownMenu } from "@/components/tiptap-ui/heading-dropdown-menu";
-import { ImageUploadButton } from "@/components/tiptap-ui/image-upload-button";
-import { ListDropdownMenu } from "@/components/tiptap-ui/list-dropdown-menu";
-import { BlockquoteButton } from "@/components/tiptap-ui/blockquote-button";
-import { CodeBlockButton } from "@/components/tiptap-ui/code-block-button";
-import {
-  ColorHighlightPopover,
-  ColorHighlightPopoverContent,
-  ColorHighlightPopoverButton,
-} from "@/components/tiptap-ui/color-highlight-popover";
-import { LinkContent } from "@/components/tiptap-ui/link-popover";
-
-import { UndoRedoButton } from "@/components/tiptap-ui/undo-redo-button";
-
-// --- Icons ---
-import { ArrowLeftIcon } from "@/components/tiptap-icons/arrow-left-icon";
-import { HighlighterIcon } from "@/components/tiptap-icons/highlighter-icon";
-import { LinkIcon } from "@/components/tiptap-icons/link-icon";
-
-// --- Hooks ---
-import { useIsMobile } from "@/hooks/use-mobile";
-import { useWindowSize } from "@/hooks/use-window-size";
-import { useCursorVisibility } from "@/hooks/use-cursor-visibility";
-
-// --- Styles ---
-import "@/components/tiptap-main/simple/simple-editor.scss";
 import { FieldValues, useForm, UseFormReturn } from "react-hook-form";
 import { Form } from "@/components/ui/form";
 import { shortInputNode } from "@/components/custom-extensions/shortinput/node";
@@ -73,32 +22,17 @@ import {
   multipleChoiceNode,
   optionNode,
 } from "@/components/custom-extensions/multiple-choices/node";
-import { CustomInputsDropdown } from "@/components/custom-input-dropdown";
+
 import { actionButtonNode } from "@/components/custom-extensions/action-btn/node";
 import { useEditorStore } from "@/stores/useEditorStore";
-import { Button } from "@/components/ui/button";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { useFormStore } from "@/stores/useformStore";
-import { PreviewForm } from "@/app/dashboard/[workspaceId]/form/create/_components/PreviewForm";
-import { TiptapMarkDropdown } from "@/components/tiptap-mark-dropdown";
-import { TiptapTextAlignDropdown } from "@/components/tiptap-text-align-dropdown";
-import { PublishForm } from "@/app/dashboard/[workspaceId]/form/create/_components/PublishForm";
-import { EditForm } from "@/app/dashboard/[workspaceId]/form/edit/[formId]/_components/EditForm";
 import { TextStyle, FontFamily } from "@tiptap/extension-text-style";
-import { CutomizationPanel } from "@/components/custom-extensions/CutomizationPanel";
 
 import { dateInputNode } from "@/components/custom-extensions/date-input/node";
-import { cn } from "@/lib/utils";
-import DragHandle from "@tiptap/extension-drag-handle-react";
-import { Equal, GripVertical, Plus, Voicemail } from "lucide-react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Switch } from "@/components/ui/switch";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
+
+import { Equal, Voicemail } from "lucide-react";
+
 import {
   Slash,
   enableKeyboardNavigation,
@@ -109,122 +43,16 @@ import {
 
 import { v4 } from "uuid";
 import { Text } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-
-const MainToolbarContent = ({
-  onHighlighterClick,
-  // onLinkClick,
-  isMobile,
-}: {
-  onHighlighterClick: () => void;
-  onLinkClick: () => void;
-  isMobile: boolean;
-}) => {
-  const forEditPage = usePathname().includes(`/edit/`);
-
-  return (
-    <div className="bg-muted flex pr-4 pl-2 rounded-sm mx-auto  overflow-x-auto overflow-y-hidden pt-2 pb-3 select-none">
-      <ToolbarGroup>
-        <UndoRedoButton action="undo" />
-        <UndoRedoButton action="redo" />
-      </ToolbarGroup>
-
-      <ToolbarSeparator />
-      <ToolbarGroup>
-        <CustomInputsDropdown />
-      </ToolbarGroup>
-
-      <ToolbarSeparator />
-
-      <ToolbarGroup>
-        <HeadingDropdownMenu levels={[1, 2, 3]} portal={isMobile} />
-        <ListDropdownMenu
-          types={["bulletList", "orderedList"]}
-          portal={isMobile}
-        />
-        <BlockquoteButton />
-        <CodeBlockButton />
-      </ToolbarGroup>
-
-      <ToolbarSeparator />
-
-      <ToolbarGroup>
-        <TiptapMarkDropdown />
-        {!isMobile ? (
-          <ColorHighlightPopover />
-        ) : (
-          <ColorHighlightPopoverButton onClick={onHighlighterClick} />
-        )}
-        {/* {!isMobile ? <LinkPopover /> : <LinkButton onClick={onLinkClick} />} */}
-      </ToolbarGroup>
-
-      <ToolbarSeparator />
-
-      {/* <ToolbarSeparator /> */}
-
-      <ToolbarGroup>
-        <TiptapTextAlignDropdown />
-      </ToolbarGroup>
-
-      <ToolbarSeparator />
-
-      <ToolbarGroup>
-        <ImageUploadButton text="Add" />
-      </ToolbarGroup>
-
-      <ToolbarSeparator />
-
-      <ToolbarGroup>
-        <CutomizationPanel />
-      </ToolbarGroup>
-
-      <ToolbarSeparator />
-
-      <ToolbarGroup className="ml-2">
-        <PreviewForm />
-      </ToolbarGroup>
-
-      <ToolbarSeparator />
-
-      <ToolbarGroup className="ml-1">
-        {forEditPage ? <EditForm /> : <PublishForm />}
-      </ToolbarGroup>
-
-      {/* {isMobile && <ToolbarSeparator />} */}
-    </div>
-  );
-};
-
-const MobileToolbarContent = ({
-  type,
-  onBack,
-}: {
-  type: "highlighter" | "link";
-  onBack: () => void;
-}) => {
-  return (
-    <>
-      <ToolbarGroup>
-        <Button data-style="ghost" onClick={onBack}>
-          <ArrowLeftIcon className="tiptap-button-icon" />
-          {type === "highlighter" ? (
-            <HighlighterIcon className="tiptap-button-icon" />
-          ) : (
-            <LinkIcon className="tiptap-button-icon" />
-          )}
-        </Button>
-      </ToolbarGroup>
-
-      <ToolbarSeparator />
-
-      {type === "highlighter" ? (
-        <ColorHighlightPopoverContent />
-      ) : (
-        <LinkContent />
-      )}
-    </>
-  );
-};
+import { TiptapToolBar } from "./main-toolbar";
+import { EditorDragHandle } from "./drag-handle";
+import "@/components/tiptap-node/blockquote-node/blockquote-node.scss";
+import "@/components/tiptap-node/code-block-node/code-block-node.scss";
+// import "@/components/tiptap-node/horizontal-rule-node/horizontal-rule-node.scss";
+import "@/components/tiptap-node/list-node/list-node.scss";
+import "@/components/tiptap-node/image-node/image-node.scss";
+import "@/components/tiptap-node/heading-node/heading-node.scss";
+import "@/components/tiptap-node/paragraph-node/paragraph-node.scss";
+import { useDebounceCallBack } from "@/hooks/use-Debounce";
 
 const suggestions = createSuggestionsItems([
   {
@@ -240,8 +68,8 @@ const suggestions = createSuggestionsItems([
     command: ({ editor, range }) => {
       editor
         ?.chain()
-        .focus()
-        .deleteRange(range)
+        ?.focus()
+        ?.deleteRange(range)
         .insertShortInput({
           id: v4(),
           isRequired: true,
@@ -262,9 +90,9 @@ const suggestions = createSuggestionsItems([
     command: ({ editor, range }) => {
       editor
         ?.chain()
-        .focus()
-        .deleteRange(range)
-        .insertLongInput({
+        ?.focus()
+        ?.deleteRange(range)
+        ?.insertLongInput({
           id: v4(),
           isRequired: true,
           label: "Long Answer",
@@ -284,9 +112,9 @@ const suggestions = createSuggestionsItems([
     command: ({ editor, range }) => {
       editor
         ?.chain()
-        .focus()
-        .deleteRange(range)
-        .insertShortInput({
+        ?.focus()
+        ?.deleteRange(range)
+        ?.insertShortInput({
           id: v4(),
           isRequired: true,
           label: "Phone Number",
@@ -306,8 +134,8 @@ const suggestions = createSuggestionsItems([
       const id = v4();
       editor
         ?.chain()
-        .focus()
-        .deleteRange(range)
+        ?.focus()
+        ?.deleteRange(range)
         .insertmultipleChoiceInput({
           id,
           label: "Single Choice",
@@ -345,9 +173,9 @@ const suggestions = createSuggestionsItems([
       const id = v4();
       editor
         ?.chain()
-        .focus()
-        .deleteRange(range)
-        .insertmultipleChoiceInput({
+        ?.focus()
+        ?.deleteRange(range)
+        ?.insertmultipleChoiceInput({
           id,
           label: "Multiple Choice",
           type: "multiple",
@@ -358,16 +186,22 @@ const suggestions = createSuggestionsItems([
           label: "Option 1",
           type: "multiple",
         })
-        .insertOption({
+        ?.insertOption({
           parentId: id,
           id: "2",
           label: "Option 2",
           type: "multiple",
         })
-        .run();
+        ?.run();
     },
     description: "Add a question where users can select more than one answer.",
     icon: <Equal size={16} />,
+  },
+  {
+    title: "add page",
+    command: ({ editor, range }) => {
+      editor?.chain()?.focus()?.deleteRange(range).setHorizontalRule().run();
+    },
   },
 ]);
 
@@ -381,16 +215,12 @@ export function SimpleEditor({
 }) {
   const router = useRouter();
   const { formId } = useParams();
-  const isMobile = useIsMobile();
-  const { height } = useWindowSize();
-  const [mobileView, setMobileView] = React.useState<
-    "main" | "highlighter" | "link"
-  >("main");
-  const toolbarRef = React.useRef<HTMLDivElement>(null);
+
   const editorContentRef = React.useRef<HTMLDivElement>(null);
 
   // form init
   const form = useForm();
+  const pathName = usePathname();
 
   // editor init
   const editor = useEditor({
@@ -402,7 +232,7 @@ export function SimpleEditor({
         autocorrect: "off",
         autocapitalize: "on",
         "aria-label": "Main content area, start typing to enter text.",
-        class: "simple-editor ",
+        class: " ",
       },
       handleDOMEvents: {
         keydown: (_, v) => enableKeyboardNavigation(v),
@@ -417,14 +247,12 @@ export function SimpleEditor({
       }) as any,
       Slash.configure({
         suggestion: {
-          items: ({ query }) => {
-            console.log("Query:", query);
-            console.log("All suggestions:", suggestions);
-
+          items: ({ query, editor }) => {
             if (!query) {
-              console.log("Returning all suggestions");
               return suggestions;
             }
+
+            if (!editor) return [];
 
             const lowerQuery = query.toLowerCase();
             const filtered = suggestions.filter((item) => {
@@ -440,7 +268,6 @@ export function SimpleEditor({
               );
             });
 
-            console.log("Filtered suggestions:", filtered);
             return filtered;
           },
         },
@@ -473,18 +300,10 @@ export function SimpleEditor({
     autofocus: true,
     editable: isEditable,
     content: content,
+    // onUpdate(props) {
+    //   debouncedUpdate(props?.editor);
+    // },
   });
-
-  const rect = useCursorVisibility({
-    editor: editor ? editor : null,
-    overlayHeight: toolbarRef.current?.getBoundingClientRect().height ?? 0,
-  });
-
-  const [isInputNode, setIsInputNode] = React.useState(false);
-  const [nodePosition, setNodePosition] = React.useState<number | null>(null);
-  const [currentNode, setCurrentNode] = React?.useState<any>(null);
-  const [openPopover, setOpenPopover] = React.useState(false);
-  // editor?.state?.doc?.nodeAt(nodePosition || 0);
 
   const onSubmit = async (values: any) => {
     if (!formId) return;
@@ -498,11 +317,14 @@ export function SimpleEditor({
     }
   };
 
-  React.useEffect(() => {
-    if (!isMobile && mobileView !== "main") {
-      setMobileView("main");
-    }
-  }, [isMobile, mobileView]);
+  // const debouncedUpdate = useDebounceCallBack((editor: Editor) => {
+  //   if (!editor) return;
+  //   if (formId && !pathName.includes("edit")) {
+  //     return;
+  //   }
+  //   const content = editor?.getJSON();
+  //   window.localStorage.setItem("formly-content", JSON.stringify(content));
+  // } , 500)
 
   React.useEffect(() => {
     useEditorStore.setState({ editor: editor });
@@ -514,218 +336,71 @@ export function SimpleEditor({
   }
 
   return (
-    <div className="simple-editor-wrapper selection:bg-teal-200/30 dark:selection:bg-teal-700/40">
+    <div className="simple-editor-wrapper selection:bg-blue-200/30 dark:selection:bg-blue-700/40">
       <EditorContext.Provider value={{ editor }}>
-        {isEditable && (
-          <Toolbar
-            className={cn(
-              " w-full h-20 z-10   mb-2 px-1",
-              `${isMobile ? "fixed top-0 inset-x-0 z-50" : "sticky top-0 "}`
-            )}
-            ref={toolbarRef}
-            style={{
-              ...(isMobile
-                ? {
-                    bottom: `calc(100% - ${height - rect.y}px)`,
-                  }
-                : {}),
-            }}
-          >
-            <div className=" flex flex-wrap items-center gap-2">
-              {mobileView === "main" ? (
-                <MainToolbarContent
-                  onHighlighterClick={() => setMobileView("highlighter")}
-                  onLinkClick={() => setMobileView("link")}
-                  isMobile={isMobile}
-                />
-              ) : (
-                <MobileToolbarContent
-                  type={mobileView === "highlighter" ? "highlighter" : "link"}
-                  onBack={() => setMobileView("main")}
-                />
-              )}
-            </div>
-          </Toolbar>
-        )}
-
-        
+        {isEditable && <TiptapToolBar editor={editor} />}
 
         <Form {...form!}>
           <form
             onSubmit={form?.handleSubmit?.(onSubmit)}
             className=" w-full h-full px-2"
           >
-            <DragHandle
-              onNodeChange={({ node, pos, editor }) => {
-                if (node?.type?.name?.includes("Input")) {
-                  setIsInputNode(true);
-                  setNodePosition(pos);
-                  setCurrentNode(node);
-                } else {
-                  setIsInputNode(false);
-                  setNodePosition(null);
-                  setCurrentNode(null);
-                }
-              }}
-              editor={editor!}
-              className=""
-            >
-              <div className="pt-1  pl-5 md:px-2">
-                <div
-                  onClick={() => setOpenPopover(!openPopover)}
-                  className="handler"
-                >
-                  <Popover open={openPopover} onOpenChange={setOpenPopover}>
-                    <PopoverTrigger className=" cursor-pointer">
-                      <GripVertical size={16} />
-                    </PopoverTrigger>
-                    {isInputNode && currentNode && (
-                      <PopoverContent className=" w-56  shadow-xl py-2 px-2 grid gap-3 text-sm mx-4">
-                        {Object?.entries?.(currentNode?.attrs)?.map?.(
-                          (o: any, i) => {
-                            if (o?.[0] === "isRequired") {
-                              return (
-                                <div
-                                  key={i}
-                                  className="flex items-center justify-between gap-2 w-full"
-                                >
-                                  <div className=" ">
-                                    <span className=" ">{"Required"}</span>
-                                  </div>
-                                  <div className="">
-                                    <Checkbox
-                                      checked={o[1]}
-                                      onCheckedChange={(c) => {
-                                        editor
-                                          ?.chain()
-                                          ?.setNodeSelection(nodePosition!)
-                                          ?.updateAttributes(
-                                            currentNode?.type?.name,
-                                            { [o[0]]: c }
-                                          )
-                                          .run();
-                                      }}
-                                    />
-                                  </div>
-                                </div>
-                              );
-                            }
+            <EditorDragHandle editor={editor} />
+            {isEditable ? (
+              <SlashCmdProvider>
+                <EditorContent
+                  editor={editor}
+                  role="presentation"
+                  className=" max-w-2xl w-full flex flex-col mx-auto  md:px-4 md:py-2 px-2"
+                  ref={editorContentRef}
+                />
 
-                            if (o[0] === "placeholder") {
-                              return (
-                                <div
-                                  key={i}
-                                  className="flex items-center justify-between gap-6 w-full "
-                                >
-                                  <div className="w-full flex-1">
-                                    {"Placeholder"}
-                                  </div>
-                                  <Input
-                                    className={cn(
-                                      "h-5 text-xs md:text-xs rounded-sm",
-                                      "focus-visible:outline-none focus-visible:ring-0"
-                                    )}
-                                    placeholder={o[1]}
-                                    onKeyDown={(e) => {
-                                      if (e.key === "Enter") {
-                                        e.preventDefault();
-
-                                        editor
-                                          ?.chain()
-                                          .setNodeSelection(nodePosition!)
-                                          ?.updateAttributes(
-                                            currentNode?.type?.name,
-                                            {
-                                              [o[0]]: e?.currentTarget?.value,
-                                            }
-                                          )
-                                          .run();
-                                      }
-                                    }}
-                                  />
-                                </div>
-                              );
-                            }
-                          }
-                        )}
-                        {currentNode?.type?.name === "multipleChoiceInput" && (
-                          <div className="flex items-center justify-between gap-2 w-full">
-                            <div className=" ">
-                              <span className=" ">{"Add Option"}</span>
+                <SlashCmd.Root editor={editor}>
+                  <SlashCmd.Cmd className=" rounded-lg bg-secondary overflow-y-auto z-50 border-2 dark:border-0">
+                    <SlashCmd.Empty className="px-4 py-2">
+                      No commands available
+                    </SlashCmd.Empty>
+                    <SlashCmd.List className=" w-72 p-2 max-h-44  overflow-y-auto gap-4 shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
+                      {suggestions?.map?.((item) => {
+                        if (!item || !item.title) return null;
+                        return (
+                          <SlashCmd.Item
+                            value={item?.title}
+                            onCommand={(val) => {
+                              item?.command?.(val);
+                            }}
+                            key={item.title}
+                            className=""
+                          >
+                            <div className="flex gap-4 items-start border-0 my-2 py-2 px-2 bg-secondary dark:bg-card/50 rounded-md">
+                              <div className="h-full pt-2 pl-1">
+                                {item.icon}
+                              </div>
+                              <div className=" ">
+                                <p className="text-md font-medium">
+                                  {item.title}
+                                </p>
+                                <p className=" text-xs font-medium text-muted-foreground mt-2">
+                                  {item?.description}
+                                </p>
+                              </div>
                             </div>
-                            <div className="">
-                              <Button
-                                onClick={() => {
-                                  editor
-                                    ?.chain()
-                                    ?.insertOption({
-                                      id: currentNode?.attrs["type"],
-                                      label: "option",
-                                      parentId: currentNode?.attrs["id"],
-                                      type: currentNode?.attrs["type"],
-                                    })
-                                    .run();
-                                }}
-                                variant={"ghost"}
-                                size={"icon"}
-                              >
-                                <Plus />
-                                {/* {currentNode?.attrs["type"]} */}
-                              </Button>
-                            </div>
-                          </div>
-                        )}
-                      </PopoverContent>
-                    )}
-                  </Popover>
-                </div>
-              </div>
-            </DragHandle>
-            <SlashCmdProvider>
+                          </SlashCmd.Item>
+                        );
+                      })}
+                      {/* </ItemGroup> */}
+                    </SlashCmd.List>
+                  </SlashCmd.Cmd>
+                </SlashCmd.Root>
+              </SlashCmdProvider>
+            ) : (
               <EditorContent
                 editor={editor}
                 role="presentation"
-                className=" max-w-2xl w-full flex flex-col mx-auto  md:px-4 md:py-2 px-2  "
+                className=" max-w-2xl w-full flex flex-col mx-auto  md:px-4 md:py-2 px-2"
                 ref={editorContentRef}
               />
-
-              <SlashCmd.Root editor={editor}>
-                <SlashCmd.Cmd className=" rounded-lg bg-secondary overflow-y-auto z-50 border-2 dark:border-0">
-                  <SlashCmd.Empty className="px-4 py-2">
-                    No commands available
-                  </SlashCmd.Empty>
-                  <SlashCmd.List className=" w-72 p-2 max-h-44  overflow-y-auto gap-4 shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
-                    {/* <ItemGroup className=" w-72 p-2 max-h-44 overflow-y-auto gap-2 shadow-[0_3px_10px_rgb(0,0,0,0.2)]"> */}
-                    {suggestions?.map?.((item) => {
-                      if (!item || !item.title) return null;
-                      return (
-                        <SlashCmd.Item
-                          value={item?.title}
-                          onCommand={(val) => {
-                            item?.command(val);
-                          }}
-                          key={item.title}
-                          className=""
-                        >
-                          <div className="flex gap-4 items-start border-0 my-2 py-2 px-2 bg-secondary dark:bg-card/50 rounded-md">
-                            <div className="h-full pt-2 pl-1">{item.icon}</div>
-                            <div className=" ">
-                              <p className="text-md font-medium">
-                                {item.title}
-                              </p>
-                              <p className=" text-xs font-medium text-muted-foreground mt-2">
-                                {item?.description}
-                              </p>
-                            </div>
-                          </div>
-                        </SlashCmd.Item>
-                      );
-                    })}
-                    {/* </ItemGroup> */}
-                  </SlashCmd.List>
-                </SlashCmd.Cmd>
-              </SlashCmd.Root>
-            </SlashCmdProvider>
+            )}
           </form>
         </Form>
       </EditorContext.Provider>

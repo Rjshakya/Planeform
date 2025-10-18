@@ -62,7 +62,6 @@ const ShortInput = (props: NodeViewProps) => {
                       disabled={props?.editor?.isEditable}
                       ref={field?.ref}
                       onBlur={field?.onBlur}
-                    
                     />
                   )}
                 </FormControl>

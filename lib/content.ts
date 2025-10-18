@@ -28,7 +28,7 @@ export const defaultEditorContent = {
       attrs: {
         id: v4(),
         label: "Short Answer",
-        placeholder: "",
+        placeholder: "Type anything here",
         type: "text",
         isRequired: true,
       },

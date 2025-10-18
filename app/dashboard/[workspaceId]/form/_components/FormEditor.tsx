@@ -20,7 +20,7 @@ export const FormEditor = ({
   const form = useFormStore.getState().form;
 
   return (
-    <div className={cn(` max-w-6xl w-full ${className}`)}>
+    <div className={cn(` max-w-6xl w-full ${className} `)}>
       <SimpleEditor
         parentform={form}
         isEditable={isEditable}
