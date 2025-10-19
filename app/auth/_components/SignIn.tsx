@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { GlowEffect } from "@/components/ui/glow-effect";
+import { Separator } from "@/components/ui/separator";
 import { signIn } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 
@@ -8,12 +9,17 @@ const SignIn = ({ className }: { className?: string }) => {
   return (
     <div className={cn("flex flex-col gap-8", className)}>
       <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-3xl font-bold">Welcome to Formly</h1>
-        <p className=" text-muted-foreground/95  w-80 text-sm text-balance mt-4">
-          With notion like interface Turn responses into insights
+        <h1 className="text-3xl md:text-5xl tracking-tighter  font-bold w-full text-start md:text-center">
+          Welcome to Formly
+        </h1>
+        <p className=" text-muted-foreground/95  w-80 text-lg text-pretty text-start md:text-center md:text-balance">
+          {
+            "Clean & modern forms , easy to create , turn user's response into insights."
+          }
+          {/* With notion like interface  */}
         </p>
       </div>
-      <div className="grid gap-6 md:px-14 mt-2">
+      <div className="grid gap-6  md:px-8 mt-2">
         <div className=" flex items-center gap-4 w-full justify-center">
           <div className=" relative overflow-hidden group w-full">
             <Button
@@ -52,6 +58,7 @@ const SignIn = ({ className }: { className?: string }) => {
           </Button> */}
         </div>
       </div>
+      <Separator />
       {/* <div className="text-center text-sm">
         Don&apos;t have an account?{" "}
         <a href="#" className="underline underline-offset-4">

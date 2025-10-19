@@ -60,6 +60,11 @@ import "@/components/tiptap-node/heading-node/heading-node.scss";
 import "@/components/tiptap-node/paragraph-node/paragraph-node.scss";
 import { useDebounceCallBack } from "@/hooks/use-Debounce";
 
+interface IformVal {
+  name: string;
+  value: string;
+}
+
 const suggestions = createSuggestionsItems([
   {
     title: "Short Answer",
@@ -233,7 +238,13 @@ const suggestions = createSuggestionsItems([
         ?.focus()
         ?.deleteRange(range)
         .setHorizontalRule()
-        .insertContent(`<p></p>`)
+        .insertLongInput({
+          id: v4(),
+          isRequired: true,
+          label: "Ask anything:",
+          placeholder: "Type anything here",
+          rows: 4,
+        })
         .insertActionButton({ id: v4(), text: "submit", type: "submit" })
         .run();
     },
@@ -284,6 +295,7 @@ export function SimpleEditor({
   const pathName = usePathname();
   const { isLastStep, activeStep, maxStep, setActiveStep, handleSubmit } =
     useFormStore((s) => s);
+  // const [formVal, setFormValue] = React.useState<IformVal | null>(null);
 
   // editor init
   const editor = useEditor({
@@ -368,36 +380,32 @@ export function SimpleEditor({
   const handleActiveIndex = (idx: number) => {
     const index = idx < 0 ? 0 : Math.min(maxStep, idx);
     if (isLast) return;
-    setActiveStep(idx);
-    console.log(idx);
+    setActiveStep(index);
   };
 
-  const onSubmit = async (values: any) => {
-    console.log(values);
-
+  const onSubmit = async (values: FieldValues) => {
     // if (!formId) return;
 
-    await handleSubmit(values, formId as string);
-
+    const res = await handleSubmit(values, formId as string);
     handleActiveIndex(activeStep + 1);
 
-    // if (res) {
-    //   router.push(`/thank-you`);
-    //   form.reset();
-    // }
+    if (isLast && res) {
+      router.push(`/thank-you`);
+      form.reset();
+    }
   };
 
   React.useEffect(() => {
     useEditorStore.setState({ editor: editor });
     useFormStore.setState({ form: form, isLastStep: isLast });
-  }, [editor, form]);
+  }, [editor, form , isLast]);
 
   if (!editor) {
     return null;
   }
 
   return (
-    <div className="w-full h-screen simple-editor-wrapper selection:bg-blue-200/30 dark:selection:bg-blue-700/40  ">
+    <div className="w-full h-screen simple-editor-wrapper selection:bg-blue-200/40 dark:selection:bg-blue-700/40  ">
       <EditorContext.Provider value={{ editor }}>
         {isEditable && <TiptapToolBar editor={editor} />}
 
@@ -458,7 +466,7 @@ export function SimpleEditor({
               <EditorContent
                 editor={editor}
                 role="presentation"
-                className="  w-full h-full flex flex-col mx-auto  md:px-4 md:py-2 px-2"
+                className="  w-full h-full flex flex-col mx-auto  md:px-4 md:py-2"
                 ref={editorContentRef}
               />
             )}

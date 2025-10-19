@@ -277,9 +277,9 @@
     scrollbar-color: var(--accent);
     scrollbar-gutter: 10px;
   }
-  .simple-editor-wrapper::-webkit-scrollbar {
+  /* .simple-editor-wrapper::-webkit-scrollbar {
     width: 0.5rem;
-  }
+  } */
   .simple-editor-wrapper::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.15);
     border-radius: 10px;
@@ -291,6 +291,8 @@
   .simple-editor-wrapper::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.25);
   }
+
+ 
 
   .tiptap hr {
     @apply my-10 border-t-4 border-input h-2;

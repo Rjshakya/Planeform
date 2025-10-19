@@ -20,6 +20,7 @@ export interface IformStore {
   activeStep: number;
   maxStep: number;
   setActiveStep: (params: any) => void;
+  isSingleForm: boolean;
 }
 
 export const useFormStore = create<IformStore>((set, get) => ({
@@ -39,6 +40,13 @@ export const useFormStore = create<IformStore>((set, get) => ({
   stepResponses: [],
   isSubmitting: false,
   handleSubmit: async (values, formId) => {
+    if (!values) {
+      toast("failed to submit form , please try again");
+      return false;
+    }
+
+    get()?.isLastStep && set({ isSubmitting: true });
+
     if (get()?.isLastStep === false) {
       const id = Object.keys(values)[0];
       if (!values[id]) return false;
@@ -56,28 +64,18 @@ export const useFormStore = create<IformStore>((set, get) => ({
         const copy = [...get()?.stepResponses];
         copy[existingIdx] = values;
         set({ stepResponses: copy });
-        return false;
+        return true;
       }
 
       get()?.stepResponses?.push(values);
       return true;
     }
 
-    const vals = [...get()?.stepResponses, values];
-    const finalValues = vals?.map((v) => {
-      const key = Object.keys(v)[0];
-      return {
-        form_field: key,
-        value: v[key],
-      };
-    });
-
-    console.log(finalValues);
-
-    return true;
-    set({ isSubmitting: true });
-
-    if (!values) return false;
+    const valuesArr = [...get()?.stepResponses, values];
+    if (!formId) {
+      toast("form not found , please try again!");
+      return false;
+    }
 
     try {
       const respondent = await apiClient.post(`/api/respondent`, {
@@ -87,20 +85,33 @@ export const useFormStore = create<IformStore>((set, get) => ({
       if (respondent.status !== 200) return false;
 
       const respondentId = respondent?.data?.respondent?.id;
-      const valuesData = Object.entries(values).map((o) => {
-        const obj = {
+
+      let finalValues = valuesArr?.map((v) => {
+        const key = Object.keys(v)[0];
+        return {
           form: formId,
-          form_field: o[0],
-          value: Array?.isArray(o[1]) ? o[1]?.join(",") : o[1],
+          form_field: key,
+          value: Array?.isArray(v[key]) ? v[key]?.join(",") : v[key],
           respondent: respondentId,
         };
-
-        return obj;
       });
+
+      if (get().isSingleForm) {
+        finalValues = Object.entries(values).map((o) => {
+          const obj = {
+            form: formId,
+            form_field: o[0],
+            value: Array?.isArray(o[1]) ? o[1]?.join(",") : o[1],
+            respondent: respondentId,
+          };
+
+          return obj;
+        });
+      }
 
       const response = await apiClient.post(
         `/api/response/multiple`,
-        valuesData
+        finalValues
       );
 
       if (response?.status !== 200) {
@@ -121,4 +132,16 @@ export const useFormStore = create<IformStore>((set, get) => ({
   activeStep: 0,
   maxStep: 0,
   setActiveStep: () => {},
+  isSingleForm: true,
 }));
+
+// const valuesData = Object.entries(values).map((o) => {
+//       const obj = {
+//         form: formId,
+//         form_field: o[0],
+//         value: Array?.isArray(o[1]) ? o[1]?.join(",") : o[1],
+//         respondent: respondentId,
+//       };
+
+//       return obj;
+//     });

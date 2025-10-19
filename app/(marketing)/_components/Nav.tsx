@@ -13,12 +13,16 @@ export const Nav = () => {
           </span>
         </div>
 
-        <div className=" menu flex gap-3 items-center px-2">
+        <div className=" menu hidden md:flex gap-3 items-center px-2">
           <Button variant={"ghost"}>Pricing</Button>
           <Button asChild className="">
             <Link href={"/auth"}>Get Started</Link>
           </Button>
         </div>
+
+        {/* <div className=" menu flex md:hidden gap-3 items-center px-2">
+          <Button variant={"ghost"}>Pricing</Button>
+        </div> */}
       </div>
     </nav>
   );

@@ -13,12 +13,12 @@ import { useCurrentEditor } from "@tiptap/react";
 import { JsonDoc } from "@/lib/types";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { useFormStore } from "@/stores/useformStore";
+import { ArrowLeft } from "lucide-react";
 
 export const PreviewForm = () => {
   const [jsonContent, setJsonContent] = useState<JsonDoc>();
   const { editor } = useCurrentEditor();
   const [docs, setDocs] = useState<JsonDoc[]>([]);
-  const { activeStep } = useFormStore((s) => s);
   const [activeIdx, setActiveIdx] = useState(0);
 
   const handlePreview = useCallback(() => {
@@ -98,6 +98,7 @@ export const PreviewForm = () => {
       }
     }
 
+    console.log(parsedDocs);
     setDocs(parsedDocs);
     setActiveIdx(0); // Reset to first step
   }, [jsonContent]);
@@ -115,22 +116,15 @@ export const PreviewForm = () => {
       >
         <SheetHeader>
           <SheetTitle>Preview form</SheetTitle>
-          {docs?.length > 1 && (
+          {docs?.length > 1 && activeIdx !== 0 && (
             <div className="w-full max-w-sm mx-auto">
-              <ButtonGroup>
-                <Button
-                  onClick={() => handleActiveIndex(activeIdx - 1)}
-                  variant={"secondary"}
-                >
-                  p
-                </Button>
-                <Button
-                  onClick={() => handleActiveIndex(activeIdx + 1)}
-                  variant={"secondary"}
-                >
-                  n
-                </Button>
-              </ButtonGroup>
+              <Button
+                onClick={() => handleActiveIndex(activeIdx - 1)}
+                variant={"secondary"}
+                size={"icon"}
+              >
+                <ArrowLeft size={16} />
+              </Button>
             </div>
           )}
 

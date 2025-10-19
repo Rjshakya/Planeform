@@ -24,9 +24,9 @@ export default function DashboardLayout({
       <SidebarInset>
         <header
           className={cn(
-            `flex h-14 shrink-0 items-center gap-2, ${
-              workspaceId && pathName?.includes("/form/create") && "hidden"
-            }`
+            `flex h-14 shrink-0 items-center gap-2`,
+            `${workspaceId && pathName?.includes("/form/create") && "hidden"}`,
+            `${workspaceId && pathName?.includes(`form/edit/`) && "hidden"}`
           )}
         >
           <div className="flex flex-1 items-center gap-2 px-3">
@@ -42,9 +42,9 @@ export default function DashboardLayout({
         </header>
         <div
           className={cn(
-            `flex flex-1 flex-col gap-4 px-4  ${
-              (workspaceId && pathName?.includes("/form/create")) || "py-10"
-            }`
+            `flex flex-1 flex-col gap-4 px-4`,
+            `${workspaceId && pathName?.includes("/form/create") && "py-0"}`,
+            `${workspaceId && pathName?.includes(`/form/edit`) && "py-0"}`
           )}
         >
           {children}
