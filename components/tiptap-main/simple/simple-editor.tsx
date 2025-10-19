@@ -31,7 +31,13 @@ import { TextStyle, FontFamily } from "@tiptap/extension-text-style";
 
 import { dateInputNode } from "@/components/custom-extensions/date-input/node";
 
-import { Equal, Voicemail } from "lucide-react";
+import {
+  CalendarDays,
+  Equal,
+  FilePlus,
+  SendHorizontal,
+  Voicemail,
+} from "lucide-react";
 
 import {
   Slash,
@@ -128,6 +134,28 @@ const suggestions = createSuggestionsItems([
   },
 
   {
+    title: "Date",
+    command: ({ editor, range }) => {
+      const id = v4();
+      editor
+        ?.chain()
+        ?.focus()
+        ?.deleteRange(range)
+        ?.insertDateInput({
+          id,
+          isRequired: true,
+          label: "Date",
+          placeholder: "date",
+          type: "Date",
+        })
+        ?.run();
+    },
+    description: "Add a field for taking dates from users",
+    searchTerms: ["date", "date-input", "birth of date"],
+    icon: <CalendarDays size={16} />,
+  },
+
+  {
     title: "Single Choice",
     searchTerms: ["single choice", "radio", "select one", "yes no", "option"],
     command: ({ editor, range }) => {
@@ -198,20 +226,53 @@ const suggestions = createSuggestionsItems([
     icon: <Equal size={16} />,
   },
   {
-    title: "add page",
+    title: "Add page",
     command: ({ editor, range }) => {
-      editor?.chain()?.focus()?.deleteRange(range).setHorizontalRule().run();
+      editor
+        ?.chain()
+        ?.focus()
+        ?.deleteRange(range)
+        .setHorizontalRule()
+        .insertContent(`<p></p>`)
+        .insertActionButton({ id: v4(), text: "submit", type: "submit" })
+        .run();
     },
+    description: "Add new page for multi-step forms",
+    icon: <FilePlus size={16} />,
+    searchTerms: [
+      "add page",
+      "page",
+      "break",
+      "new page",
+      "multi-step",
+      "step",
+    ],
+  },
+  {
+    title: "Submit button",
+    command: ({ editor, range }) => {
+      editor
+        ?.chain()
+        ?.focus()
+        ?.deleteRange(range)
+        .insertActionButton({ id: v4(), text: "Submit", type: "submit" })
+        .run();
+    },
+    description: "Add Submit button , so that users can submit their responses",
+    icon: <SendHorizontal size={16} />,
+    searchTerms: ["submit", "button", "action button"],
   },
 ]);
 
 export function SimpleEditor({
   content,
   isEditable,
+  isLast,
 }: {
   parentform: UseFormReturn<FieldValues, any, FieldValues> | null;
   content?: any;
   isEditable?: boolean;
+  isLast?: boolean;
 }) {
   const router = useRouter();
   const { formId } = useParams();
@@ -221,6 +282,8 @@ export function SimpleEditor({
   // form init
   const form = useForm();
   const pathName = usePathname();
+  const { isLastStep, activeStep, maxStep, setActiveStep, handleSubmit } =
+    useFormStore((s) => s);
 
   // editor init
   const editor = useEditor({
@@ -232,7 +295,7 @@ export function SimpleEditor({
         autocorrect: "off",
         autocapitalize: "on",
         "aria-label": "Main content area, start typing to enter text.",
-        class: " ",
+        class: " pb-[40vh] flex-1 md:px-12 pt-4",
       },
       handleDOMEvents: {
         keydown: (_, v) => enableKeyboardNavigation(v),
@@ -300,35 +363,33 @@ export function SimpleEditor({
     autofocus: true,
     editable: isEditable,
     content: content,
-    // onUpdate(props) {
-    //   debouncedUpdate(props?.editor);
-    // },
   });
 
-  const onSubmit = async (values: any) => {
-    if (!formId) return;
-
-    const res = await useFormStore
-      .getState()
-      .handleSubmit(values, formId as string);
-    if (res) {
-      router.push(`/thank-you`);
-      form.reset();
-    }
+  const handleActiveIndex = (idx: number) => {
+    const index = idx < 0 ? 0 : Math.min(maxStep, idx);
+    if (isLast) return;
+    setActiveStep(idx);
+    console.log(idx);
   };
 
-  // const debouncedUpdate = useDebounceCallBack((editor: Editor) => {
-  //   if (!editor) return;
-  //   if (formId && !pathName.includes("edit")) {
-  //     return;
-  //   }
-  //   const content = editor?.getJSON();
-  //   window.localStorage.setItem("formly-content", JSON.stringify(content));
-  // } , 500)
+  const onSubmit = async (values: any) => {
+    console.log(values);
+
+    // if (!formId) return;
+
+    await handleSubmit(values, formId as string);
+
+    handleActiveIndex(activeStep + 1);
+
+    // if (res) {
+    //   router.push(`/thank-you`);
+    //   form.reset();
+    // }
+  };
 
   React.useEffect(() => {
     useEditorStore.setState({ editor: editor });
-    useFormStore.setState({ form: form });
+    useFormStore.setState({ form: form, isLastStep: isLast });
   }, [editor, form]);
 
   if (!editor) {
@@ -336,14 +397,14 @@ export function SimpleEditor({
   }
 
   return (
-    <div className="simple-editor-wrapper selection:bg-blue-200/30 dark:selection:bg-blue-700/40">
+    <div className="w-full h-screen simple-editor-wrapper selection:bg-blue-200/30 dark:selection:bg-blue-700/40  ">
       <EditorContext.Provider value={{ editor }}>
         {isEditable && <TiptapToolBar editor={editor} />}
 
         <Form {...form!}>
           <form
             onSubmit={form?.handleSubmit?.(onSubmit)}
-            className=" w-full h-full px-2"
+            className="max-w-2xl w-full h-full px-2 mx-auto"
           >
             <EditorDragHandle editor={editor} />
             {isEditable ? (
@@ -351,7 +412,7 @@ export function SimpleEditor({
                 <EditorContent
                   editor={editor}
                   role="presentation"
-                  className=" max-w-2xl w-full flex flex-col mx-auto  md:px-4 md:py-2 px-2"
+                  className=" w-full h-full flex flex-col mx-auto  md:px-4 md:py-2 px-2"
                   ref={editorContentRef}
                 />
 
@@ -397,7 +458,7 @@ export function SimpleEditor({
               <EditorContent
                 editor={editor}
                 role="presentation"
-                className=" max-w-2xl w-full flex flex-col mx-auto  md:px-4 md:py-2 px-2"
+                className="  w-full h-full flex flex-col mx-auto  md:px-4 md:py-2 px-2"
                 ref={editorContentRef}
               />
             )}

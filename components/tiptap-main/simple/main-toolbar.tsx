@@ -39,6 +39,9 @@ import { useCursorVisibility } from "@/hooks/use-cursor-visibility";
 import React, { memo } from "react";
 import { Editor } from "@tiptap/core";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "./theme-toggle";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Separator } from "@/components/ui/separator";
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -52,18 +55,32 @@ const MainToolbarContent = ({
   const forEditPage = usePathname().includes(`/edit/`);
 
   return (
-    <div className="bg-muted flex pr-4 pl-2 rounded-sm mx-auto  overflow-x-auto overflow-y-hidden pt-2 pb-3 select-none">
+    <div
+      className={cn(
+        `bg-background w-full flex pr-4 pl-2 overflow-x-auto overscroll-x-contain pt-2 pb-3 select-none`,
+        `${
+          isMobile
+            ? `border-t-2  border-border/80`
+            : `border-b-2 border-border/50`
+        }`
+      )}
+    >
+      <ToolbarGroup>
+        <SidebarTrigger />
+      </ToolbarGroup>
+      {isMobile && <Separator className="mx-2" orientation="vertical" />}
+      <div className="flex-1"></div>
       <ToolbarGroup>
         <UndoRedoButton action="undo" />
         <UndoRedoButton action="redo" />
       </ToolbarGroup>
 
-      <ToolbarSeparator />
+      <Separator className="mx-2" orientation="vertical" />
       <ToolbarGroup>
         <CustomInputsDropdown />
       </ToolbarGroup>
 
-      <ToolbarSeparator />
+      <Separator className="mx-2" orientation="vertical" />
 
       <ToolbarGroup>
         <HeadingDropdownMenu levels={[1, 2, 3]} portal={isMobile} />
@@ -75,7 +92,7 @@ const MainToolbarContent = ({
         <CodeBlockButton />
       </ToolbarGroup>
 
-      <ToolbarSeparator />
+      <Separator className="mx-2" orientation="vertical" />
 
       <ToolbarGroup>
         <TiptapMarkDropdown />
@@ -87,7 +104,7 @@ const MainToolbarContent = ({
         {/* {!isMobile ? <LinkPopover /> : <LinkButton onClick={onLinkClick} />} */}
       </ToolbarGroup>
 
-      <ToolbarSeparator />
+      <Separator className="mx-2" orientation="vertical" />
 
       {/* <ToolbarSeparator /> */}
 
@@ -95,30 +112,31 @@ const MainToolbarContent = ({
         <TiptapTextAlignDropdown />
       </ToolbarGroup>
 
-      <ToolbarSeparator />
+      {/* <Separator className="mx-2" orientation="vertical" /> */}
 
       <ToolbarGroup>
         <ImageUploadButton text="Add" />
       </ToolbarGroup>
 
-      <ToolbarSeparator />
-
       <ToolbarGroup>
         <CutomizationPanel />
       </ToolbarGroup>
 
-      <ToolbarSeparator />
+      <Separator className="mx-2" orientation="vertical" />
 
       <ToolbarGroup className="ml-2">
         <PreviewForm />
       </ToolbarGroup>
 
-      <ToolbarSeparator />
-
       <ToolbarGroup className="ml-1">
         {forEditPage ? <EditForm /> : <PublishForm />}
       </ToolbarGroup>
 
+      <div className="flex-1"></div>
+      {isMobile && <Separator className="mx-2" orientation="vertical" />}
+      <ToolbarGroup>
+        <ThemeToggle />
+      </ToolbarGroup>
       {/* {isMobile && <ToolbarSeparator />} */}
     </div>
   );
@@ -180,8 +198,10 @@ export const TiptapToolBar = memo(function ToolBarComp({
   return (
     <Toolbar
       className={cn(
-        " w-full h-20 z-10   mb-2 px-1",
-        `${isMobile ? "fixed top-0 inset-x-0 z-50" : "sticky top-0 "}`
+        " w-full z-10 px-1 ",
+        `${
+          isMobile ? "absolute top-auto inset-x-0 z-50" : "sticky top-0 z-50 "
+        }`
       )}
       ref={toolbarRef}
       style={{
@@ -192,7 +212,7 @@ export const TiptapToolBar = memo(function ToolBarComp({
           : {}),
       }}
     >
-      <div className=" flex flex-wrap items-center gap-2">
+      <div className=" flex  gap-2">
         {mobileView === "main" ? (
           <MainToolbarContent
             onHighlighterClick={() => setMobileView("highlighter")}

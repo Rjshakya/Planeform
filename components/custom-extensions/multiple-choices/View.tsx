@@ -40,7 +40,7 @@ export const MultipleChoiceView = (props: NodeViewProps) => {
               >
                 <NodeViewContent
                   onKeyDown={(e) => e?.key === "Enter" && e?.preventDefault()}
-                  className="content"
+                  className="content pl-1"
                 />
               </FormLabel>
             </FormItem>
@@ -53,7 +53,7 @@ export const MultipleChoiceView = (props: NodeViewProps) => {
 
 export const Option = (props: NodeViewProps) => {
   const { parentId, id, label, type } = props?.node?.attrs;
-  const contentLabel = props?.node?.content?.content[0]?.text;
+  const optionLabel = props?.node?.content?.content[0]?.text;
   const isEditable = props.editor.isEditable;
 
   return (
@@ -65,28 +65,32 @@ export const Option = (props: NodeViewProps) => {
             <FormControl>
               {type === "single" ? (
                 <Input
-                  id={contentLabel}
+                  id={optionLabel}
                   className=" size-0  after:absolute after:inset-0 "
                   type="radio"
-                  value={contentLabel}
-                  checked={field?.value === contentLabel}
+                  value={optionLabel}
+                  checked={field?.value === optionLabel}
                   onChange={(e) => field?.onChange?.(e?.target?.value)}
                   disabled={isEditable}
                 />
               ) : (
-                <Checkbox
-                  id={contentLabel}
-                  checked={field?.value?.includes?.(contentLabel)}
-                  className=" after:absolute after:inset-0 appearance-none "
-                  onCheckedChange={(checked) => {
+                <Input
+                  id={optionLabel}
+                  checked={field?.value?.includes?.(optionLabel)}
+                  className=" size-0  after:absolute after:inset-0  "
+                  type="checkbox"
+                  onChange={(e) => {
+                    const checked = e.currentTarget?.checked;
+                    console.log(checked);
+
                     if (!field.value) {
                       field.value = [];
                     }
 
                     return checked
-                      ? field?.onChange([...field?.value, contentLabel])
+                      ? field?.onChange([...field?.value, optionLabel])
                       : field?.onChange(
-                          field?.value?.filter((v: any) => v !== contentLabel)
+                          field?.value?.filter((v: any) => v !== optionLabel)
                         );
                   }}
                   disabled={isEditable}
@@ -94,8 +98,8 @@ export const Option = (props: NodeViewProps) => {
               )}
             </FormControl>
             <FormLabel
-              htmlFor={contentLabel}
-              aria-label={contentLabel}
+              htmlFor={optionLabel}
+              aria-label={optionLabel}
               className=" text-sm w-full"
             >
               <NodeViewContent

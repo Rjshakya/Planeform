@@ -5,7 +5,7 @@ import { ActionButtonView } from "./View";
 
 export interface InsertActionButtonParams {
   id: string;
-  type: string;
+  type: "submit" | "reset" | "button";
   text: string;
 }
 

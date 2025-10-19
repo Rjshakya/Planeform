@@ -293,7 +293,7 @@
   }
 
   .tiptap hr {
-    @apply my-2 border-t-4 border-input h-2;
+    @apply my-10 border-t-4 border-input h-2;
   }
 }
 

@@ -26,7 +26,7 @@ import { url } from "node:inspector";
 import { apiClient } from "@/lib/axios";
 import useSWR from "swr";
 import { authClient } from "@/lib/auth-client";
-import { redirect } from "next/navigation";
+import { redirect, useParams, usePathname } from "next/navigation";
 
 // This is sample data.
 const data = {

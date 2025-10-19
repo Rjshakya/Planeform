@@ -47,7 +47,7 @@ export const DateInputView = (props: NodeViewProps) => {
               <NodeViewContent
                 onKeyDown={(e) => e?.key === "Enter" && e?.preventDefault()}
                 as="div"
-                className="outline-none focus:outline-none inline-block min-w-[20px] w-full"
+                className="pl-1 outline-none focus:outline-none inline-block min-w-[20px] w-full"
               />
             </FormLabel>
             <Popover>
@@ -56,7 +56,7 @@ export const DateInputView = (props: NodeViewProps) => {
                   <Button
                     variant={"outline"}
                     className={cn(
-                      "w-full pl-3 text-left font-normal",
+                      "w-full pl-3 h-[48px] text-left font-normal",
                       !field.value && "text-muted-foreground"
                     )}
                   >
@@ -81,9 +81,7 @@ export const DateInputView = (props: NodeViewProps) => {
                 />
               </PopoverContent>
             </Popover>
-            <FormDescription>
-              Your date of birth is used to calculate your age.
-            </FormDescription>
+
             <FormMessage />
           </FormItem>
         )}

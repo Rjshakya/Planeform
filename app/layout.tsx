@@ -55,7 +55,8 @@ export default function RootLayout({
         className={`${dmSans.variable} ${geistMono.variable} ${inter.variable} ${geist.variable} ${spaceGrotesk.variable} antialiased`}
       >
         <div
-          className={`${spaceGrotesk.className} max-w-6xl mx-auto tracking-tighter`}
+          // max-w-6xl mx-auto
+          className={`${spaceGrotesk.className}  tracking-tighter`}
         >
           {children}
         </div>

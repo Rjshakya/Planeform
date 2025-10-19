@@ -15,6 +15,11 @@ export interface IformStore {
     formId: string
   ) => Promise<boolean>;
   isSuccess: boolean;
+  isLastStep: boolean;
+  stepResponses: any[];
+  activeStep: number;
+  maxStep: number;
+  setActiveStep: (params: any) => void;
 }
 
 export const useFormStore = create<IformStore>((set, get) => ({
@@ -31,11 +36,45 @@ export const useFormStore = create<IformStore>((set, get) => ({
 
     return get()?.form!;
   },
+  stepResponses: [],
   isSubmitting: false,
   handleSubmit: async (values, formId) => {
-    // console.log(values);
-    // return false;
+    if (get()?.isLastStep === false) {
+      const id = Object.keys(values)[0];
+      if (!values[id]) return false;
 
+      const existing = get()?.stepResponses?.find((v, i) => {
+        const key = Object.keys(v)[0];
+        return key === id;
+      });
+      const existingIdx = get()?.stepResponses?.findIndex((v) => {
+        const key = Object.keys(v)[0];
+        return key === id;
+      });
+
+      if (existing) {
+        const copy = [...get()?.stepResponses];
+        copy[existingIdx] = values;
+        set({ stepResponses: copy });
+        return false;
+      }
+
+      get()?.stepResponses?.push(values);
+      return true;
+    }
+
+    const vals = [...get()?.stepResponses, values];
+    const finalValues = vals?.map((v) => {
+      const key = Object.keys(v)[0];
+      return {
+        form_field: key,
+        value: v[key],
+      };
+    });
+
+    console.log(finalValues);
+
+    return true;
     set({ isSubmitting: true });
 
     if (!values) return false;
@@ -78,4 +117,8 @@ export const useFormStore = create<IformStore>((set, get) => ({
       set({ isSubmitting: false });
     }
   },
+  isLastStep: true,
+  activeStep: 0,
+  maxStep: 0,
+  setActiveStep: () => {},
 }));

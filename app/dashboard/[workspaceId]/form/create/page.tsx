@@ -16,8 +16,7 @@ export default function Page() {
     const content = JSON.parse(item || "");
     setContent(content);
     console.log(content);
-    
   }, []);
   // @ts-ignore
-  return <FormEditor content={content} isEditable={true} />;
+  return <FormEditor content={defaultEditorContent} isEditable={true} />;
 }
