@@ -57,7 +57,7 @@ const MainToolbarContent = ({
   return (
     <div
       className={cn(
-        `bg-background w-full flex overflow-x-auto overscroll-x-contain`,
+        `bg-background w-full flex overflow-x-auto overscroll-x-contain pb-4 pt-1 select-none`,
         `${
           isMobile
             ? `border-t-2  border-border/80`
@@ -198,19 +198,19 @@ export const TiptapToolBar = memo(function ToolBarComp({
   return (
     <Toolbar
       className={cn(
-        "toolbar w-full z-30 px-1 min-h-[48px]  ",
-        `${isMobile ? "sticky inset-y-0" : "sticky top-0"}`
+        "toolbar w-full z-30 px-1 ",
+        `${isMobile ? " fixed inset-x-0 top-0" : "sticky top-0"}`
       )}
       ref={toolbarRef}
-      style={{
-        ...(isMobile
-          ? {
-              bottom: `calc(100% - ${height - rect.y}px)`,
-            }
-          : {}),
-      }}
+      // style={{
+      //   ...(isMobile
+      //     ? {
+      //         bottom: `calc(100% - ${height - rect.y}px)`,
+      //       }
+      //     : {}),
+      // }}
     >
-      <div className=" flex  gap-2 ">
+      <div className=" flex gap-2 ">
         {mobileView === "main" ? (
           <MainToolbarContent
             onHighlighterClick={() => setMobileView("highlighter")}

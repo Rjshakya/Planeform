@@ -36,7 +36,7 @@ export const EditorDragHandle = memo(function Dragcomp({
         }
       }}
       editor={editor!}
-      className=""
+      className={cn(``)}
     >
       <div className="pt-1  pl-5 md:px-2">
         <div onClick={() => setOpenPopover(!openPopover)} className="handler">

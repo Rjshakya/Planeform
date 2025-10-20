@@ -12,7 +12,7 @@ const SignIn = ({ className }: { className?: string }) => {
         <h1 className="text-3xl md:text-5xl tracking-tighter  font-bold w-full text-start md:text-center">
           Welcome to Formly
         </h1>
-        <p className=" text-muted-foreground/95  w-80 text-lg text-pretty text-start md:text-center md:text-balance">
+        <p className=" text-muted-foreground/95  w-80 text-pretty text-start md:text-center md:text-balance">
           {
             "Clean & modern forms , easy to create , turn user's response into insights."
           }
@@ -58,13 +58,6 @@ const SignIn = ({ className }: { className?: string }) => {
           </Button> */}
         </div>
       </div>
-      <Separator />
-      {/* <div className="text-center text-sm">
-        Don&apos;t have an account?{" "}
-        <a href="#" className="underline underline-offset-4">
-          Sign up
-        </a>
-      </div> */}
     </div>
   );
 };

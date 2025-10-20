@@ -398,14 +398,14 @@ export function SimpleEditor({
   React.useEffect(() => {
     useEditorStore.setState({ editor: editor });
     useFormStore.setState({ form: form, isLastStep: isLast });
-  }, [editor, form , isLast]);
+  }, [editor, form, isLast]);
 
   if (!editor) {
     return null;
   }
 
   return (
-    <div className="w-full h-screen simple-editor-wrapper selection:bg-blue-200/40 dark:selection:bg-blue-700/40  ">
+    <div className="w-full h-screen simple-editor-wrapper selection:bg-blue-200/40 dark:selection:bg-blue-700/40  relative ">
       <EditorContext.Provider value={{ editor }}>
         {isEditable && <TiptapToolBar editor={editor} />}
 
@@ -420,7 +420,7 @@ export function SimpleEditor({
                 <EditorContent
                   editor={editor}
                   role="presentation"
-                  className=" w-full h-full flex flex-col mx-auto  md:px-4 md:py-2 px-2"
+                  className=" w-full h-full flex flex-col mx-auto  md:px-4 md:py-2 px-2 mt-18 md:mt-0"
                   ref={editorContentRef}
                 />
 
