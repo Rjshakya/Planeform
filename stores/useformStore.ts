@@ -5,6 +5,13 @@ import { toast } from "sonner";
 import { mutate } from "swr";
 import { create } from "zustand";
 
+interface IsubmissionObj {
+  form: string;
+  form_field: string;
+  value: string;
+  respondent: string;
+}
+
 export interface IformStore {
   getHookForm: () => UseFormReturn<FieldValues, any, FieldValues> | null;
   form: UseFormReturn | null;
@@ -45,8 +52,6 @@ export const useFormStore = create<IformStore>((set, get) => ({
       return false;
     }
 
-    get()?.isLastStep && set({ isSubmitting: true });
-
     if (get()?.isLastStep === false) {
       const id = Object.keys(values)[0];
       if (!values[id]) return false;
@@ -72,11 +77,12 @@ export const useFormStore = create<IformStore>((set, get) => ({
     }
 
     const valuesArr = [...get()?.stepResponses, values];
+
     if (!formId) {
-      toast("form not found , please try again!");
       return false;
     }
 
+    get()?.isLastStep && set({ isSubmitting: true });
     try {
       const respondent = await apiClient.post(`/api/respondent`, {
         form: formId,
@@ -86,14 +92,20 @@ export const useFormStore = create<IformStore>((set, get) => ({
 
       const respondentId = respondent?.data?.respondent?.id;
 
-      let finalValues = valuesArr?.map((v) => {
-        const key = Object.keys(v)[0];
-        return {
-          form: formId,
-          form_field: key,
-          value: Array?.isArray(v[key]) ? v[key]?.join(",") : v[key],
-          respondent: respondentId,
-        };
+      let finalValues = [] as IsubmissionObj[];
+
+      valuesArr?.forEach((valueObj) => {
+        const keys = Object.keys(valueObj);
+        keys?.forEach((key) => {
+          finalValues?.push({
+            form: formId,
+            form_field: key,
+            respondent: respondentId,
+            value: Array?.isArray(valueObj[key])
+              ? valueObj[key]?.join(",")
+              : valueObj[key],
+          });
+        });
       });
 
       if (get().isSingleForm) {
@@ -135,13 +147,9 @@ export const useFormStore = create<IformStore>((set, get) => ({
   isSingleForm: true,
 }));
 
-// const valuesData = Object.entries(values).map((o) => {
-//       const obj = {
-//         form: formId,
-//         form_field: o[0],
-//         value: Array?.isArray(o[1]) ? o[1]?.join(",") : o[1],
-//         respondent: respondentId,
-//       };
-
-//       return obj;
-//     });
+// {
+//             form: formId,
+//             form_field: key,
+//             value: Array?.isArray(v[key]) ? v[key]?.join(",") : v[key],
+//             respondent: respondentId,
+//           };

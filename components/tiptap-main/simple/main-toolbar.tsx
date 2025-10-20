@@ -58,10 +58,9 @@ const MainToolbarContent = ({
     <div
       className={cn(
         `bg-background w-full flex overflow-x-auto overscroll-x-contain pb-4 pt-1 select-none`,
-        `${
-          isMobile
-            ? `border-t-2  border-border/80`
-            : `border-b-2 border-border/50`
+        `${isMobile
+          ? `border-t-2  border-border/80`
+          : `border-b-2 border-border/50`
         }`
       )}
     >
@@ -202,13 +201,13 @@ export const TiptapToolBar = memo(function ToolBarComp({
         `${isMobile ? " fixed inset-x-0 top-0" : "sticky top-0"}`
       )}
       ref={toolbarRef}
-      // style={{
-      //   ...(isMobile
-      //     ? {
-      //         bottom: `calc(100% - ${height - rect.y}px)`,
-      //       }
-      //     : {}),
-      // }}
+    // style={{
+    //   ...(isMobile
+    //     ? {
+    //         bottom: `calc(100% - ${height - rect.y}px)`,
+    //       }
+    //     : {}),
+    // }}
     >
       <div className=" flex gap-2 ">
         {mobileView === "main" ? (
