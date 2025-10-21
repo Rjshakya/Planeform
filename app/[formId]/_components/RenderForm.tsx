@@ -24,6 +24,7 @@ export const RenderForm = () => {
 
   const form = data?.data?.form;
   const form_schema = form?.form_schema;
+  const creator = form?.creator;
 
   useEffect(() => {
     if (activeIdx === undefined) return;
@@ -32,7 +33,7 @@ export const RenderForm = () => {
       maxStep: docs?.length - 1,
       setActiveStep: setActiveIdx,
     });
-  }, [docs ,activeIdx]);
+  }, [docs, activeIdx]);
 
   useEffect(() => {
     if (!form_schema?.content) {
@@ -64,9 +65,9 @@ export const RenderForm = () => {
 
     setDocs(parsedDocs);
     if (parsedDocs?.length === 1) {
-      useFormStore.setState({ isSingleForm: true });
+      useFormStore.setState({ isSingleForm: true, creator: creator });
     } else {
-      useFormStore.setState({ isSingleForm: false });
+      useFormStore.setState({ isSingleForm: false, creator: creator });
     }
     setActiveIdx(0); // Reset to first step
   }, [form_schema]);

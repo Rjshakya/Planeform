@@ -28,10 +28,12 @@ export interface IformStore {
   maxStep: number;
   setActiveStep: (params: any) => void;
   isSingleForm: boolean;
+  creator: string | null;
 }
 
 export const useFormStore = create<IformStore>((set, get) => ({
   isSuccess: false,
+  creator: null,
   getHookForm: () => {
     return get()?.form;
   },
@@ -83,6 +85,7 @@ export const useFormStore = create<IformStore>((set, get) => ({
     }
 
     get()?.isLastStep && set({ isSubmitting: true });
+    const creator = get()?.creator;
     try {
       const respondent = await apiClient.post(`/api/respondent`, {
         form: formId,
@@ -121,10 +124,10 @@ export const useFormStore = create<IformStore>((set, get) => ({
         });
       }
 
-      const response = await apiClient.post(
-        `/api/response/multiple`,
-        finalValues
-      );
+      const response = await apiClient.post(`/api/response/multiple`, {
+        finalValues,
+        creator,
+      });
 
       if (response?.status !== 200) {
         await apiClient?.delete(`/api/respondent/${respondentId}`);

@@ -123,7 +123,7 @@ export function NavActions() {
                           className="w-full flex items-center gap-2"
                           onClick={() =>
                             router.push(
-                              `/dashboard/${workspaceId}/form/edit/${formId}`
+                              `/dashboard/${workspaceId}/form/edit/${formId}?name=${formId}`
                             )
                           }
                         >

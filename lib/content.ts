@@ -14,6 +14,7 @@ export const defaultEditorContent = {
         {
           type: "text",
           text: "Simple form",
+          attrs: {},
         },
       ],
     },
@@ -36,6 +37,7 @@ export const defaultEditorContent = {
         {
           type: "text",
           text: "Name",
+          attrs: {},
         },
       ],
     },
@@ -50,6 +52,7 @@ export const defaultEditorContent = {
         {
           type: "text",
           text: "Submit",
+          attrs: {},
         },
       ],
     },
@@ -60,4 +63,5 @@ export const defaultEditorContent = {
       },
     },
   ],
-}
+  attrs: {},
+} satisfies JsonDoc;

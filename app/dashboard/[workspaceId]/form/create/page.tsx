@@ -3,20 +3,25 @@ import { defaultEditorContent } from "@/lib/content";
 import { FormEditor } from "../_components/FormEditor";
 import { useEffect, useState } from "react";
 import { JsonDoc } from "@/lib/types";
+import { useEditorStore } from "@/stores/useEditorStore";
 
 export default function Page() {
   const [content, setContent] = useState<JsonDoc>();
 
   useEffect(() => {
-    window.localStorage.setItem(
-      "formly-content",
-      JSON.stringify(defaultEditorContent)
-    );
-    const item = window.localStorage.getItem("formly-content");
-    const content = JSON.parse(item || "");
-    setContent(content);
-    console.log(content);
+    useEditorStore.setState({ content: defaultEditorContent });
   }, []);
   // @ts-ignore
-  return <FormEditor content={defaultEditorContent} isEditable={true} />;
+  return (
+    <FormEditor
+      content={
+        useEditorStore.getState().content || {
+          type: "doc",
+          attrs: {},
+          content: [],
+        }
+      }
+      isEditable={true}
+    />
+  );
 }
