@@ -19,6 +19,7 @@ import { TeamSwitcher } from "@/components/team-switcher";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
@@ -27,6 +28,7 @@ import { apiClient } from "@/lib/axios";
 import useSWR from "swr";
 import { authClient } from "@/lib/auth-client";
 import { redirect, useParams, usePathname } from "next/navigation";
+import { NavUser } from "./nav-user";
 
 // This is sample data.
 const data = {
@@ -97,10 +99,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     fetcher
   );
 
-
-
   return (
-    <Sidebar  className="border-r-0" {...props}>
+    <Sidebar className="border-r-0" {...props}>
       <SidebarHeader>
         <TeamSwitcher teams={data.teams} />
         <NavMain items={data.navMain} />
@@ -110,6 +110,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavWorkspaces workspaces={workspaceData?.data?.workspace} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
+      <SidebarFooter>
+        <NavUser
+          user={{
+            avatar: session?.user?.image || "",
+            email: session?.user?.email || "user@formly.com",
+            name: session?.user?.name || "user",
+            customerId:session?.user?.dodoCustomerId||'customer'
+          }}
+        />
+      </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );

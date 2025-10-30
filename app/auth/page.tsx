@@ -1,16 +1,24 @@
 "use client";
 import Image from "next/image";
 import SignIn from "./_components/SignIn";
-import { FileSpreadsheet } from "lucide-react";
+import { FileSpreadsheet, Loader } from "lucide-react";
 import { redirect } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import authImg from "@/public/auth-image.jpg";
 
 export default function Auth() {
-  const { data } = authClient.useSession();
+  const { data, isPending } = authClient.useSession();
 
   if (data?.session?.id) {
     redirect("/dashboard");
+  }
+
+  if (isPending) {
+    return (
+      <div className=" grid place-content-center min-h-screen w-full">
+        <Loader className=" animate-spin" />
+      </div>
+    );
   }
 
   return (

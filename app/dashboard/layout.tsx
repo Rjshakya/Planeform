@@ -7,8 +7,9 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { authClient, signOut } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
-import { useParams, usePathname } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 
 export default function DashboardLayout({
   children,
@@ -17,6 +18,12 @@ export default function DashboardLayout({
 }>) {
   const pathName = usePathname();
   const { workspaceId } = useParams();
+  const { data, error, isPending } = authClient.useSession();
+  const router = useRouter();
+  if (error) {
+    signOut();
+    router.push("/auth");
+  }
 
   return (
     <SidebarProvider className="">

@@ -8,17 +8,12 @@ import { useCallback, useEffect } from "react";
 
 export const ActionButtonView = (props: NodeViewProps) => {
   const { id, text, type } = props?.node?.attrs as InsertActionButtonParams;
-  const { isSubmitting } =
-    useFormStore((s) => s);
+  const { isSubmitting } = useFormStore((s) => s);
 
   return (
-    <NodeViewWrapper className={"mt-6"}>
-      <Button className="px-6 py-6 " id={id} type={type}>
-        {/* {isSubmitting && (
-          <div className="">
-            <Loader className=" animate-spin" />
-          </div>
-        )} */}
+    <NodeViewWrapper className={"mt-6  "}>
+      <Button size={"sm"} className="px-4 py-5 " id={id} type={type}>
+      
 
         <NodeViewContent content="" as="div" className="text-md content " />
         <div>

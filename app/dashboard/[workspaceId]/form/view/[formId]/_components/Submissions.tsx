@@ -8,9 +8,11 @@ import { ColumnDef, PaginationState } from "@tanstack/react-table";
 
 import { useEffect, useMemo, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { format, setDate } from "date-fns";
 
 export interface Iheads {
   label: string;
+  id: string;
 }
 
 const fetcher = (url: string) => apiClient.get(url);
@@ -26,34 +28,34 @@ export const Submissions = () => {
     `/api/response/form/${formId}?pageIndex=${pagination.pageIndex}&pageSize=${pagination.pageSize}`,
     fetcher
   );
+  const [tableData, setTableData] = useState<any[]>();
 
   const responses = data?.data?.responses;
   const heads: Iheads[] = responses?.headers;
   const columns = useMemo(() => {
     const columnArr: ColumnDef<Iheads>[] = heads?.map((h) => {
       return {
-        id: h?.label,
+        id: h?.id,
         header: h?.label,
-        accessorKey: h?.label,
+        accessorKey: h?.id,
         cell: ({ row }) => {
           // @ts-ignore
-          const isTime = row.getValue(h.label)?.id === "time";
+          const isTime = h?.id === "Time";
+
           if (isTime) {
             // @ts-ignore
-            const time = row.getValue(h.label)?.value;
+            const time = row.getValue(h.id)?.value;
             const date = new Date(time);
             return (
               // @ts-ignore
-              <div className="font-medium ">
-                {date?.toDateString()}, {date?.toLocaleTimeString()}
-              </div>
+              <div className="font-medium ">{format(date, "Pp")}</div>
             );
           }
 
           return (
             <div className="font-medium ">
               {/* @ts-ignore */}
-              <p className=" text-wrap">{row.getValue(h?.label)?.value}</p>
+              <p className=" text-wrap">{row.getValue(h?.id)?.value}</p>
             </div>
           );
         },
@@ -102,6 +104,10 @@ export const Submissions = () => {
 
     return columnArr;
   }, [heads]);
+
+  useEffect(() => {
+    setTableData(responses?.res || []);
+  }, [responses?.res]);
 
   if (error) {
     return (

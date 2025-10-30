@@ -24,21 +24,21 @@ export default function Page() {
             {data?.data?.form?.name || "form"}
           </p>
         </div>
-        <TabsList className=" bg-background flex items-center gap-8">
+        <TabsList className="  bg-accent ">
           <TabsTrigger
-            className=" p-0 text-left md:text-lg py-3.5 w-full h-full data-[state=active]:underline  data-[state=active]:underline-offset-4 "
+            className="  text-left md:text-lg py-3.5 w-full h-full data-[state=active]:bg-card dark:data-[state=active]:bg-card "
             value="Submission"
           >
             Submission
           </TabsTrigger>
           <TabsTrigger
-            className=" p-0 text-left md:text-lg py-3.5 w-full h-full data-[state=active]:underline  data-[state=active]:underline-offset-4"
+            className="  text-left md:text-lg py-3.5 w-full h-full data-[state=active]:bg-card dark:data-[state=active]:bg-card"
             value="Analytics"
           >
             Analytics
           </TabsTrigger>
           <TabsTrigger
-            className=" p-0 text-left md:text-lg py-3.5 w-full h-full data-[state=active]:underline  data-[state=active]:underline-offset-4"
+            className=" p-0 text-left md:text-lg py-3.5 w-full h-full data-[state=active]:bg-card dark:data-[state=active]:bg-card"
             value="Integrations"
           >
             Integrations

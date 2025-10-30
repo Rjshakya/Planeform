@@ -79,16 +79,22 @@ export const PublishForm = () => {
       <DialogTrigger asChild>
         <Button size={"sm"}>Publish</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="gap-7">
         <DialogHeader>
           <DialogTitle>Create new form</DialogTitle>
         </DialogHeader>
-        <div className=" grid gap-2.5">
+        <div className=" grid gap-7">
           <Label>Form name</Label>
           <Input
             value={formName}
             onChange={(e) => setFormName(e?.currentTarget?.value)}
-            placeholder="please provide form name"
+            placeholder="Please provide form name"
+            onKeyDown={async (e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                await handlePublish(formName);
+              }
+            }}
           />
         </div>
         <DialogFooter>
@@ -101,7 +107,7 @@ export const PublishForm = () => {
           </Button>
           <Button onClick={async () => await handlePublish(formName)}>
             {creating && <Loader className={`animate-spin`} />}
-            <span>Ship it</span>
+            <span>Create</span>
           </Button>
         </DialogFooter>
       </DialogContent>

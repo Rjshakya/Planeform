@@ -197,6 +197,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground tracking-tight;
   }
@@ -218,7 +219,7 @@
     h1 {
       font-weight: 700;
       @apply text-3xl md:text-4xl tracking-tighter mt-2
-     /* margin-top: .5em; */;
+      /* margin-top: .5em; */;
     }
 
     h2 {
@@ -277,6 +278,7 @@
     scrollbar-color: var(--accent);
     scrollbar-gutter: 10px;
   }
+
   /* .simple-editor-wrapper::-webkit-scrollbar {
     width: 0.5rem;
   } */
@@ -285,17 +287,17 @@
     border-radius: 10px;
     transition: background 0.3s ease;
   }
+
   .simple-editor-wrapper::-webkit-scrollbar-track {
     background: transparent;
   }
+
   .simple-editor-wrapper::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.25);
   }
 
- 
-
   .tiptap hr {
-    @apply my-10 border-t-4 border-input h-2;
+    @apply my-10 border-t-4 border-input h-4;
   }
 }
 
@@ -306,6 +308,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }

@@ -20,7 +20,6 @@ const ShortInput = (props: NodeViewProps) => {
   const { label, id, type, isRequired, placeholder } = props?.node?.attrs;
 
   const form = useFormStore.getState().getHookForm();
-
   return (
     <>
       <NodeViewWrapper as={"div"}>

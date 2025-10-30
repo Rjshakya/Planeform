@@ -134,7 +134,6 @@ export default function TanStackTable({
 }) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const [data, setData] = useState<any[]>(tableData);
 

@@ -35,6 +35,7 @@ import {
   CalendarDays,
   Equal,
   FilePlus,
+  ImagePlus,
   SendHorizontal,
   Voicemail,
 } from "lucide-react";
@@ -59,6 +60,10 @@ import "@/components/tiptap-node/image-node/image-node.scss";
 import "@/components/tiptap-node/heading-node/heading-node.scss";
 import "@/components/tiptap-node/paragraph-node/paragraph-node.scss";
 import { useDebounceCallBack } from "@/hooks/use-Debounce";
+import UploadImage from "tiptap-extension-upload-image";
+import { ImageExtension, ImageAligner } from "@harshtalks/image-tiptap";
+import { apiClient } from "@/lib/axios";
+import axios from "axios";
 
 interface IformVal {
   name: string;
@@ -247,6 +252,14 @@ const suggestions = createSuggestionsItems([
         })
         .insertActionButton({ id: v4(), text: "submit", type: "submit" })
         .run();
+
+      const actionBtns = editor.$nodes("actionButton");
+      actionBtns?.forEach((btn, i) => {
+        if (i === actionBtns.length - 1) {
+          return;
+        }
+        btn.content = "next";
+      });
     },
     description: "Add new page for multi-step forms",
     icon: <FilePlus size={16} />,
@@ -273,6 +286,38 @@ const suggestions = createSuggestionsItems([
     icon: <SendHorizontal size={16} />,
     searchTerms: ["submit", "button", "action button"],
   },
+  {
+    title: "Add image",
+    command: ({ editor, range }) => {
+      editor.chain().focus().addImage().run();
+    },
+    description: "Add images or brand assets in your form",
+    icon: <ImagePlus size={16} />,
+    searchTerms: ["image", "assets", "brand"],
+  },
+  {
+    title: "Add option",
+    command: ({ editor, range }) => {
+      const { from } = editor.state.selection;
+      const optionNodes = editor.$nodes("optionNode");
+
+      // Filter nodes that are before or contain the cursor, get the last one
+      if (optionNodes) {
+        const closestNode = optionNodes
+          .filter(({ pos, node }) => pos <= from)
+          .sort((a, b) => b.pos - a.pos)[0];
+
+        const { parentId, type } = closestNode?.node.attrs;
+        editor
+          .chain()
+          .focus()
+          .deleteRange(range)
+          .insertOption({ id: "option", label: "option", parentId, type })
+          .run();
+        console.log(closestNode?.node.attrs);
+      }
+    },
+  },
 ]);
 
 export function SimpleEditor({
@@ -292,10 +337,22 @@ export function SimpleEditor({
 
   // form init
   const form = useForm();
-  const pathName = usePathname();
   const { isLastStep, activeStep, maxStep, setActiveStep, handleSubmit } =
     useFormStore((s) => s);
-  // const [formVal, setFormValue] = React.useState<IformVal | null>(null);
+
+  const uploadFn = async (file: File) => {
+    const fileName = file?.name;
+    const formData = new FormData();
+    formData.append("image", file);
+    let url = URL.createObjectURL(file);
+    const res = await apiClient.post("/api/upload", { fileName });
+    if (res?.status === 200) {
+      const signedUrl = res?.data?.uploadUrl;
+      url = res?.data?.fileUrl;
+      await axios.put(signedUrl, file);
+    }
+    return url;
+  };
 
   // editor init
   const editor = useEditor({
@@ -319,6 +376,7 @@ export function SimpleEditor({
           openOnClick: true,
           enableClickSelection: true,
         },
+        // horizontalRule: { HTMLAttributes: { tag: "div" } },
       }) as any,
       Slash.configure({
         suggestion: {
@@ -371,6 +429,9 @@ export function SimpleEditor({
       Placeholder.configure({
         placeholder: "Press / to add inputs",
       }),
+      UploadImage.configure({
+        uploadFn: uploadFn,
+      }),
     ],
     autofocus: true,
     editable: isEditable,
@@ -405,7 +466,7 @@ export function SimpleEditor({
   }
 
   return (
-    <div className="w-full h-screen simple-editor-wrapper selection:bg-blue-200/40 dark:selection:bg-blue-700/40  relative ">
+    <div className="w-full  simple-editor-wrapper selection:bg-blue-200/40 dark:selection:bg-blue-700/40  relative ">
       <EditorContext.Provider value={{ editor }}>
         {isEditable && <TiptapToolBar editor={editor} />}
 
@@ -415,21 +476,22 @@ export function SimpleEditor({
             className="max-w-2xl w-full h-full px-2 mx-auto"
           >
             <EditorDragHandle editor={editor} />
+
             {isEditable ? (
               <SlashCmdProvider>
                 <EditorContent
                   editor={editor}
                   role="presentation"
-                  className=" w-full h-full flex flex-col mx-auto  md:px-4 md:py-2 px-2 mt-18 md:mt-0"
+                  className=" w-full h-full flex flex-col mx-auto  md:px-4 md:py-2 px-2 mt-18 md:mt-0 relative"
                   ref={editorContentRef}
                 />
 
                 <SlashCmd.Root editor={editor}>
-                  <SlashCmd.Cmd className=" rounded-lg bg-secondary overflow-y-auto z-50 border-2 dark:border-0">
+                  <SlashCmd.Cmd className="  bg-card rounded-2xl  z-50 border-2 dark:border-0">
                     <SlashCmd.Empty className="px-4 py-2">
                       No commands available
                     </SlashCmd.Empty>
-                    <SlashCmd.List className=" w-72 p-2 max-h-44  overflow-y-auto gap-4 shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
+                    <SlashCmd.List className=" w-[360px] px-2 py-3 max-h-44 rounded-2xl overscroll-y-contain  overflow-y-auto gap-6 shadow-[0_3px_10px_rgb(0,0,0,0.2)] ">
                       {suggestions?.map?.((item) => {
                         if (!item || !item.title) return null;
                         return (
@@ -439,17 +501,17 @@ export function SimpleEditor({
                               item?.command?.(val);
                             }}
                             key={item.title}
-                            className=""
+                            className=" hover:bg-accent  rounded-md"
                           >
-                            <div className="flex gap-4 items-start border-0 my-2 py-2 px-2 bg-secondary dark:bg-card/50 rounded-md">
+                            <div className="flex gap-4 items-start border-0 my-2 py-2 px-4 bg-secondary/50 dark:bg-secondary/50 rounded-md">
                               <div className="h-full pt-2 pl-1">
                                 {item.icon}
                               </div>
                               <div className=" ">
-                                <p className="text-md font-medium">
+                                <p className="text-sm font-medium">
                                   {item.title}
                                 </p>
-                                <p className=" text-xs font-medium text-muted-foreground mt-2">
+                                <p className=" text-xs font-medium text-muted-foreground mt-1">
                                   {item?.description}
                                 </p>
                               </div>

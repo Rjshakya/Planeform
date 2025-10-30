@@ -40,33 +40,31 @@ export default function Page() {
   }
 
   return (
-    <div className="grid gap-16 max-w-4xl w-full mx-auto">
-      <Tabs defaultValue="forms" className="w-full">
-        <div className=" mb-8  flex justify-between items-center gap-2">
-          <div className=" text-muted-foreground text-3xl md:text-5xl font-semibold tracking-tighter">
-            {data?.workspace?.name || "Your workspace"}
-          </div>
-
-          <div className="">
-            <Button
-              onClick={() =>
-                router.push(`/dashboard/${workspaceId}/form/create`)
-              }
-            >
-              {" "}
-              <PlusIcon /> form
-            </Button>
-          </div>
+    <div className="grid gap-4 max-w-4xl w-full mx-auto">
+      <div className=" mb-8  flex justify-between items-center gap-2">
+        <div className=" text-muted-foreground text-3xl md:text-5xl font-semibold tracking-tighter">
+          {data?.workspace?.name || "Your workspace"}
         </div>
-        <TabsList className=" bg-background flex items-center gap-8">
+
+        <div className="">
+          <Button
+            onClick={() => router.push(`/dashboard/${workspaceId}/form/create`)}
+          >
+            {" "}
+            <PlusIcon /> form
+          </Button>
+        </div>
+      </div>
+      <Tabs defaultValue="forms" className="w-full">
+        <TabsList className="h-10  bg-accent rounded-sm">
           <TabsTrigger
-            className=" p-0 text-left md:text-lg py-3.5 w-full h-full data-[state=active]:underline  data-[state=active]:underline-offset-4 "
+            className=" rounded-sm text-left md:text-lg w-full h-full py-4 px-5  data-[state=active]:bg-card dark:data-[state=active]:bg-card"
             value="forms"
           >
             Forms
           </TabsTrigger>
           <TabsTrigger
-            className=" p-0 text-left md:text-lg py-3.5 w-full h-full data-[state=active]:underline  data-[state=active]:underline-offset-4"
+            className=" rounded-sm text-left md:text-lg w-full h-full py-4 px-5 data-[state=active]:bg-card dark:data-[state=active]:bg-card"
             value="settings"
           >
             Settings
