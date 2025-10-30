@@ -70,7 +70,7 @@ export const RenderForm = () => {
       useFormStore.setState({ isSingleForm: false, creator: creator });
     }
     setActiveIdx(0); // Reset to first step
-  }, [form_schema]);
+  }, [form_schema, creator]);
 
   if (error) {
     return (
