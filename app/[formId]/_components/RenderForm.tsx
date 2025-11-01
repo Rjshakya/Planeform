@@ -22,9 +22,20 @@ export const RenderForm = () => {
     setActiveIdx(index);
   };
 
+  const handleCreateRespondent = async (formId: string, customerId: string) => {
+    const resp = await apiClient.post(`/api/respondent`, {
+      form: formId,
+      customerId: customerId,
+    });
+
+    const respondentId = resp?.data?.respondent?.id;
+    useFormStore?.setState({ respondentId });
+  };
+
   const form = data?.data?.form;
   const form_schema = form?.form_schema;
   const creator = form?.creator;
+  const customerId = form?.customerId;
 
   useEffect(() => {
     if (activeIdx === undefined) return;
@@ -65,12 +76,25 @@ export const RenderForm = () => {
 
     setDocs(parsedDocs);
     if (parsedDocs?.length === 1) {
-      useFormStore.setState({ isSingleForm: true, creator: creator });
+      useFormStore.setState({
+        isSingleForm: true,
+        creator: creator,
+        customerId: customerId,
+      });
     } else {
-      useFormStore.setState({ isSingleForm: false, creator: creator });
+      useFormStore.setState({
+        isSingleForm: false,
+        creator: creator,
+        customerId: customerId,
+      });
     }
     setActiveIdx(0); // Reset to first step
   }, [form_schema, creator]);
+
+  useEffect(() => {
+    if (!formId || !customerId) return;
+    handleCreateRespondent(formId as string, customerId);
+  }, [formId, customerId]);
 
   if (error) {
     return (

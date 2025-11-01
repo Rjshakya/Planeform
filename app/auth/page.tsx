@@ -4,7 +4,8 @@ import SignIn from "./_components/SignIn";
 import { FileSpreadsheet, Loader } from "lucide-react";
 import { redirect } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
-import authImg from "@/public/auth-image.jpg";
+import authImg from "@/public/auth3.jpg";
+import { Logo } from "@/components/Logo";
 
 export default function Auth() {
   const { data, isPending } = authClient.useSession();
@@ -23,8 +24,12 @@ export default function Auth() {
 
   return (
     <main className="grid min-h-screen p-2 lg:grid-cols-2">
-      <div className=" hidden  lg:flex items-center justify-center">
+      <div className=" hidden  lg:flex items-center justify-center p-4">
         <div className="w-full h-full relative rounded-2xl">
+          {/* <div className="w-full h-full bg-primary rounded-2xl pt-8 flex flex-col  ">
+            <span className="pl-4 text-2xl font-bold tracking-tighter text-background">Forms that are actually good</span>
+            <span className="pl-8 text-2xl font-bold tracking-tighter text-background">Forms that are actually smart</span>
+          </div> */}
           <Image
             src={authImg}
             alt="Image"
@@ -34,16 +39,9 @@ export default function Auth() {
       </div>
       <div className="flex flex-col gap-4 p-4 md:3 md:px-8">
         <div className="flex gap-2 justify-start">
-          <a href="#" className="flex items-center gap-2 font-medium">
-            <div className="logo md:ml-2.5 ">
-              <span className=" font-bold flex items-start gap-2 ">
-                <p className="text-3xl text-primary">*</p>
-                <p className=" text-lg">Formly</p>
-              </span>
-            </div>
-          </a>
+          <Logo />
         </div>
-        <div className="flex flex-1 items-center justify-center">
+        <div className="flex flex-1 items-center justify-center mt-12">
           <div className="w-full max-w-md ">
             <SignIn />
           </div>

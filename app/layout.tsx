@@ -34,7 +34,7 @@ const geist = Geist({
   subsets: ["latin"],
 });
 
-const spaceGrotesk = Space_Grotesk({
+export const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
   subsets: ["latin"],
 });
@@ -56,7 +56,7 @@ export default function RootLayout({
       >
         <div
           // max-w-6xl mx-auto
-          className={`${spaceGrotesk.className}  tracking-tighter`}
+          className={`${spaceGrotesk.className}  tracking-tighter w-full`}
         >
           {children}
         </div>
