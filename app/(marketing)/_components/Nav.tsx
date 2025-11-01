@@ -1,4 +1,3 @@
-import { spaceGrotesk } from "@/app/layout";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,7 +9,13 @@ import {
 } from "@/components/ui/sheet";
 import { authClient } from "@/lib/auth-client";
 import { Asterisk } from "lucide-react";
+import { Space_Grotesk } from "next/font/google";
 import Link from "next/link";
+
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
+  subsets: ["latin"],
+});
 
 export const Nav = () => {
   return (

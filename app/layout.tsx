@@ -34,7 +34,7 @@ const geist = Geist({
   subsets: ["latin"],
 });
 
-export const spaceGrotesk = Space_Grotesk({
+ const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
   subsets: ["latin"],
 });
