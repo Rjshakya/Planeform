@@ -4,6 +4,7 @@ import {
   CSSProperties,
   Dispatch,
   SetStateAction,
+  useCallback,
   useId,
   useRef,
   useState,
@@ -175,6 +176,13 @@ export default function TanStackTable({
     columnResizeMode: "onChange",
   });
 
+  // const getHeaderName = useCallback((colId: string) => {
+  //   const headerGroup = table
+  //     .getHeaderGroups()
+  //     ?.map((head) => head?.headers[0]);
+  //   const header = headerGroup.find((head) => head.column.id === colId);
+  //   return header?.column.columnDef.header
+  // }, []);
   return (
     <div className="space-y-4 overflow-auto">
       {/* Filters */}
@@ -248,7 +256,7 @@ export default function TanStackTable({
                       }
                       onSelect={(event) => event.preventDefault()}
                     >
-                      {column.id}
+                      {column.columnDef.header?.toString() || column.id}
                     </DropdownMenuCheckboxItem>
                   );
                 })}

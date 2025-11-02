@@ -26,19 +26,19 @@ export default function Page() {
         </div>
         <TabsList className="  bg-accent ">
           <TabsTrigger
-            className="  text-left md:text-lg py-3.5 w-full h-full data-[state=active]:bg-card dark:data-[state=active]:bg-card "
+            className=" rounded-sm text-left md:text-lg w-full h-full py-4 px-5  data-[state=active]:bg-card dark:data-[state=active]:bg-card"
             value="Submission"
           >
             Submission
           </TabsTrigger>
           <TabsTrigger
-            className="  text-left md:text-lg py-3.5 w-full h-full data-[state=active]:bg-card dark:data-[state=active]:bg-card"
+            className=" rounded-sm text-left md:text-lg w-full h-full py-4 px-5  data-[state=active]:bg-card dark:data-[state=active]:bg-card"
             value="Analytics"
           >
             Analytics
           </TabsTrigger>
           <TabsTrigger
-            className=" p-0 text-left md:text-lg py-3.5 w-full h-full data-[state=active]:bg-card dark:data-[state=active]:bg-card"
+            className=" rounded-sm text-left md:text-lg w-full h-full py-4 px-5  data-[state=active]:bg-card dark:data-[state=active]:bg-card "
             value="Integrations"
           >
             Integrations
