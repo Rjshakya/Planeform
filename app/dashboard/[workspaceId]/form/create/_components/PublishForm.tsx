@@ -44,7 +44,7 @@ export const PublishForm = () => {
     const form_schema = JSON.stringify(json);
     const creator = session?.user?.id;
     const name = formname;
-    const customerId = session?.user?.dodoCustomerId
+    const customerId = session?.user?.dodoCustomerId;
 
     setCreating(true);
 
@@ -55,7 +55,7 @@ export const PublishForm = () => {
         creator,
         form_schema,
         shortId,
-        customerId
+        customerId,
       });
 
       if (res.status === 201) {

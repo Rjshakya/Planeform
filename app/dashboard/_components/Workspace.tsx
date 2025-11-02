@@ -46,7 +46,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const fetcher = (url: string) => apiClient.get(url).then((res) => res.data);
+// const fetcher = (url: string) => apiClient.get(url).then((res) => res.data);
 
 export default function Workspace() {
   const [creating, setCreating] = useState(false);

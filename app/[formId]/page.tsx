@@ -18,7 +18,7 @@ export default function Page() {
           </Button>
           <ThemeToggle variant={"outline"} />
         </ButtonGroup> */}
-         <ThemeToggle variant={"outline"} />
+        <ThemeToggle variant={"outline"} />
       </div>
       <div className={cn(` max-w-6xl w-full mx-auto px-2`)}>
         <RenderForm />
