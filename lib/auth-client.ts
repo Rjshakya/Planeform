@@ -16,8 +16,6 @@ export const authClient = createAuthClient({
     inferAdditionalFields({
       user: {
         dodoCustomerId: { type: "string" },
-        subsriptionPlan: { type: "string" },
-        subsriptionStatus: { type: "string" },
       },
     }),
   ],
