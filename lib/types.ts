@@ -3,6 +3,7 @@ import { DocumentType, MarkType, NodeType, TextType } from "@tiptap/core";
 export type createWorkspaceParams = {
   name: string;
   owner: string;
+  customerId:string
 };
 
 export type JsonDoc =

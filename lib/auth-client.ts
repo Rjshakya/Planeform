@@ -67,7 +67,7 @@ export const checkout = async ({
 }) => {
   try {
     const res = await authClient.dodopayments.checkout({
-      slug: "free-plan",
+      slug: "Pro",
       customer: {
         email,
         name,

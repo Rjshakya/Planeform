@@ -1,9 +1,15 @@
+import { cn } from "@/lib/utils";
 import React from "react";
 
-export const Logo = () => {
+export const Logo = ({ className }: { className?: string }) => {
   return (
-    <div className="logo pl-2">
-      <span className=" font-bold flex items-center justify-center gap-2 ">
+    <div className={cn(`logo pl-2`)}>
+      <span
+        className={cn(
+          `font-bold flex items-center justify-center gap-2`,
+          className
+        )}
+      >
         <div className="size-5 text-primary">
           <svg
             width="100%"

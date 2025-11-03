@@ -51,7 +51,8 @@ import {
 export default function Workspace() {
   const [creating, setCreating] = useState(false);
   const [workspaceName, setWorkspaceName] = useState("");
-  const { workspace, error, isLoading, mutate, userId } = useWorkspace();
+  const { workspace, error, isLoading, mutate, userId, customerId } =
+    useWorkspace();
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
@@ -84,6 +85,7 @@ export default function Workspace() {
         const workspaceBody = {
           name: "formly-wrkspace",
           owner: userId,
+          customerId: customerId,
         } as createWorkspaceParams;
         const { data, status } = await apiClient.post(
           "/api/workspace",
@@ -138,12 +140,12 @@ export default function Workspace() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="m-1.5">
-              <DropdownMenuRadioGroup>
+              <DropdownMenuGroup>
                 <DropdownMenuItem>
                   <FilePlus />
-                  <span onClick={handleCreateForm}>Create form</span>
+                  <span onClick={handleCreateForm}>New form</span>
                 </DropdownMenuItem>
-              </DropdownMenuRadioGroup>
+              </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
                 <DropdownMenuItem>
@@ -168,6 +170,7 @@ export default function Workspace() {
                     await handleCreateWorkspace({
                       name: workspaceName,
                       owner: userId || "",
+                      customerId: customerId || "",
                     });
                   }
                 }}
@@ -178,6 +181,7 @@ export default function Workspace() {
                     handleCreateWorkspace({
                       name: workspaceName,
                       owner: userId || "",
+                      customerId: customerId || "",
                     })
                   }
                 >

@@ -16,5 +16,5 @@ export const useWorkspace = () => {
     fetcher
   );
 
-  return { workspace: data?.workspace as Iworkspace[], isLoading, error, mutate , userId:session?.user?.id };
+  return { workspace: data?.workspace as Iworkspace[], isLoading, error, mutate , userId:session?.user?.id , customerId:session?.user?.dodoCustomerId };
 };

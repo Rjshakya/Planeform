@@ -26,10 +26,6 @@ export const Integrations = ({
 }) => {
   const { workspaceId, formId } = useParams();
 
-  // const { data, error, isLoading } = useSWR(
-  //   `/api/integration/${formId}`,
-  //   fetcher
-  // );
 
   const integrations = [
     {

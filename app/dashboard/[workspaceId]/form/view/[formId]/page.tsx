@@ -6,6 +6,7 @@ import { apiClient } from "@/lib/axios";
 import useSWR from "swr";
 import { useParams } from "next/navigation";
 import { Integrations } from "./_components/Integrations";
+import { Analytics } from "./_components/Analytics";
 
 const fetcher = (url: string) => apiClient.get(url);
 export default function Page() {
@@ -48,7 +49,7 @@ export default function Page() {
           <Submissions />
         </TabsContent>
         <TabsContent className="px-1 mt-4" value="Analytics">
-          See analytics of your form here .
+          <Analytics />
         </TabsContent>
         <TabsContent className="px-1 mt-4" value="Integrations">
           <Integrations

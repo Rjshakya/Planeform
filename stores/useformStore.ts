@@ -100,18 +100,6 @@ export const useFormStore = create<IformStore>((set, get) => ({
     isLastStep && set({ isSubmitting: true });
 
     try {
-      // const respondent = await apiClient.post(`/api/respondent`, {
-      // form: formId,
-      // customerId: customerId,
-      // });
-
-      // if (respondent.status !== 200) {
-      //   toast("failed to submit form please try again later;");
-      //   return false;
-      // }
-
-      // const respondentId = respondent?.data?.respondent?.id;
-
       let respondent = respondentId;
 
       if (!respondent) {

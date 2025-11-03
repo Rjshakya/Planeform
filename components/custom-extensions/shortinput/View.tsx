@@ -23,51 +23,50 @@ const ShortInput = (props: NodeViewProps) => {
   return (
     <>
       <NodeViewWrapper as={"div"}>
-        {
-          <FormField
-            control={form?.control}
-            name={id}
-            render={({ field }) => (
-              <FormItem className={`mt-4 field gap-3`}>
-                <FormLabel
-                  htmlFor={label}
-                  aria-label={label}
-                  className=" text-md pl-1"
-                  id={id}
-                >
-                  {/* {field?.} */}
-                  <NodeViewContent
-                    onKeyDown={(e) => e?.key === "Enter" && e?.preventDefault()}
-                    as="div"
-                    className=" min-w-[20px] w-full"
+        <FormField
+          control={form?.control}
+          name={id}
+          render={({ field }) => (
+            <FormItem className={`mt-4 field gap-3`}>
+              <FormLabel
+                htmlFor={label}
+                aria-label={label}
+                className=" text-md pl-1"
+                id={id}
+              >
+                {/* {field?.} */}
+                <NodeViewContent
+                  onKeyDown={(e) => e?.key === "Enter" && e?.preventDefault()}
+                  as="div"
+                  className=" min-w-[20px] w-full"
+                />
+              </FormLabel>
+              <FormControl>
+                {type === "phone" ? (
+                  <Component
+                    value={field?.value}
+                    valueChange={field?.onChange}
+                    id={id}
+                    placeholder={placeholder}
                   />
-                </FormLabel>
-                <FormControl>
-                  {type === "phone" ? (
-                    <Component
-                      value={field?.value}
-                      valueChange={field?.onChange}
-                      id={id}
-                      placeholder={placeholder}
-                    />
-                  ) : (
-                    <Input
-                      placeholder={placeholder}
-                      type={type}
-                      required={isRequired}
-                      value={field?.value}
-                      onChange={field?.onChange}
-                      name={field?.name}
-                      disabled={props?.editor?.isEditable}
-                      ref={field?.ref}
-                      onBlur={field?.onBlur}
-                    />
-                  )}
-                </FormControl>
-              </FormItem>
-            )}
-          />
-        }
+                ) : (
+                  <Input
+                    placeholder={placeholder}
+                    type={type}
+                    required={isRequired}
+                    // value={field?.value}
+                    // onChange={field?.onChange}
+                    // name={field?.name}
+                    // disabled={props?.editor?.isEditable}
+                    // ref={field?.ref}
+                    // onBlur={field?.onBlur}
+                    {...field}
+                  />
+                )}
+              </FormControl>
+            </FormItem>
+          )}
+        />
       </NodeViewWrapper>
     </>
   );

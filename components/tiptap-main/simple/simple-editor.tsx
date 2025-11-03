@@ -36,6 +36,7 @@ import {
   Equal,
   FilePlus,
   ImagePlus,
+  Plus,
   SendHorizontal,
   Voicemail,
 } from "lucide-react";
@@ -64,6 +65,8 @@ import UploadImage from "tiptap-extension-upload-image";
 import { ImageExtension, ImageAligner } from "@harshtalks/image-tiptap";
 import { apiClient } from "@/lib/axios";
 import axios from "axios";
+import { fileUploadNode } from "@/components/custom-extensions/file-uplaod/node";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 interface IformVal {
   name: string;
@@ -95,8 +98,7 @@ const suggestions = createSuggestionsItems([
         })
         .run();
     },
-    description:
-      "Add a one-line text field — great for names, emails, or short responses.",
+    description: "Add a one-line text field",
     icon: <Text size={16} />,
   },
 
@@ -117,8 +119,7 @@ const suggestions = createSuggestionsItems([
         })
         .run();
     },
-    description:
-      "Add a larger text box for longer responses, feedback, or descriptions.",
+    description: "Add a larger text box for longer responses",
     icon: <Text size={16} />,
   },
 
@@ -193,8 +194,7 @@ const suggestions = createSuggestionsItems([
         })
         .run();
     },
-    description:
-      "Add a question where users can select only one answer from multiple options.",
+    description: "Add a question where users can select only one answer",
     icon: <Equal size={16} />,
   },
 
@@ -232,7 +232,7 @@ const suggestions = createSuggestionsItems([
         })
         ?.run();
     },
-    description: "Add a question where users can select more than one answer.",
+    description: "Add a question where users can select multiple answer.",
     icon: <Equal size={16} />,
   },
   {
@@ -282,7 +282,7 @@ const suggestions = createSuggestionsItems([
         .insertActionButton({ id: v4(), text: "Submit", type: "submit" })
         .run();
     },
-    description: "Add Submit button , so that users can submit their responses",
+    description: "Add Submit button",
     icon: <SendHorizontal size={16} />,
     searchTerms: ["submit", "button", "action button"],
   },
@@ -317,6 +317,29 @@ const suggestions = createSuggestionsItems([
         console.log(closestNode?.node.attrs);
       }
     },
+    description: "Add new option for multiple choice or single choice",
+    icon: <Plus size={16} />,
+  },
+  {
+    title: "File Upload ",
+    command: ({ editor, range }) => {
+      editor
+        ?.chain()
+        ?.focus()
+        ?.deleteRange(range)
+        ?.insertFileUploadInput({
+          id: v4(),
+          isRequired: true,
+          label: "upload file",
+          type: "multiple",
+          maxFiles: 2,
+          maxSize: 5 * 1024 * 1024,
+        })
+        .run();
+    },
+    description: "Add a file upload field to collect files from users",
+    icon: <FilePlus size={16} />,
+    searchTerms: ["file upload", "upload", "file", "attachment"],
   },
 ]);
 
@@ -345,10 +368,12 @@ export function SimpleEditor({
     const formData = new FormData();
     formData.append("image", file);
     let url = URL.createObjectURL(file);
-    const res = await apiClient.post("/api/upload", { fileName });
+    const res = await apiClient.post("/api/file", { fileName });
     if (res?.status === 200) {
-      const signedUrl = res?.data?.uploadUrl;
-      url = res?.data?.fileUrl;
+      const signedUrl = res?.data?.url?.uploadUrl;
+      url = res?.data?.url?.fileUrl;
+      console.log(res?.data);
+
       await axios.put(signedUrl, file);
     }
     return url;
@@ -420,6 +445,7 @@ export function SimpleEditor({
       optionNode,
       dateInputNode,
       actionButtonNode,
+      fileUploadNode,
       Focus.configure({
         className: "has-focus",
         mode: "all",
@@ -487,40 +513,44 @@ export function SimpleEditor({
                 />
 
                 <SlashCmd.Root editor={editor}>
-                  <SlashCmd.Cmd className="  bg-card rounded-2xl  z-50 border-2 dark:border-0">
+                  <SlashCmd.Cmd className="w-[380px] backdrop-blur-3xl rounded-md z-50 border dark:border-0 shadow-xl dark:bg-secondary/30">
                     <SlashCmd.Empty className="px-4 py-2">
                       No commands available
                     </SlashCmd.Empty>
-                    <SlashCmd.List className=" w-[360px] px-2 py-3 max-h-44 rounded-2xl overscroll-y-contain  overflow-y-auto gap-6 shadow-[0_3px_10px_rgb(0,0,0,0.2)] ">
-                      {suggestions?.map?.((item) => {
-                        if (!item || !item.title) return null;
-                        return (
-                          <SlashCmd.Item
-                            value={item?.title}
-                            onCommand={(val) => {
-                              item?.command?.(val);
-                            }}
-                            key={item.title}
-                            className=" hover:bg-accent  rounded-md"
-                          >
-                            <div className="flex gap-4 items-start border-0 my-2 py-2 px-4 bg-secondary/50 dark:bg-secondary/50 rounded-md">
-                              <div className="h-full pt-2 pl-1">
-                                {item.icon}
+                    <ScrollArea className="h-[200px]">
+                      <SlashCmd.List className=" w-full grid gap-4 px-2 py-1 rounded-md ">
+                        {suggestions?.map?.((item) => {
+                          if (!item || !item.title) return null;
+                          return (
+                            <SlashCmd.Item
+                              value={item?.title}
+                              onCommand={(val) => {
+                                item?.command?.(val);
+                              }}
+                              key={item.title}
+                              className=" dark:hover:bg-accent/10 hover:bg-accent/30 hover:backdrop-blur-lg  rounded-md border dark:border-border/40 my-1"
+                            >
+                              <div className="flex gap-4 items-start  my-2 py-2 px-4 ">
+                                <div className="h-full pt-2 pl-1">
+                                  {item.icon}
+                                </div>
+                                <div className=" ">
+                                  <p className="text-sm font-medium">
+                                    {item.title}
+                                  </p>
+                                  <p className=" text-xs font-medium text-muted-foreground mt-1">
+                                    {item?.description}
+                                  </p>
+                                </div>
                               </div>
-                              <div className=" ">
-                                <p className="text-sm font-medium">
-                                  {item.title}
-                                </p>
-                                <p className=" text-xs font-medium text-muted-foreground mt-1">
-                                  {item?.description}
-                                </p>
-                              </div>
-                            </div>
-                          </SlashCmd.Item>
-                        );
-                      })}
-                      {/* </ItemGroup> */}
-                    </SlashCmd.List>
+                            </SlashCmd.Item>
+                          );
+                        })}
+
+                        {/* </ItemGroup> */}
+                      </SlashCmd.List>
+                      <ScrollBar orientation="vertical" />
+                    </ScrollArea>
                   </SlashCmd.Cmd>
                 </SlashCmd.Root>
               </SlashCmdProvider>

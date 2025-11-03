@@ -21,6 +21,8 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  SidebarMenu,
+  SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { url } from "node:inspector";
@@ -29,51 +31,52 @@ import useSWR from "swr";
 import { authClient } from "@/lib/auth-client";
 import { redirect, useParams, usePathname } from "next/navigation";
 import { NavUser } from "./nav-user";
+import { Logo } from "./Logo";
 
 // This is sample data.
 const data = {
   teams: [
     {
-      name: "Formly",
+      name: "Planetform",
       logo: Command,
       plan: "Free",
     },
   ],
   navMain: [
-    {
-      title: "Search",
-      url: "#",
-      icon: Search,
-    },
+    // {
+    //   title: "Search",
+    //   url: "#",
+    //   icon: Search,
+    // },
     {
       title: "Home",
       url: "/dashboard",
       icon: Home,
       isActive: true,
     },
-    {
-      title: "Inbox",
-      url: "#",
-      icon: Inbox,
-      badge: "10",
-    },
+    // {
+    //   title: "Inbox",
+    //   url: "#",
+    //   icon: Inbox,
+    //   badge: "10",
+    // },
   ],
   navSecondary: [
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-    },
-    {
-      title: "Templates",
-      url: "#",
-      icon: Blocks,
-    },
-    {
-      title: "Help",
-      url: "#",
-      icon: MessageCircleQuestion,
-    },
+    // {
+    //   title: "Settings",
+    //   url: "#",
+    //   icon: Settings2,
+    // },
+    // {
+    //   title: "Templates",
+    //   url: "#",
+    //   icon: Blocks,
+    // },
+    // {
+    //   title: "Help",
+    //   url: "#",
+    //   icon: MessageCircleQuestion,
+    // },
   ],
   workspaces: [
     {
@@ -101,9 +104,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   return (
     <Sidebar className="border-r-0" {...props}>
-      <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
-        <NavMain items={data.navMain} />
+      <SidebarHeader className="gap-4">
+        {/* <TeamSwitcher teams={data.teams} /> */}
+        <SidebarMenu>
+           <SidebarMenuItem>
+             <Logo className="justify-start"/>
+           </SidebarMenuItem>
+        </SidebarMenu>
+        <NavMain  items={data.navMain} />
       </SidebarHeader>
       <SidebarContent>
         {/* <NavFavorites favorites={data.favorites} /> */}
@@ -116,7 +124,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             avatar: session?.user?.image || "",
             email: session?.user?.email || "user@formly.com",
             name: session?.user?.name || "user",
-            customerId:session?.user?.dodoCustomerId||'customer'
+            customerId: session?.user?.dodoCustomerId || "customer",
           }}
         />
       </SidebarFooter>
