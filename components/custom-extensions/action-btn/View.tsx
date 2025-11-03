@@ -13,8 +13,6 @@ export const ActionButtonView = (props: NodeViewProps) => {
   return (
     <NodeViewWrapper className={"mt-6  "}>
       <Button size={"sm"} className="px-4 py-5 " id={id} type={type}>
-      
-
         <NodeViewContent content="" as="div" className="text-md content " />
         <div>
           {isSubmitting ? <Loader className=" animate-spin" /> : <ArrowRight />}

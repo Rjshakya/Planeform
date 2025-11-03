@@ -116,7 +116,7 @@ export const RenderForm = () => {
   return (
     <div className="pt-3">
       {docs?.length > 1 && activeIdx !== 0 && (
-        <div className="w-full max-w-sm mx-auto ">
+        <div className="w-full max-w-[400px] mx-auto ">
           <Button
             onClick={() => handleActiveIndex(activeIdx - 1)}
             variant={"secondary"}

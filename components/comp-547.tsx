@@ -81,7 +81,7 @@ export default function FileUploadComp({
           >
             <ImageIcon className="size-4 opacity-60" />
           </div>
-          <p className="mb-1.5 text-sm font-medium">Drop your images here</p>
+          <p className="mb-1.5 text-sm font-medium">Drop your files here</p>
           <p className="text-xs text-muted-foreground">(max. {maxSizeMB}MB)</p>
           <Button
             type="button"

@@ -24,7 +24,7 @@ export const fileUploadNode = Node.create({
       label: { default: "Upload image" },
       isRequired: { default: true },
       type: { default: "single" },
-      maxFiles: { default: 2 },
+      maxFiles: { default: 1 },
       maxSize: { default: 5 * 1024 * 1024 },
     };
   },

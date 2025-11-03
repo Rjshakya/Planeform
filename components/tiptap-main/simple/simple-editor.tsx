@@ -332,7 +332,7 @@ const suggestions = createSuggestionsItems([
           isRequired: true,
           label: "upload file",
           type: "multiple",
-          maxFiles: 2,
+          maxFiles: 1,
           maxSize: 5 * 1024 * 1024,
         })
         .run();

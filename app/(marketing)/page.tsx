@@ -18,9 +18,9 @@ export default function Landing() {
         <Hero />
       </div>
 
-      <div className=" w-16 h-16 fixed bottom-1 right-1 z-30">
+      {/* <div className=" w-16 h-16 fixed bottom-1 right-1 z-30">
         <ThemeToggle />
-      </div>
+      </div> */}
     </main>
   );
 }
