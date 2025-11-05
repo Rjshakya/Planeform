@@ -115,20 +115,21 @@ export const HeadingDropdownMenu = React.forwardRef<
           <TooltipContent>Heading</TooltipContent>
         </Tooltip>
 
-        <DropdownMenuContent align="start">
-          <Card className=" py-1 border-0 shadow-none w-full">
-            <CardContent className="px-1 w-full">
+        <DropdownMenuContent align="start" className=" rounded-sm grid p-1">
+          {/* <Card className=" py-1 border-0 shadow-none w-full bg-popover">
+            <CardContent className="px-1 w-full"> */}
               {levels.map((level) => (
-                <DropdownMenuItem key={`heading-${level}`} asChild>
+                <DropdownMenuItem className="w-full flex justify-start" key={`heading-${level}`} asChild>
                   <HeadingButton
                     editor={editor}
                     level={level}
                     text={`Heading ${level}`}
+                    
                   />
                 </DropdownMenuItem>
               ))}
-            </CardContent>
-          </Card>
+            {/* </CardContent>
+          </Card> */}
         </DropdownMenuContent>
       </DropdownMenu>
     );

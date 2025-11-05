@@ -25,6 +25,12 @@ export const defaultEditorContent = {
       },
     },
     {
+      type: "paragraph",
+      attrs: {
+        textAlign: null,
+      },
+    },
+    {
       type: "shortInput",
       attrs: {
         id: v4(),
@@ -56,12 +62,7 @@ export const defaultEditorContent = {
         },
       ],
     },
-    {
-      type: "paragraph",
-      attrs: {
-        textAlign: null,
-      },
-    },
+    
   ],
   attrs: {},
 } satisfies JsonDoc;

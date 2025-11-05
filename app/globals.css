@@ -55,7 +55,8 @@
     "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,"Liberation Mono", "Courier New", monospace;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
   --radius: 0.85rem;
   --shadow-x: 0;
   --shadow-y: 1px;
@@ -77,6 +78,12 @@
   --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
+
+  --tt-color-highlight-red: oklch(0.81 0.117 11.638);
+  --tt-color-highlight-blue: oklch(0.809 0.105 251.813);
+  --tt-color-highlight-green: oklch(0.871 0.15 154.449);
+  --tt-color-highlight-yellow: oklch(0.924 0.12 95.746);
+  --tt-color-highlight-purple: oklch(0.827 0.119 306.383);
 }
 
 .dark {
@@ -137,6 +144,12 @@
   --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
     0 8px 10px -1px hsl(0 0% 0% / 0.1);
   --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+
+  --tt-color-highlight-red: oklch(0.645 0.246 16.439);
+  --tt-color-highlight-blue: oklch(0.488 0.243 264.376);
+  --tt-color-highlight-green: oklch(0.723 0.219 149.579);
+  --tt-color-highlight-yellow: oklch(0.769 0.188 70.08);
+  --tt-color-highlight-purple: oklch(0.627 0.265 303.9);
 }
 
 @theme inline {
@@ -274,29 +287,20 @@
 
   * {
     scrollbar-width: thin;
-    /* scrollbar-color: var(--accent);
-    scrollbar-gutter: 10px; */
   }
-
-  /* .simple-editor-wrapper::-webkit-scrollbar {
-    width: 0.5rem;
-  } */
-  /* .simple-editor-wrapper::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 10px;
-    transition: background 0.3s ease;
-  }
-
-  .simple-editor-wrapper::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .simple-editor-wrapper::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.25);
-  } */
 
   .tiptap hr {
     @apply my-10 border-t-4 border-input h-4;
+  }
+
+  .tiptap {
+    img.ProseMirror-selectednode {
+      @apply outline-[2px] outline-primary/60;
+    }
+
+    img {
+      @apply rounded-sm max-w-full  max-h-[300px] w-full h-full object-cover object-center;
+    }
   }
 }
 

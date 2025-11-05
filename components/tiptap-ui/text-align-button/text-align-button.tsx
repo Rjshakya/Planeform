@@ -117,15 +117,12 @@ export const TextAlignButton = React.forwardRef<
     return (
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button
+          <button
             type="button"
             disabled={!canAlign}
-            variant={`${isActive ? "secondary" : "ghost"}`}
-            size={"icon"}
             data-active-state={isActive ? "on" : "off"}
             data-disabled={!canAlign}
             role="button"
-            // tabIndex={-1}
             aria-label={label}
             aria-pressed={isActive}
             onClick={handleClick}
@@ -144,7 +141,7 @@ export const TextAlignButton = React.forwardRef<
                 )}
               </>
             )}
-          </Button>
+          </button>
         </TooltipTrigger>
         <TooltipContent>{label}</TooltipContent>
       </Tooltip>
