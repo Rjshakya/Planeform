@@ -123,45 +123,45 @@ export function ColorHighlightPopoverContent({
   });
 
   return (
-    <Card
+    <div
       ref={containerRef}
-      className=" flex items-center justify-center py-2 border-0 shadow-none"
+      className=" flex p-1  shadow-none rounded-none"
       style={isMobile ? { boxShadow: "none", border: 0 } : {}}
     >
-      <CardContent
-        className="px-1 w-full flex items-center justify-center gap-2"
+      {/* <CardContent
+        className=" flex items-center  gap-0.5 bg-transparent"
         style={isMobile ? { padding: 0 } : {}}
+      > */}
+      {colors.map((color, index) => (
+        <ColorHighlightButton
+          key={color.value}
+          editor={editor}
+          highlightColor={color.value}
+          tooltip={color.value}
+          aria-label={`${color.label} highlight color`}
+          tabIndex={index === selectedIndex ? 0 : -1}
+          data-highlighted={selectedIndex === index}
+        />
+      ))}
+
+      <Separator />
+
+      <Button
+        onClick={handleRemoveHighlight}
+        aria-label="Remove highlight"
+        variant={"ghost"}
+        size={"sm"}
+        // tooltip="Remove highlight"
+        tabIndex={selectedIndex === colors.length ? 0 : -1}
+        type="button"
+        role="menuitem"
+        data-style="ghost"
+        data-highlighted={selectedIndex === colors.length}
       >
-        {colors.map((color, index) => (
-          <ColorHighlightButton
-            key={color.value}
-            editor={editor}
-            highlightColor={color.value}
-            tooltip={color.value}
-            aria-label={`${color.label} highlight color`}
-            tabIndex={index === selectedIndex ? 0 : -1}
-            data-highlighted={selectedIndex === index}
-          />
-        ))}
-
-        <Separator />
-
-        <Button
-          onClick={handleRemoveHighlight}
-          aria-label="Remove highlight"
-          variant={"ghost"}
-          size={"sm"}
-          // tooltip="Remove highlight"
-          tabIndex={selectedIndex === colors.length ? 0 : -1}
-          type="button"
-          role="menuitem"
-          data-style="ghost"
-          data-highlighted={selectedIndex === colors.length}
-        >
-          <BanIcon className="tiptap-button-icon" />
-        </Button>
-      </CardContent>
-    </Card>
+        <BanIcon className="tiptap-button-icon" />
+      </Button>
+      {/* </CardContent> */}
+    </div>
   );
 }
 
@@ -210,7 +210,7 @@ export function ColorHighlightPopover({
         <TooltipContent>Highlight</TooltipContent>
       </Tooltip>
 
-      <PopoverContent className=" p-0" aria-label="Highlight colors">
+      <PopoverContent className=" p-0 w-full " aria-label="Highlight colors">
         <ColorHighlightPopoverContent editor={editor} colors={colors} />
       </PopoverContent>
     </Popover>

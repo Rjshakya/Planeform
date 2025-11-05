@@ -99,13 +99,9 @@ export const MarkButton = React.forwardRef<HTMLButtonElement, MarkButtonProps>(
     }
 
     return (
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
+      <button
             type="button"
             disabled={!canToggle}
-         
-            size={"sm"}
             data-disabled={!canToggle}
             aria-label={label}
             aria-pressed={isActive}
@@ -113,7 +109,6 @@ export const MarkButton = React.forwardRef<HTMLButtonElement, MarkButtonProps>(
             {...buttonProps}
             ref={ref}
             // className={`${isActive && " border bg-accent text-foreground"}`}
-            variant={`${isActive ? "secondary" : "ghost"}`}
           >
             {children ?? (
               <>
@@ -124,10 +119,13 @@ export const MarkButton = React.forwardRef<HTMLButtonElement, MarkButtonProps>(
                 )}
               </>
             )}
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>{label}</TooltipContent>
-      </Tooltip>
+          </button>
+      // <Tooltip>
+      //   <TooltipTrigger asChild>
+          
+      //   </TooltipTrigger>
+      //   <TooltipContent>{label}</TooltipContent>
+      // </Tooltip>
     );
   }
 );

@@ -17,6 +17,7 @@ import type { ListType, UseListConfig } from "@/components/tiptap-ui/list-button
 import { LIST_SHORTCUT_KEYS, useList } from "@/components/tiptap-ui/list-button"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 
 export interface ListButtonProps
   extends Omit<ButtonProps, "type">,
@@ -92,16 +93,10 @@ export const ListButton = React.forwardRef<HTMLButtonElement, ListButtonProps>(
     }
 
     return (
-      <Button
+      <button
         type="button"
-        variant={"ghost"}
-        size={"sm"}
-        className={`${isActive && 'bg-muted'}`}
-        
-        // data-active-state={isActive ? "on" : "off"}
         disabled={!canToggle}
         data-disabled={!canToggle}
-        // tooltip={label}
         onClick={handleClick}
         {...buttonProps}
         ref={ref}
@@ -109,13 +104,13 @@ export const ListButton = React.forwardRef<HTMLButtonElement, ListButtonProps>(
         {children ?? (
           <>
             <Icon className="tiptap-button-icon" />
-            {text && <span className="">{text}</span>}
+            {text && <div className="">{text}</div>}
             {showShortcut && (
               <ListShortcutBadge type={type} shortcutKeys={shortcutKeys} />
             )}
           </>
         )}
-      </Button>
+      </button>
     )
   }
 )

@@ -23,19 +23,41 @@ export const CutomizationPanel = () => {
   const { editor } = useCurrentEditor();
 
   const {
-    isSerif = false,
     isGiestMono = false,
     isInter = false,
+    isPlayFair = false,
+    isRoboto = false,
+    isPoppins = false,
+    isAcme = false,
+    isRobotoMono = false,
+    isRobotoSerif = false,
   } = useEditorState({
     editor,
     selector: (ctx) => {
       return {
-        isSerif: editor?.isActive("textStyle", { fontFamily: "serif" }),
         isGiestMono: editor?.isActive("textStyle", {
           fontFamily: "var(--font-geist-mono)",
         }),
         isInter: editor?.isActive("textStyle", {
           fontFamily: "var(--font-inter)",
+        }),
+        isPlayFair: editor?.isActive("textStyle", {
+          fontFamily: "var(--font-playfair-display)",
+        }),
+        isRoboto: editor?.isActive("textStyle", {
+          fontFamily: "var(--font-roboto)",
+        }),
+        isPoppins: editor?.isActive("textStyle", {
+          fontFamily: "var(--font-poppins)",
+        }),
+        isAcme: editor?.isActive("textStyle", {
+          fontFamily: "var(--font-acme)",
+        }),
+        isRobotoMono: editor?.isActive("textStyle", {
+          fontFamily: "var(--font-roboto-mono)",
+        }),
+        isRobotoSerif: editor?.isActive("textStyle", {
+          fontFamily: "var(--font-roboto-serif)",
         }),
       };
     },
@@ -43,14 +65,19 @@ export const CutomizationPanel = () => {
 
   const fontFamilies = [
     {
-      name: "Serif",
-      onclick: () => editor?.chain().selectAll().setFontFamily("serif").run(),
-      isSerif,
-      variant: isSerif ? "secondary" : "ghost",
+      name: "Default",
+      onclick: () =>
+        editor
+          ?.chain()
+          .selectAll()
+          .setFontFamily("var(--font-space-grotesk)")
+          .blur()
+          .run(),
       className: "",
+      variant: "ghost",
     },
     {
-      name: "geist-mono",
+      name: "Geist-mono",
       onclick: () =>
         editor
           ?.chain()
@@ -62,7 +89,7 @@ export const CutomizationPanel = () => {
       className: "",
     },
     {
-      name: "inter",
+      name: "Inter",
       onclick: () =>
         editor?.chain().selectAll().setFontFamily("var(--font-inter)").run(),
       isInter,
@@ -70,10 +97,68 @@ export const CutomizationPanel = () => {
       className: "",
     },
     {
-      name: "Default",
-      onclick: () => editor?.chain().selectAll().unsetFontFamily().run(),
+      name: "Playfair Display",
+      onclick: () =>
+        editor
+          ?.chain()
+          ?.selectAll()
+          ?.setFontFamily("var(--font-playfair-display)")
+          .run(),
       className: "",
-      variant: "ghost",
+      isPlayFair,
+      variant: isPlayFair ? "secondary" : "ghost",
+    },
+    {
+      name: "Roboto",
+      onclick: () =>
+        editor?.chain()?.selectAll().setFontFamily("var(--font-roboto)").run(),
+      className: "",
+      isRoboto,
+      variant: isRoboto ? "secondary" : "ghost",
+    },
+    {
+      name: "Roboto Mono",
+      onclick: () =>
+        editor
+          ?.chain()
+          ?.selectAll()
+          .setFontFamily("var(--font-roboto-mono)")
+          .run(),
+      className: "",
+      isRobotoMono,
+      variant: isRobotoMono ? "secondary" : "ghost",
+    },
+    {
+      name: "Roboto Serif",
+      onclick: () =>
+        editor
+          ?.chain()
+          ?.selectAll()
+          .setFontFamily("var(--font-roboto-serif)")
+          .run(),
+      className: "",
+      isRobotoSerif,
+      variant: isRobotoSerif ? "secondary" : "ghost",
+    },
+    {
+      name: "Poppins",
+      onclick: () =>
+        editor
+          ?.chain()
+          ?.selectAll()
+          ?.setFontFamily("var(--font-poppins)")
+          .run(),
+      className: "",
+      isPoppins,
+      variant: isPoppins ? "secondary" : "ghost",
+    },
+    {
+      name: "Acme",
+      onclick: () =>
+        editor?.chain()?.selectAll()?.setFontFamily("var(--font-acme)").run(),
+      className: "",
+      isAcme,
+      variant: isAcme ? "secondary" : "ghost",
     },
   ];
 
@@ -114,7 +199,7 @@ export const FontFamilyBox = ({ families }: { families: any[] }) => {
           ref={buttonRef}
         >
           {value
-            ? families.find((family) => family?.name === value)?.name
+            ? families?.find((family) => family?.name === value)?.name
             : "Select font family..."}
           <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -133,7 +218,7 @@ export const FontFamilyBox = ({ families }: { families: any[] }) => {
                   key={family?.name}
                   value={family?.name}
                   onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue);
+                    setValue(currentValue);
                     family?.onclick?.();
                     setOpen(false);
                   }}

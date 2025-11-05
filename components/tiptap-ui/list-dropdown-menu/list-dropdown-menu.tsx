@@ -16,7 +16,6 @@ import { useListDropdownMenu } from "./use-list-dropdown-menu";
 
 // --- UI Primitives ---
 import type { ButtonProps } from "@/components/tiptap-ui-primitive/button";
-import { ButtonGroup } from "@/components/tiptap-ui-primitive/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,7 +23,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+
 import {
   Tooltip,
   TooltipContent,
@@ -93,7 +92,7 @@ export function ListDropdownMenu({
           <DropdownMenuTrigger asChild>
             <Button
               type="button"
-              variant={`${isActive ? 'secondary' : 'ghost'}`}
+              variant={`${isActive ? "secondary" : "ghost"}`}
               size={"sm"}
               data-active-state={isActive ? "on" : "off"}
               disabled={!canToggle}
@@ -111,22 +110,20 @@ export function ListDropdownMenu({
         <TooltipContent>Lists</TooltipContent>
       </Tooltip>
 
-      <DropdownMenuContent align="start">
-        <Card className=" py-1  border-0 shadow-none">
-          <CardContent className="px-1">
-            <ButtonGroup>
-              {filteredLists.map((option) => (
-                <DropdownMenuItem className="" key={option.type} asChild>
-                  <ListButton
-                    editor={editor}
-                    type={option.type}
-                    text={option.label}
-                  />
-                </DropdownMenuItem>
-              ))}
-            </ButtonGroup>
-          </CardContent>
-        </Card>
+      <DropdownMenuContent align="start" className="rounded-sm grid p-1">
+        {filteredLists.map((option) => (
+          <DropdownMenuItem
+            className="w-full flex justify-start"
+            key={option.type}
+            asChild
+          >
+            <ListButton
+              editor={editor}
+              type={option.type}
+              text={option.label}
+            />
+          </DropdownMenuItem>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
   );

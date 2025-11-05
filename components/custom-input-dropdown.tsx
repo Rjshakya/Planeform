@@ -17,7 +17,7 @@ import { InsertActionBtn } from "./custom-extensions/action-btn/Insert";
 import { InsertPhoneInput } from "./custom-extensions/phoneinput/Insert";
 import { InsertDateInput } from "./custom-extensions/date-input/Insert";
 
-import { TextCursorInput } from "lucide-react";
+import { ChevronDown, TextCursorInput } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 export const CustomInputsDropdown = () => {
@@ -32,17 +32,18 @@ export const CustomInputsDropdown = () => {
           <TooltipTrigger asChild>
             <DropdownMenuTrigger asChild>
               <Button variant={"ghost"} size={"sm"}>
-                <TextCursorInput />
-                Inputs
+                {/* <TextCursorInput /> */}
+                Fields
+                <ChevronDown/>
               </Button>
             </DropdownMenuTrigger>
           </TooltipTrigger>
           <TooltipContent>Input fields</TooltipContent>
         </Tooltip>
 
-        <DropdownMenuContent>
-          <Card className="py-1 border-0 shadow-none">
-            <CardContent className="px-1 grid gap-1">
+        <DropdownMenuContent align="start" className=" rounded-sm grid p-1">
+          {/* <Card className="py-1 border-0 shadow-none">
+            <CardContent className="px-1 grid gap-1"> */}
               <DropdownMenuItem
                 onClick={() => {
                   setOpen(true);
@@ -84,8 +85,8 @@ export const CustomInputsDropdown = () => {
               <DropdownMenuItem asChild>
                 <InsertActionBtn />
               </DropdownMenuItem>
-            </CardContent>
-          </Card>
+            {/* </CardContent>
+          </Card> */}
         </DropdownMenuContent>
       </DropdownMenu>
 

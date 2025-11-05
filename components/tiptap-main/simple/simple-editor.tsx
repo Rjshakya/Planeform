@@ -67,6 +67,7 @@ import { apiClient } from "@/lib/axios";
 import axios from "axios";
 import { fileUploadNode } from "@/components/custom-extensions/file-uplaod/node";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
 
 interface IformVal {
   name: string;
@@ -389,7 +390,7 @@ export function SimpleEditor({
         autocorrect: "off",
         autocapitalize: "on",
         "aria-label": "Main content area, start typing to enter text.",
-        class: `${isEditable && "pb-[20vh]"} flex-1 md:px-12 pt-4`,
+        class: `${isEditable && "pb-0"} flex-1 md:px-12 pt-4`,
       },
       handleDOMEvents: {
         keydown: (_, v) => enableKeyboardNavigation(v),
@@ -402,7 +403,6 @@ export function SimpleEditor({
           enableClickSelection: true,
         },
 
-        // horizontalRule: { HTMLAttributes: { tag: "div" } },
       }) as any,
       Slash.configure({
         suggestion: {
@@ -454,7 +454,7 @@ export function SimpleEditor({
       TextStyle,
       FontFamily,
       Placeholder.configure({
-        placeholder: "Press / to add inputs",
+        placeholder: "Press / to open menu",
       }),
       UploadImage.configure({
         uploadFn: uploadFn,
@@ -463,6 +463,12 @@ export function SimpleEditor({
     autofocus: true,
     editable: isEditable,
     content: content,
+    onUpdate(props) {
+      setTimeout(() => {
+        const json = props.editor.getJSON();
+        useEditorStore.setState({ editedContent: json });
+      } , 1000)
+    },
   });
 
   const handleActiveIndex = React.useCallback(
@@ -504,7 +510,7 @@ export function SimpleEditor({
   }
 
   return (
-    <div className="w-full  simple-editor-wrapper selection:bg-blue-200/40 dark:selection:bg-blue-700/40  relative ">
+    <div className="w-full   simple-editor-wrapper selection:bg-blue-200/40 dark:selection:bg-blue-700/40  relative ">
       <EditorContext.Provider value={{ editor }}>
         {isEditable && <TiptapToolBar editor={editor} />}
 
@@ -520,12 +526,12 @@ export function SimpleEditor({
                 <EditorContent
                   editor={editor}
                   role="presentation"
-                  className=" w-full h-full flex flex-col mx-auto  md:px-4 md:py-2 px-2 mt-18 md:mt-0 relative"
+                  className=" w-full h-full flex flex-col mx-auto  sm:px-4 sm:mt-0  px-2 mt-16  relative"
                   ref={editorContentRef}
                 />
 
                 <SlashCmd.Root editor={editor}>
-                  <SlashCmd.Cmd className="w-[380px] backdrop-blur-3xl rounded-md z-50 border dark:border-0 shadow-xl dark:bg-secondary/30">
+                  <SlashCmd.Cmd className="w-[360px] bg-popover backdrop-blur-2xl rounded-md z-50 border dark:border-0 shadow-xl dark:bg-popover">
                     <SlashCmd.Empty className="px-4 py-2">
                       No commands available
                     </SlashCmd.Empty>
@@ -540,12 +546,15 @@ export function SimpleEditor({
                                 item?.command?.(val);
                               }}
                               key={item.title}
-                              className=" dark:hover:bg-accent/10 hover:bg-accent/30 hover:backdrop-blur-lg  rounded-md border dark:border-border/40 my-1"
+                              className=" dark:hover:bg-accent/30 hover:bg-accent/30 hover:backdrop-blur-lg  rounded-md  dark:border-border/40 my-1"
                             >
-                              <div className="flex gap-4 items-start  my-2 py-2 px-4 ">
-                                <div className="h-full pt-2 pl-1">
+                              <div className="flex gap-6 items-start  my-2 py-2 px-4 ">
+                                {/* <div className="h-full pt-1 ">
                                   {item.icon}
-                                </div>
+                                </div> */}
+                                <Button variant={"secondary"} size={"icon"}>
+                                  {item.icon}
+                                </Button>
                                 <div className=" ">
                                   <p className="text-sm font-medium">
                                     {item.title}

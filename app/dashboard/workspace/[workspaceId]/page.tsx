@@ -9,6 +9,7 @@ import FormCard from "./_components/FormCard";
 import { useParams, useRouter } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FormsTab } from "./_components/FormsTab";
+import { useUser } from "@/hooks/use-User";
 
 const fetcher = (url: string) => apiClient.get(url).then((r) => r?.data);
 
@@ -18,8 +19,8 @@ export default function Page() {
     `/api/form/workspace/${workspaceId}`,
     fetcher
   );
-
   const router = useRouter();
+  useUser()
 
   if (error) {
     return (

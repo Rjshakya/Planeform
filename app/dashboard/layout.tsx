@@ -28,8 +28,8 @@ export default function DashboardLayout({
         <header
           className={cn(
             `flex h-14 shrink-0 items-center gap-2`,
-            `${workspaceId && pathName?.includes("/form/create/") && "hidden"}`,
-            `${workspaceId && pathName?.includes(`form/edit/`) && "hidden"}`
+            `${workspaceId && pathName?.includes("/form/create") && "hidden"}`,
+            `${workspaceId && pathName?.includes(`form/edit`) && "hidden"}`
           )}
         >
           <div className="flex flex-1 items-center gap-2 px-3">

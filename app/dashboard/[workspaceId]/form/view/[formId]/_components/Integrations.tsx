@@ -30,14 +30,21 @@ export const Integrations = ({
   const integrations = [
     {
       id: 1,
-      provider: "google",
+      provider: "Google",
       isConnectedUri: `/api/integration/isConnected?provider=google&scope=spreadsheets&scope=drive.file`,
       workspaceId,
       formId,
     },
     {
       id: 2,
-      provider: "notion",
+      provider: "Notion",
+      isConnectedUri: `/api/integration/isConnected?provider=notion`,
+      workspaceId,
+      formId,
+    },
+     {
+      id: 3,
+      provider: "Webhook",
       isConnectedUri: `/api/integration/isConnected?provider=notion`,
       workspaceId,
       formId,

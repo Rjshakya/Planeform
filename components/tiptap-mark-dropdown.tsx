@@ -10,6 +10,7 @@ import { MarkButton } from "./tiptap-ui/mark-button";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import { ChevronDown } from "lucide-react";
 
 const marksArray = [
   {
@@ -40,17 +41,17 @@ export const TiptapMarkDropdown = () => {
       <Tooltip>
         <TooltipTrigger asChild>
           <DropdownMenuTrigger asChild>
-            <Button variant={"ghost"} size={"icon"}>
-              B
+            <Button variant={"ghost"} size={"sm"}>
+              <p>B</p>
+              <ChevronDown/>
             </Button>
           </DropdownMenuTrigger>
         </TooltipTrigger>
         <TooltipContent>Marks</TooltipContent>
       </Tooltip>
 
-      <DropdownMenuContent className="">
-        <Card className=" py-1  border-0 shadow-none">
-          <CardContent className=" px-1 flex flex-row items-center gap-1">
+      <DropdownMenuContent align="start" className=" rounded-sm p-1 flex flex-row gap-1 ">
+      
             {marksArray.map((m, i) => {
               return (
                 <DropdownMenuItem key={i} asChild>
@@ -58,8 +59,7 @@ export const TiptapMarkDropdown = () => {
                 </DropdownMenuItem>
               );
             })}
-          </CardContent>
-        </Card>
+         
       </DropdownMenuContent>
     </DropdownMenu>
   );

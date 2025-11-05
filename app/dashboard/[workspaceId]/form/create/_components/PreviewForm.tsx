@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Sheet,
   SheetContent,
@@ -11,7 +11,6 @@ import { FormEditor } from "@/app/dashboard/[workspaceId]/form/_components/FormE
 import { Button } from "@/components/ui/button";
 import { useCurrentEditor } from "@tiptap/react";
 import { JsonDoc } from "@/lib/types";
-import { ButtonGroup } from "@/components/ui/button-group";
 import { useFormStore } from "@/stores/useformStore";
 import { ArrowLeft } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
@@ -32,33 +31,6 @@ export const PreviewForm = () => {
     setJsonContent(json);
   }, [editor]);
 
-  // const steps = useMemo(() => {
-  //   if (!jsonContent) return [];
-  //   const copy = [...jsonContent?.content];
-
-  //   const alldocs = [] as any[];
-  //   const breaks = [0] as any[];
-  //   copy?.forEach((c, i) => {
-  //     if (c.type === "horizontalRule") {
-  //       breaks?.push(i);
-  //     }
-  //   });
-
-  //   breaks.push(copy?.length - 1);
-
-  //   breaks.forEach((b, i) => {
-  //     if (!breaks[i + 1]) {
-  //       return;
-  //     }
-
-  //     const stepContent = copy
-  //       ?.slice(breaks[i], breaks[i + 1])
-  //       ?.filter((n) => n?.type !== "horizontalRule");
-  //     alldocs.push({ type: "doc", content: stepContent });
-  //   });
-  //   setDocs(alldocs);
-  // }, [jsonContent]);
-
   const handleActiveIndex = useCallback(
     (idx: number) => {
       const index = idx < 0 ? 0 : Math.min(maxStep, idx);
@@ -72,14 +44,6 @@ export const PreviewForm = () => {
     },
     [activeStep, isLastStep, maxStep]
   );
-
-  // useEffect(() => {
-  //   // if (activeIdx !== undefined) return;
-
-  //   useFormStore?.setState({
-  //     maxStep: docs?.length - 1,
-  //   });
-  // }, [docs]);
 
   useEffect(() => {
     if (!jsonContent?.content) {
@@ -147,7 +111,7 @@ export const PreviewForm = () => {
         <SheetHeader>
           <SheetTitle>Preview form</SheetTitle>
           {docs?.length > 1 && activeStep !== 0 && (
-            <div className="w-full max-w-sm mx-auto">
+            <div className="w-full max-w-lg mx-auto">
               <Button
                 onClick={() => handleActiveIndex(activeStep - 1)}
                 variant={"secondary"}
@@ -166,9 +130,6 @@ export const PreviewForm = () => {
                   className=" mx-auto max-w-xl   w-full rounded-2xl  dark:bg-accent/0 "
                   isEditable={false}
                   content={d}
-                  // isLast={docs?.length - 1 === activeStep}
-                  // activeStep={i}
-                  // maxStep={docs?.length - 1}
                 />
               );
             }

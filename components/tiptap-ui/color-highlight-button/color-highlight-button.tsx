@@ -134,7 +134,7 @@ export const ColorHighlightButton = React.forwardRef<
             {children ?? (
               <>
                 <span
-                  className={`w-5 h-5 rounded-sm`}
+                  className={`w-6 h-6 rounded-sm`}
                   style={{ backgroundColor: highlightColor }}
                 />
                 {text && <span className="tiptap-button-text">{text}</span>}

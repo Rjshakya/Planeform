@@ -5,7 +5,6 @@ import { File, Folder, Loader, TriangleAlert, Users } from "lucide-react";
 import Workspace from "./Workspace";
 import { apiClient } from "@/lib/axios";
 import useSWR from "swr";
-import { authClient } from "@/lib/auth-client";
 import { useUser } from "@/hooks/use-User";
 
 const fetcher = (url: string) => apiClient.get(url).then((res) => res.data);
