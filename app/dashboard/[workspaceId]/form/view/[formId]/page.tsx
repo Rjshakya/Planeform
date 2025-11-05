@@ -4,9 +4,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Submissions } from "./_components/Submissions";
 import { apiClient } from "@/lib/axios";
 import useSWR from "swr";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Integrations } from "./_components/Integrations";
 import { Analytics } from "./_components/Analytics";
+import { authClient, signOut } from "@/lib/auth-client";
+import { useUser } from "@/hooks/use-User";
 
 const fetcher = (url: string) => apiClient.get(url);
 export default function Page() {
@@ -16,7 +18,7 @@ export default function Page() {
     `/api/form/${formId}/meta_data`,
     fetcher
   );
-
+  useUser();
   return (
     <main className=" w-full max-w-4xl  mx-auto">
       <Tabs defaultValue="Submission" className="w-full">
@@ -25,7 +27,7 @@ export default function Page() {
             {data?.data?.form?.name || "form"}
           </p>
         </div>
-        <TabsList className="  bg-accent ">
+        <TabsList className=" h-12 bg-accent rounded-sm ">
           <TabsTrigger
             className=" rounded-sm text-left md:text-lg w-full h-full py-4 px-5  data-[state=active]:bg-card dark:data-[state=active]:bg-card"
             value="Submission"

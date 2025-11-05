@@ -6,12 +6,13 @@ import Workspace from "./Workspace";
 import { apiClient } from "@/lib/axios";
 import useSWR from "swr";
 import { authClient } from "@/lib/auth-client";
+import { useUser } from "@/hooks/use-User";
 
 const fetcher = (url: string) => apiClient.get(url).then((res) => res.data);
 export const DashboardComp = () => {
-  const { data: session } = authClient.useSession();
+  const { user } = useUser();
   const { data, error, isLoading } = useSWR(
-    () => `/api/analytics/` + session?.user?.dodoCustomerId,
+    () => `/api/analytics/` + user?.dodoCustomerId,
     fetcher
   );
 

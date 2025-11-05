@@ -14,7 +14,6 @@ export const FormEditor = ({
   className,
   isLast,
   activeStep,
-  maxStep,
 }: {
   isEditable: boolean;
   content?: JsonDoc;
@@ -25,19 +24,18 @@ export const FormEditor = ({
 }) => {
   const form = useFormStore.getState().form;
 
-  useEffect(() => {
-    useFormStore.setState({
-      activeStep: activeStep,
-    });
-  }, [activeStep]);
+  // useEffect(() => {
+  //   useFormStore.setState({
+  //     activeStep: activeStep,
+  //   });
+  // }, [activeStep]);
 
   return (
     <div className={cn(`  w-full ${className || ""} `)}>
       <SimpleEditor
-        parentform={form}
+        // parentform={form}
         isEditable={isEditable}
         content={content}
-        isLast={isLast}
       />
     </div>
   );

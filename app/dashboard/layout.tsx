@@ -1,6 +1,7 @@
 "use client";
 import { AppSidebar } from "@/components/app-sidebar";
 import { NavActions } from "@/components/nav-actions";
+import { ThemeToggle } from "@/components/tiptap-main/simple/theme-toggle";
 import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
@@ -18,12 +19,7 @@ export default function DashboardLayout({
 }>) {
   const pathName = usePathname();
   const { workspaceId } = useParams();
-  const { data, error, isPending } = authClient.useSession();
-  const router = useRouter();
-  if (error) {
-    signOut();
-    router.push("/auth");
-  }
+  
 
   return (
     <SidebarProvider className="">
@@ -32,7 +28,7 @@ export default function DashboardLayout({
         <header
           className={cn(
             `flex h-14 shrink-0 items-center gap-2`,
-            `${workspaceId && pathName?.includes("/form/create") && "hidden"}`,
+            `${workspaceId && pathName?.includes("/form/create/") && "hidden"}`,
             `${workspaceId && pathName?.includes(`form/edit/`) && "hidden"}`
           )}
         >
@@ -43,7 +39,9 @@ export default function DashboardLayout({
               className="mr-2 data-[orientation=vertical]:h-4"
             />
           </div>
-          <div className="ml-auto px-3">
+          <div className={cn(`ml-auto px-3 flex items-center gap-2`)}>
+            <ThemeToggle />
+
             <NavActions />
           </div>
         </header>

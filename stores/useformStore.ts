@@ -26,7 +26,6 @@ export interface IformStore {
   stepResponses: any[];
   activeStep: number;
   maxStep: number;
-  setActiveStep: (params: any) => void;
   isSingleForm: boolean;
   creator: string | null;
   customerId: string | null;
@@ -62,9 +61,14 @@ export const useFormStore = create<IformStore>((set, get) => ({
     } = get();
 
     if (!values || !creator || !customerId) {
-      toast("failed to submit form , please try again");
+      toast("failed to submit form , please try again :customer");
       return false;
     }
+
+    // if (!formId) {
+    //   toast("failed to submit form , please try again :form");
+    //   return true;
+    // }
 
     // if this is not last step then push values to stepresponses
     if (!isLastStep) {
@@ -168,14 +172,6 @@ export const useFormStore = create<IformStore>((set, get) => ({
   isLastStep: true,
   activeStep: 0,
   maxStep: 0,
-  setActiveStep: () => {},
   isSingleForm: true,
   respondentId: null,
 }));
-
-// {
-//             form: formId,
-//             form_field: key,
-//             value: Array?.isArray(v[key]) ? v[key]?.join(",") : v[key],
-//             respondent: respondentId,
-//           };

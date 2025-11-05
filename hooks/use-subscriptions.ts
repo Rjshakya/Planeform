@@ -48,7 +48,8 @@ export const useSubscriptions = () => {
       setSubscriptionData(data?.subscriptions);
       setPlan(data?.subscriptions[0]?.plan);
     } catch (e) {
-      toast("failed to get your subscriptions");
+      // toast("failed to get your subscriptions");
+      return;
     }
 
     setLoadingSubscriptions(false);
@@ -70,7 +71,8 @@ export const usePlans = () => {
       const { data } = await apiClient.get(`/api/subscription/plans`);
       setPlans(data?.plans);
     } catch (e) {
-      toast("failed to get plans");
+      // toast("failed to get plans");
+      return;
     }
 
     setLoadingPlans(false);

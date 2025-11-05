@@ -334,6 +334,7 @@ const suggestions = createSuggestionsItems([
           type: "multiple",
           maxFiles: 1,
           maxSize: 5 * 1024 * 1024,
+          accept: "*",
         })
         .run();
     },
@@ -346,12 +347,10 @@ const suggestions = createSuggestionsItems([
 export function SimpleEditor({
   content,
   isEditable,
-  isLast,
 }: {
-  parentform: UseFormReturn<FieldValues, any, FieldValues> | null;
+  // parentform: UseFormReturn<FieldValues, any, FieldValues> | null;
   content?: any;
   isEditable?: boolean;
-  isLast?: boolean;
 }) {
   const router = useRouter();
   const { formId } = useParams();
@@ -360,8 +359,9 @@ export function SimpleEditor({
 
   // form init
   const form = useForm();
-  const { isLastStep, activeStep, maxStep, setActiveStep, handleSubmit } =
-    useFormStore((s) => s);
+  const { isLastStep, activeStep, maxStep, handleSubmit } = useFormStore(
+    (s) => s
+  );
 
   const uploadFn = async (file: File) => {
     const fileName = file?.name;
@@ -389,7 +389,7 @@ export function SimpleEditor({
         autocorrect: "off",
         autocapitalize: "on",
         "aria-label": "Main content area, start typing to enter text.",
-        class: " pb-[40vh] flex-1 md:px-12 pt-4",
+        class: `${isEditable && "pb-[20vh]"} flex-1 md:px-12 pt-4`,
       },
       handleDOMEvents: {
         keydown: (_, v) => enableKeyboardNavigation(v),
@@ -401,6 +401,7 @@ export function SimpleEditor({
           openOnClick: true,
           enableClickSelection: true,
         },
+
         // horizontalRule: { HTMLAttributes: { tag: "div" } },
       }) as any,
       Slash.configure({
@@ -464,19 +465,30 @@ export function SimpleEditor({
     content: content,
   });
 
-  const handleActiveIndex = (idx: number) => {
-    const index = idx < 0 ? 0 : Math.min(maxStep, idx);
-    if (isLast) return;
-    setActiveStep(index);
-  };
+  const handleActiveIndex = React.useCallback(
+    (idx: number) => {
+      const index = idx < 0 ? 0 : Math.min(maxStep, idx);
+
+      if (isLastStep) return;
+      // setActiveStep(index);
+      console.log(index, idx);
+      console.log(maxStep === index);
+      useFormStore.setState({
+        activeStep: index,
+        isLastStep: maxStep === index,
+      });
+    },
+    [activeStep, maxStep, isLastStep]
+  );
 
   const onSubmit = async (values: FieldValues) => {
     // if (!formId) return;
+    console.log(values);
 
-    const res = await handleSubmit(values, formId as string);
+    const isSubmitted = await handleSubmit(values, formId as string);
     handleActiveIndex(activeStep + 1);
 
-    if (isLast && res) {
+    if (isLastStep && isSubmitted) {
       router.push(`/thank-you`);
       form.reset();
     }
@@ -484,8 +496,8 @@ export function SimpleEditor({
 
   React.useEffect(() => {
     useEditorStore.setState({ editor: editor });
-    useFormStore.setState({ form: form, isLastStep: isLast });
-  }, [editor, form, isLast]);
+    useFormStore.setState({ form: form });
+  }, [editor, form]);
 
   if (!editor) {
     return null;
@@ -499,9 +511,9 @@ export function SimpleEditor({
         <Form {...form!}>
           <form
             onSubmit={form?.handleSubmit?.(onSubmit)}
-            className="max-w-2xl w-full h-full px-2 mx-auto"
+            className={`w-full h-full px-2 ${isEditable && "max-w-xl"} mx-auto`}
           >
-            <EditorDragHandle editor={editor} />
+            {isEditable && <EditorDragHandle editor={editor} />}
 
             {isEditable ? (
               <SlashCmdProvider>
@@ -558,7 +570,7 @@ export function SimpleEditor({
               <EditorContent
                 editor={editor}
                 role="presentation"
-                className="  w-full h-full flex flex-col mx-auto  md:px-4 md:py-2"
+                className="  w-full h-full flex flex-col mx-auto  md:px-1"
                 ref={editorContentRef}
               />
             )}

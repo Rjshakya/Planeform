@@ -91,6 +91,7 @@ export function NavUser({
   const { loadingSubscriptions, subscriptionsData, plan } = useSubscriptions();
   const { plans, loadingPlans } = usePlans();
   const [step, setStep] = useState(0);
+  const router = useRouter()
 
   const handleSubmit = async () => {
     if (!address) return;
@@ -279,21 +280,24 @@ export function NavUser({
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              {/* <DropdownMenuItem>
                 <BadgeCheck />
                 Account
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
               <DropdownMenuItem onClick={customerPortal}>
                 <CreditCard />
                 Billing
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              {/* <DropdownMenuItem>
                 <Bell />
                 Notifications
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={signOut}>
+            <DropdownMenuItem onClick={async() => {
+              await signOut();
+              router.push("/auth")
+            }}>
               <LogOut />
               Log out
             </DropdownMenuItem>

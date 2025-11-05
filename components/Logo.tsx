@@ -3,7 +3,7 @@ import React from "react";
 
 export const Logo = ({ className }: { className?: string }) => {
   return (
-    <div className={cn(`logo pl-1`)}>
+    <div className={cn(`logo `)}>
       <span
         className={cn(
           `font-bold flex items-center justify-center gap-2`,

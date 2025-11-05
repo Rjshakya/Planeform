@@ -9,39 +9,21 @@ import {
 } from "@/hooks/use-file-upload";
 import { Button } from "@/components/ui/button";
 
-// Create some dummy initial files
-const initialFiles = [
-  {
-    name: "image-01.jpg",
-    size: 1528737,
-    type: "image/jpeg",
-    url: "https://picsum.photos/1000/800?grayscale&random=1",
-    id: "image-01-123456789",
-  },
-  {
-    name: "image-02.jpg",
-    size: 2345678,
-    type: "image/jpeg",
-    url: "https://picsum.photos/1000/800?grayscale&random=2",
-    id: "image-02-123456789",
-  },
-  {
-    name: "image-03.jpg",
-    size: 3456789,
-    type: "image/jpeg",
-    url: "https://picsum.photos/1000/800?grayscale&random=3",
-    id: "image-03-123456789",
-  },
-];
+
 
 export default function FileUploadComp({
   options,
+  id,
+  name
+
 }: {
   options: FileUploadOptions;
+  id:string
+  name:string
 }) {
   const maxSizeMB = 5;
-  const maxSize = maxSizeMB * 1024 * 1024; // 5MB default
-  const maxFiles = 6;
+  // const maxSize = maxSizeMB * 1024 * 1024; // 5MB default
+  // const maxFiles = 6;
 
   const [
     { files, isDragging, errors },
@@ -73,6 +55,9 @@ export default function FileUploadComp({
           {...getInputProps()}
           className="sr-only"
           aria-label="Upload image file"
+          id={id}
+          name={name}
+
         />
         <div className="flex flex-col items-center justify-center px-4 py-3 text-center">
           <div
@@ -106,27 +91,27 @@ export default function FileUploadComp({
       )}
 
       {/* File list */}
-      {files.length > 0 && (
+      {files?.length > 0 && (
         <div className="space-y-2">
-          {files.map((file) => (
+          {files?.map((file) => (
             <div
-              key={file.id}
+              key={file?.id}
               className="flex items-center justify-between gap-2 rounded-lg border bg-background p-2 pe-3"
             >
               <div className="flex items-center gap-3 overflow-hidden">
                 <div className="aspect-square shrink-0 rounded bg-accent">
                   <img
-                    src={file.preview}
-                    alt={file.file.name}
+                    src={file?.preview}
+                    alt={file?.file.name}
                     className="size-10 rounded-[inherit] object-cover"
                   />
                 </div>
                 <div className="flex min-w-0 flex-col gap-0.5">
                   <p className="truncate text-[13px] font-medium">
-                    {file.file.name}
+                    {file?.file.name}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {formatBytes(file.file.size)}
+                    {formatBytes(file?.file.size)}
                   </p>
                 </div>
               </div>
@@ -143,7 +128,7 @@ export default function FileUploadComp({
             </div>
           ))}
 
-          {/* Remove all files button */}
+    
           {files.length > 1 && (
             <div>
               <Button size="sm" variant="outline" onClick={clearFiles}>
@@ -153,20 +138,6 @@ export default function FileUploadComp({
           )}
         </div>
       )}
-
-      {/* <p
-        aria-live="polite"
-        role="region"
-        className="mt-2 text-center text-xs text-muted-foreground"
-      >
-        Multiple image uploader w/ image list ∙{" "}
-        <a
-          href="https://github.com/cosscom/coss/blob/main/apps/origin/docs/use-file-upload.md"
-          className="underline hover:text-foreground"
-        >
-          API
-        </a>
-      </p> */}
     </div>
   );
 }

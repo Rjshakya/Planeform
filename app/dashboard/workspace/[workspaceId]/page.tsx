@@ -56,7 +56,7 @@ export default function Page() {
         </div>
       </div>
       <Tabs defaultValue="forms" className="w-full">
-        <TabsList className="h-10  bg-accent rounded-sm">
+        <TabsList className="h-12  bg-accent rounded-sm">
           <TabsTrigger
             className=" rounded-sm text-left md:text-lg w-full h-full py-4 px-5  data-[state=active]:bg-card dark:data-[state=active]:bg-card"
             value="forms"

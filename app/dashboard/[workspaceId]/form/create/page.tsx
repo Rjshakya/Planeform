@@ -4,10 +4,11 @@ import { FormEditor } from "../_components/FormEditor";
 import { useEffect, useState } from "react";
 import { JsonDoc } from "@/lib/types";
 import { useEditorStore } from "@/stores/useEditorStore";
+import { useUser } from "@/hooks/use-User";
 
 export default function Page() {
   const [content, setContent] = useState<JsonDoc>();
-
+ useUser()
   useEffect(() => {
     useEditorStore.setState({ content: defaultEditorContent });
   }, []);
@@ -22,6 +23,7 @@ export default function Page() {
         }
       }
       isEditable={true}
+      className=""
     />
   );
 }

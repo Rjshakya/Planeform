@@ -21,12 +21,14 @@ export const Nav = () => {
   return (
     <nav className="col-span-1 rounded-lg my-2 py-2 w-full max-w-4xl mx-auto bg-accent/35 backdrop-blur-lg border flex items-center justify-between  ">
       <div className="wrapper flex justify-between items-center w-full">
-        <Logo />
+        <div className="pl-3">
+          <Logo />
+        </div>
 
         <div className=" menu hidden md:flex gap-3 items-center px-2">
           <Button variant={"ghost"}>Pricing</Button>
-          <Button asChild className="" variant={"outline"}>
-            <Link href={"/auth"}>Sign In</Link>
+          <Button asChild className="" variant={"default"}>
+            <Link href={"/auth"}>Get started</Link>
           </Button>
         </div>
       </div>
@@ -71,16 +73,16 @@ export const Nav = () => {
                   </clipPath>
                 </defs>
               </svg> */}
-              <Menu  />
+              <Menu />
             </Button>
           </SheetTrigger>
           <SheetContent
             side="top"
-            className={`${spaceGrotesk.className} m-2`}
+            className={`${spaceGrotesk.className} m-2 rounded-md`}
           >
             <SheetHeader>
-              <SheetTitle className="text-xl px-2 tracking-tighter ">
-                <Logo className="justify-start"/>
+              <SheetTitle className="text-xl  tracking-tighter ">
+                <Logo className="justify-start" />
               </SheetTitle>
             </SheetHeader>
 

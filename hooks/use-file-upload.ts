@@ -1,8 +1,6 @@
 "use client";
 
 import { apiClient } from "@/lib/axios";
-import axios from "axios";
-import { usePathname } from "next/navigation";
 import type React from "react";
 import {
   useCallback,
@@ -76,7 +74,7 @@ export const useFileUpload = (
   } = options;
 
   const [state, setState] = useState<FileUploadState>({
-    files: initialFiles.map((file) => ({
+    files: initialFiles?.map((file) => ({
       file,
       id: file.id,
       preview: file.url,
@@ -84,12 +82,12 @@ export const useFileUpload = (
     isDragging: false,
     errors: [],
   });
-  const pathName = usePathname();
-  let isPreview = false;
+  // const pathName = usePathname();
+  // let isPreview = false;
 
-  if (pathName.includes("/create") || pathName.includes("/edit")) {
-    isPreview = true;
-  }
+  // if (pathName.includes("/create") || pathName.includes("/edit")) {
+  //   isPreview = true;
+  // }
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -102,7 +100,7 @@ export const useFileUpload = (
           )}.`;
         }
       } else {
-        if (file.size > maxSize) {
+        if (file?.size > maxSize) {
           return `File "${file.name}" exceeds the maximum size of ${formatBytes(
             maxSize
           )}.`;
@@ -145,18 +143,18 @@ export const useFileUpload = (
     async (file: File | FileMetadata): Promise<string | undefined> => {
       if (file instanceof File) {
         const { name } = file;
-        let url = URL.createObjectURL(file);
+        // let url = URL.createObjectURL(file);
 
-        if (!isPreview) {
-          const res = await apiClient.post("/api/file", { fileName: name });
-          if (res?.status === 200) {
-            const signedUrl = res?.data?.url?.uploadUrl;
-            url = res?.data?.url?.fileUrl;
-            await axios.put(signedUrl, file);
-          }
-        }
+        // if (!isPreview) {
+        //   const res = await apiClient.post("/api/file", { fileName: name });
+        //   if (res?.status === 200) {
+        //     const signedUrl = res?.data?.url?.uploadUrl;
+        //     url = res?.data?.url?.fileUrl;
+        //     await axios.put(signedUrl, file);
+        //   }
+        // }
 
-        return url;
+        return URL.createObjectURL(file);
       }
       return file.url;
     },
@@ -305,15 +303,20 @@ export const useFileUpload = (
       if (validFiles.length > 0) {
         // Call the onFilesAdded callback with the newly added valid files
         onFilesAdded?.(validFiles);
+        const newFiles = !multiple
+          ? validFiles
+          : [...state.files, ...validFiles];
+
+        onFilesChange?.(newFiles);
 
         setState((prev) => {
-          const newFiles = !multiple
+          const _newFiles = !multiple
             ? validFiles
             : [...prev.files, ...validFiles];
-          onFilesChange?.(newFiles);
+
           return {
             ...prev,
-            files: newFiles,
+            files: _newFiles,
             errors,
           };
         });
@@ -366,18 +369,18 @@ export const useFileUpload = (
         };
       });
 
-      if (!isPreview) {
-        const fileToRemove = files.find((file) => file.id === id);
-        if (
-          fileToRemove &&
-          fileToRemove.preview &&
-          fileToRemove.file instanceof File &&
-          fileToRemove.file.type.startsWith("image/")
-        ) {
-          const key = fileToRemove.preview?.split("xyz/")[1];
-          await apiClient.post(`/api/file/delete`, { key });
-        }
+      // if (!isPreview) {
+      const fileToRemove = files.find((file) => file.id === id);
+      if (
+        fileToRemove &&
+        fileToRemove.preview &&
+        fileToRemove.file instanceof File &&
+        fileToRemove.file.type.startsWith("image/")
+      ) {
+        const key = fileToRemove.preview?.split("xyz/")[1];
+        await apiClient.post(`/api/file/delete`, { key });
       }
+      // }
     },
     [onFilesChange]
   );

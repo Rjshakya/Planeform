@@ -14,12 +14,15 @@ import { JsonDoc } from "@/lib/types";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { useFormStore } from "@/stores/useformStore";
 import { ArrowLeft } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 
 export const PreviewForm = () => {
   const [jsonContent, setJsonContent] = useState<JsonDoc>();
   const { editor } = useCurrentEditor();
   const [docs, setDocs] = useState<JsonDoc[]>([]);
-  const [activeIdx, setActiveIdx] = useState(0);
+
+  const { data: session } = authClient.useSession();
+  const { activeStep, isLastStep, maxStep } = useFormStore((s) => s);
 
   const handlePreview = useCallback(() => {
     if (!editor) return;
@@ -56,19 +59,27 @@ export const PreviewForm = () => {
   //   setDocs(alldocs);
   // }, [jsonContent]);
 
-  const handleActiveIndex = (idx: number) => {
-    const index = idx < 0 ? 0 : Math.min(docs?.length - 1, idx);
-    setActiveIdx(index);
-  };
+  const handleActiveIndex = useCallback(
+    (idx: number) => {
+      const index = idx < 0 ? 0 : Math.min(maxStep, idx);
+      console.log(index, idx);
+      console.log(maxStep === index);
 
-  useEffect(() => {
-    // if (activeIdx !== undefined) return;
+      useFormStore.setState({
+        activeStep: index,
+        isLastStep: maxStep === index,
+      });
+    },
+    [activeStep, isLastStep, maxStep]
+  );
 
-    useFormStore?.setState({
-      maxStep: docs?.length - 1,
-      setActiveStep: setActiveIdx,
-    });
-  }, [docs]);
+  // useEffect(() => {
+  //   // if (activeIdx !== undefined) return;
+
+  //   useFormStore?.setState({
+  //     maxStep: docs?.length - 1,
+  //   });
+  // }, [docs]);
 
   useEffect(() => {
     if (!jsonContent?.content) {
@@ -98,9 +109,28 @@ export const PreviewForm = () => {
       }
     }
 
-    console.log(parsedDocs);
+    // console.log(parsedDocs);
     setDocs(parsedDocs);
-    setActiveIdx(0); // Reset to first step
+
+    if (parsedDocs?.length === 1) {
+      useFormStore.setState({
+        isSingleForm: true,
+        creator: session?.user?.id,
+        customerId: session?.user?.dodoCustomerId,
+        isLastStep: true,
+        maxStep: parsedDocs?.length - 1,
+      });
+    } else {
+      useFormStore.setState({
+        isSingleForm: false,
+        creator: session?.user?.id,
+        customerId: session?.user?.dodoCustomerId,
+        isLastStep: false,
+        maxStep: parsedDocs?.length - 1,
+      });
+    }
+
+    useFormStore.setState({ activeStep: 0 });
   }, [jsonContent]);
 
   return (
@@ -116,10 +146,10 @@ export const PreviewForm = () => {
       >
         <SheetHeader>
           <SheetTitle>Preview form</SheetTitle>
-          {docs?.length > 1 && activeIdx !== 0 && (
+          {docs?.length > 1 && activeStep !== 0 && (
             <div className="w-full max-w-sm mx-auto">
               <Button
-                onClick={() => handleActiveIndex(activeIdx - 1)}
+                onClick={() => handleActiveIndex(activeStep - 1)}
                 variant={"secondary"}
                 size={"icon"}
               >
@@ -129,16 +159,16 @@ export const PreviewForm = () => {
           )}
 
           {docs?.map((d, i) => {
-            if (activeIdx === i) {
+            if (activeStep === i) {
               return (
                 <FormEditor
                   key={i}
-                  className=" mx-auto max-w-lg w-full rounded-2xl  dark:bg-accent/0 "
+                  className=" mx-auto max-w-xl   w-full rounded-2xl  dark:bg-accent/0 "
                   isEditable={false}
                   content={d}
-                  isLast={docs?.length - 1 === activeIdx}
-                  activeStep={i}
-                  maxStep={docs?.length - 1}
+                  // isLast={docs?.length - 1 === activeStep}
+                  // activeStep={i}
+                  // maxStep={docs?.length - 1}
                 />
               );
             }

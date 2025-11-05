@@ -9,6 +9,8 @@ import { ColumnDef, PaginationState } from "@tanstack/react-table";
 import { useEffect, useMemo, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { format, setDate } from "date-fns";
+import { z } from "zod";
+import Image from "next/image";
 
 export interface Iheads {
   label: string;
@@ -25,10 +27,10 @@ export const Submissions = () => {
   });
 
   const { data, error, isLoading } = useSWR(
-    `/api/response/form/${formId}?pageIndex=${pagination.pageIndex}&pageSize=${pagination.pageSize}`,
+    () => `/api/response/form/${formId}?pageIndex=${pagination.pageIndex}&pageSize=${pagination.pageSize}`,
     fetcher
   );
-  const [tableData, setTableData] = useState<any[]>();
+  // const [tableData, setTableData] = useState<any[]>();
 
   const responses = data?.data?.responses;
   const heads: Iheads[] = responses?.headers;
@@ -40,15 +42,30 @@ export const Submissions = () => {
         accessorKey: h?.id,
         cell: ({ row }) => {
           // @ts-ignore
-          const isTime = h?.id === "Time";
+          const value = row.getValue(h?.id)?.value;
+          const dateSchema = z.iso.datetime();
+          const imgUrlSchema = z.httpUrl({
+            pattern:
+              /^https:\/\/bucket\.planetform\.xyz\/[\w\-\.\/]+\.(jpg|jpeg|png|gif|webp|svg)$/i,
+          });
+          const parsed = dateSchema.safeParse(value);
+          const parsedImg = imgUrlSchema.safeParse(value);
 
-          if (isTime) {
-            // @ts-ignore
-            const time = row.getValue(h.id)?.value;
-            const date = new Date(time);
+          if (parsed.success) {
+            const date = new Date(parsed.data);
+            return <div className="font-medium ">{format(date, "Pp")}</div>;
+          }
+          if (parsedImg.success) {
             return (
-              // @ts-ignore
-              <div className="font-medium ">{format(date, "Pp")}</div>
+              <div className="font-medium ">
+                <Image
+                  className=""
+                  width={80}
+                  height={80}
+                  src={parsedImg.data}
+                  alt="uploaded-img"
+                />
+              </div>
             );
           }
 
@@ -68,7 +85,7 @@ export const Submissions = () => {
     columnArr?.unshift({
       id: "select",
       header: ({ table }) => (
-        <div className=" grid place-content-center mr-1.5">
+        <div className=" grid place-content-center mr-1">
           <Checkbox
             checked={
               table.getIsAllPageRowsSelected() ||
@@ -105,9 +122,9 @@ export const Submissions = () => {
     return columnArr;
   }, [heads]);
 
-  useEffect(() => {
-    setTableData(responses?.res || []);
-  }, [responses?.res]);
+  // useEffect(() => {
+  //   setTableData(responses?.res || []);
+  // }, [responses?.res]);
 
   if (error) {
     return (

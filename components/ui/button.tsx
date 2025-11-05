@@ -12,13 +12,13 @@ const buttonVariants = cva(
         default:
           "bg-primary ring-[3px] ring-primary/50 text-primary-foreground shadow-xs hover:bg-primary/90 inset-shadow-2xl inset-shadow-primary-foreground",
         destructive:
-          "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+          "bg-destructive ring-[3px] ring-destructive/50 text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:
-          "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
+          "border bg-background ring-[3px] ring-background/50  shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
         secondary:
-          "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
+          "bg-secondary ring-[3px] ring-secondary/50  text-secondary-foreground shadow-xs hover:bg-secondary/80",
         ghost:
-          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
+          "hover:bg-accent hover:ring-[3px] hover:ring-accent/50 hover:text-accent-foreground dark:hover:bg-accent/50 dark:hover:hover:ring-accent/40",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {

@@ -5,13 +5,14 @@ import { useParams } from "next/navigation";
 import useSWR from "swr";
 import { FormEditor } from "../../_components/FormEditor";
 import { Loader, TriangleAlert } from "lucide-react";
+import { useUser } from "@/hooks/use-User";
 
 const fetcher = (url: string) => apiClient.get(url);
 
 export default function Page() {
   const { formId } = useParams();
   const { data, isLoading, error } = useSWR(`/api/form/${formId}`, fetcher);
-
+  useUser();
   if (error) {
     return (
       <div className="w-full h-screen flex items-center justify-center">

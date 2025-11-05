@@ -1,7 +1,7 @@
 import { mergeAttributes, Node } from "@tiptap/core";
 import { ReactNodeViewRenderer } from "@tiptap/react";
 import { v4 } from "uuid";
-import { FIleUploadInputView } from "./View";
+import { FileUploadInputView } from "./View";
 
 export interface InsertFileUploadParams {
   label: string;
@@ -10,6 +10,7 @@ export interface InsertFileUploadParams {
   isRequired: boolean;
   maxFiles: number;
   maxSize: number;
+  accept: string;
 }
 
 export const fileUploadNode = Node.create({
@@ -26,6 +27,7 @@ export const fileUploadNode = Node.create({
       type: { default: "single" },
       maxFiles: { default: 1 },
       maxSize: { default: 5 * 1024 * 1024 },
+      accept: { default: "*" },
     };
   },
 
@@ -44,6 +46,7 @@ export const fileUploadNode = Node.create({
             maxFiles: Number(element.getAttribute("data-max-files")) || 2,
             maxSize:
               Number(element.getAttribute("data-max-size")) || 5 * 1024 * 1024,
+            accept: element.getAttribute("data-accept-files") || "*",
           };
         },
       },
@@ -52,7 +55,7 @@ export const fileUploadNode = Node.create({
 
   renderHTML({ HTMLAttributes, node }) {
     return [
-      "short-input",
+      "fileUploadInput",
       mergeAttributes(HTMLAttributes, {
         "data-id": node.attrs.id,
         "data-label": node.attrs.label,
@@ -60,6 +63,7 @@ export const fileUploadNode = Node.create({
         "data-required": node.attrs.isRequired,
         "data-max-files": node.attrs.maxFiles,
         "data-max-size": node.attrs.maxSize,
+        "data-accept-files": node.attrs.accept,
       }),
       0,
     ];
@@ -68,11 +72,11 @@ export const fileUploadNode = Node.create({
   addCommands() {
     return {
       insertFileUploadInput:
-        ({ id, isRequired, label, type, maxFiles, maxSize }) =>
+        ({ id, isRequired, label, type, maxFiles, maxSize, accept }) =>
         ({ commands }) => {
           return commands.insertContent({
             type: "fileUploadInput",
-            attrs: { id, isRequired, label, type, maxFiles, maxSize },
+            attrs: { id, isRequired, label, type, maxFiles, maxSize, accept },
             content: label
               ? [{ type: "text", text: label }]
               : [{ type: "text", text: "Upload image" }],
@@ -82,7 +86,7 @@ export const fileUploadNode = Node.create({
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(FIleUploadInputView);
+    return ReactNodeViewRenderer(FileUploadInputView);
   },
 
   addKeyboardShortcuts() {

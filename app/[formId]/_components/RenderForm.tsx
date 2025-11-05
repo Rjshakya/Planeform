@@ -6,7 +6,7 @@ import { JsonDoc } from "@/lib/types";
 import { useFormStore } from "@/stores/useformStore";
 import { ArrowLeft, Loader, TriangleAlert } from "lucide-react";
 import { useParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import useSWR from "swr";
 
@@ -16,11 +16,18 @@ export const RenderForm = () => {
   const { formId } = useParams();
   const { data, isLoading, error } = useSWR(`/api/form/${formId}`, fetcher);
   const [docs, setDocs] = useState<JsonDoc[]>([]);
-  const [activeIdx, setActiveIdx] = useState(0);
-  const handleActiveIndex = (idx: number) => {
-    const index = idx < 0 ? 0 : Math.min(docs?.length - 1, idx);
-    setActiveIdx(index);
-  };
+  // const [activeIdx, setActiveIdx] = useState(0);
+  const { activeStep, maxStep, isLastStep } = useFormStore((s) => s);
+  const handleActiveIndex = useCallback(
+    (idx: number) => {
+      const index = idx < 0 ? 0 : Math.min(docs?.length - 1, idx);
+      useFormStore.setState({
+        activeStep: index,
+        isLastStep: maxStep === index,
+      });
+    },
+    [activeStep, isLastStep, maxStep]
+  );
 
   const handleCreateRespondent = async (formId: string, customerId: string) => {
     const resp = await apiClient.post(`/api/respondent`, {
@@ -31,20 +38,19 @@ export const RenderForm = () => {
     const respondentId = resp?.data?.respondent?.id;
     useFormStore?.setState({ respondentId });
   };
-
   const form = data?.data?.form;
   const form_schema = form?.form_schema;
   const creator = form?.creator;
   const customerId = form?.customerId;
 
-  useEffect(() => {
-    if (activeIdx === undefined) return;
+  // useEffect(() => {
+  //   if (!docs) return;
 
-    useFormStore?.setState({
-      maxStep: docs?.length - 1,
-      setActiveStep: setActiveIdx,
-    });
-  }, [docs, activeIdx]);
+  //   useFormStore?.setState({
+  //     maxStep: docs?.length - 1,
+  //     // setActiveStep: setActiveIdx,
+  //   });
+  // }, [docs]);
 
   useEffect(() => {
     if (!form_schema?.content) {
@@ -75,20 +81,27 @@ export const RenderForm = () => {
     }
 
     setDocs(parsedDocs);
+
     if (parsedDocs?.length === 1) {
       useFormStore.setState({
         isSingleForm: true,
         creator: creator,
         customerId: customerId,
+        isLastStep: true,
+        maxStep: parsedDocs?.length - 1,
       });
     } else {
       useFormStore.setState({
         isSingleForm: false,
         creator: creator,
         customerId: customerId,
+        isLastStep: false,
+        maxStep: parsedDocs?.length - 1,
       });
     }
-    setActiveIdx(0); // Reset to first step
+
+    //  useFormStore.setState({ activeStep: 0 });
+    // setActiveIdx(0); // Reset to first step
   }, [form_schema, creator]);
 
   useEffect(() => {
@@ -115,10 +128,10 @@ export const RenderForm = () => {
 
   return (
     <div className="pt-3">
-      {docs?.length > 1 && activeIdx !== 0 && (
-        <div className="w-full max-w-[400px] mx-auto ">
+      {docs?.length > 1 && activeStep !== 0 && (
+        <div className="w-full max-w-lg mx-auto ">
           <Button
-            onClick={() => handleActiveIndex(activeIdx - 1)}
+            onClick={() => handleActiveIndex(activeStep - 1)}
             variant={"secondary"}
             size={"icon"}
           >
@@ -128,26 +141,21 @@ export const RenderForm = () => {
       )}
 
       {docs?.map((content, i) => {
-        if (activeIdx === i) {
+        if (activeStep === i) {
           return (
             <FormEditor
-              key={i}
-              className=" mx-auto max-w-lg w-full rounded-2xl  dark:bg-accent/0 "
+              key={activeStep}
+              className="max-w-xl mx-auto  w-full rounded-2xl  dark:bg-accent/0 "
               isEditable={false}
               content={content}
-              isLast={docs?.length - 1 === activeIdx}
-              activeStep={i}
-              maxStep={docs?.length - 1}
+              // isLast={docs?.length - 1 === activeStep}
+              // activeStep={i}
+              // maxStep={docs?.length - 1}
             />
           );
         }
         return null;
       })}
     </div>
-    // <FormEditor
-    //   className="mx-auto max-w-lg w-full rounded-2xl   my-3 "
-    //   isEditable={false}
-    //   content={form_schema}
-    // />
   );
 };

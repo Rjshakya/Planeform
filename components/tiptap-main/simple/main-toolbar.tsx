@@ -127,7 +127,7 @@ const MainToolbarContent = ({
         <PreviewForm />
       </ToolbarGroup>
 
-      <ToolbarGroup className="ml-1">
+      <ToolbarGroup className="ml-2">
         {forEditPage ? <EditForm /> : <PublishForm />}
       </ToolbarGroup>
 
