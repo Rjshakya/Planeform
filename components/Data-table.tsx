@@ -146,10 +146,11 @@ export default function TanStackTable({
       );
       const selectedRowsId = selectedRows.map((r) => r?.original?.id);
       await apiClient.put(`/api/respondent/multiple`, selectedRowsId);
-      mutate(`/api/response/form/${formId}`);
+      
       setData(updatedData);
       table.resetRowSelection();
       toast("selected rows deleted !");
+      mutate(`/api/response/form/${formId}?pageIndex=${states.pagination}&pageSize=${20}`);
     } catch (e) {
       toast("failed to delete selected rows");
     }
@@ -196,7 +197,7 @@ export default function TanStackTable({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
-              {table?.getAllColumns()?.length &&
+              {tableData && table?.getAllColumns()?.length &&
                 table
                   ?.getAllColumns?.()
                   ?.filter((column) => column.getCanHide())
@@ -489,7 +490,7 @@ export default function TanStackTable({
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={columns?.length}
                   className="h-24 text-center"
                 >
                   No results.

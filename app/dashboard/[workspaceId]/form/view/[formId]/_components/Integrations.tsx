@@ -12,6 +12,7 @@ import { IntegrationCard } from "./_components_integrations/IntegrationCard";
 import { LiveConnection } from "./_components_integrations/LiveConnection";
 import { AnimatedBackground } from "@/components/ui/animated-background";
 import { Loader, TriangleAlert } from "lucide-react";
+import { useUser } from "@/hooks/use-User";
 
 const fetcher = (url: string) => apiClient.get(url);
 
@@ -25,7 +26,7 @@ export const Integrations = ({
   isLoading: boolean;
 }) => {
   const { workspaceId, formId } = useParams();
-
+  const { user } = useUser();
 
   const integrations = [
     {
@@ -42,7 +43,7 @@ export const Integrations = ({
       workspaceId,
       formId,
     },
-     {
+    {
       id: 3,
       provider: "Webhook",
       isConnectedUri: `/api/integration/isConnected?provider=notion`,
@@ -71,25 +72,27 @@ export const Integrations = ({
 
   return (
     <div className=" w-full grid gap-6 mt-4">
-      <Card className="grid gap-4 py-6 bg-transparent">
-        <CardHeader className="">
-          <CardTitle>
-            <p className=" px-1">Live connections</p>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className=" flex flex-col  gap-5 ">
-          {data &&
-            data?.length > 0 &&
-            data?.map((i: any, index: number) => {
+      {/* live connections */}
+      {data && data?.length > 0 && (
+        <Card className="grid gap-4 py-6 bg-transparent rounded-sm shadow-none">
+          <CardHeader className="">
+            <CardTitle>
+              <p className=" px-1">Live connections</p>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className=" flex flex-col  gap-5 ">
+            {data?.map((i: any, index: number) => {
               if (i?.metaData) {
                 const metaData = JSON.parse(i?.metaData || "");
                 return <LiveConnection key={index} metaData={metaData} />;
               }
             })}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
 
-      <div className=" grid md:grid-cols-3 gap-4">
+      {/* integrations */}
+      <div className=" grid md:grid-cols-3 gap-1">
         <AnimatedBackground
           className="rounded-lg bg-muted/20"
           transition={{
@@ -118,6 +121,7 @@ export const Integrations = ({
                   isConnectedUri={i.isConnectedUri}
                   provider={i.provider}
                   workspaceId={(i.workspaceId as string) || ""}
+                  customerId={user?.dodoCustomerId || ""}
                 />
               </div>
             );
