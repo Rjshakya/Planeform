@@ -122,9 +122,6 @@ export const Submissions = () => {
     return columnArr;
   }, [heads]);
 
-  // useEffect(() => {
-  //   setTableData(responses?.res || []);
-  // }, [responses?.res]);
 
   if (error) {
     return (

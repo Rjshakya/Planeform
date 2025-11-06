@@ -43,15 +43,6 @@ export const RenderForm = () => {
   const creator = form?.creator;
   const customerId = form?.customerId;
 
-  // useEffect(() => {
-  //   if (!docs) return;
-
-  //   useFormStore?.setState({
-  //     maxStep: docs?.length - 1,
-  //     // setActiveStep: setActiveIdx,
-  //   });
-  // }, [docs]);
-
   useEffect(() => {
     if (!form_schema?.content) {
       setDocs([]);
@@ -108,6 +99,10 @@ export const RenderForm = () => {
     if (!formId || !customerId) return;
     handleCreateRespondent(formId as string, customerId);
   }, [formId, customerId]);
+
+  useEffect(() => {
+    useFormStore.setState({ activeStep: 0 });
+  }, []);
 
   if (error) {
     return (
