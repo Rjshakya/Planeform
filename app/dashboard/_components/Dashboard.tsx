@@ -11,7 +11,7 @@ const fetcher = (url: string) => apiClient.get(url).then((res) => res.data);
 export const DashboardComp = () => {
   const { user } = useUser();
   const { data, error, isLoading } = useSWR(
-    () => `/api/analytics/` + user?.dodoCustomerId,
+    () => `/api/analytics/dashboard/` + user?.dodoCustomerId,
     fetcher
   );
 

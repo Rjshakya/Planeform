@@ -20,7 +20,7 @@ export default function Page() {
   );
   useUser();
   return (
-    <main className=" w-full max-w-4xl  mx-auto">
+    <main className=" w-full max-w-4xl  mx-auto pb-16">
       <Tabs defaultValue="Submission" className="w-full">
         <div className=" mb-8 ">
           <p className=" text-muted-foreground text-3xl md:text-5xl font-semibold tracking-tighter">
