@@ -19,6 +19,7 @@ import { authClient, signOut } from "@/lib/auth-client";
 import { mutate } from "swr";
 import { Loader } from "lucide-react";
 import ShortUniqueId from "short-unique-id";
+import { v7 } from "uuid";
 
 const uid = new ShortUniqueId({ length: 10 });
 
@@ -40,7 +41,7 @@ export const PublishForm = () => {
     }
 
     if (!workspace) return;
-    const json = editor?.getJSON();
+    const json = handleFormSchema(editor?.getJSON());
     const form_schema = JSON.stringify(json);
     const creator = session?.user?.id;
     const name = formname;
@@ -152,4 +153,17 @@ export const postFormFields = async (jsonDoc: JsonDoc, formId: string) => {
     toast("failed to create form");
     throw new Error("error occurred in creating form");
   }
+};
+
+export const handleFormSchema = (jsonDoc: JsonDoc): JsonDoc => {
+  if (!jsonDoc) return;
+  const doc = jsonDoc;
+  const alterContent = doc?.content?.map((c) => {
+    if (c?.type?.includes("Input")) {
+      return { ...c, attrs: { ...c.attrs, id: v7() } };
+    }
+    return c;
+  });
+
+  return { ...jsonDoc, content: alterContent };
 };

@@ -14,11 +14,14 @@ import { JsonDoc } from "@/lib/types";
 import { useFormStore } from "@/stores/useformStore";
 import { ArrowLeft } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import { useForm } from "react-hook-form";
+import { thankyouPageContent } from "@/lib/content";
 
 export const PreviewForm = () => {
   const [jsonContent, setJsonContent] = useState<JsonDoc>();
   const { editor } = useCurrentEditor();
   const [docs, setDocs] = useState<JsonDoc[]>([]);
+  const form = useForm();
 
   const { data: session } = authClient.useSession();
   const { activeStep, isLastStep, maxStep } = useFormStore((s) => s);
@@ -51,7 +54,12 @@ export const PreviewForm = () => {
       return;
     }
 
-    const content = [...jsonContent?.content];
+    const thankyouPage = [...jsonContent?.content]?.find(
+      (c) => c.type === "pageBreak"
+    );
+    const content = [...jsonContent?.content].filter(
+      (c) => c?.type !== "pageBreak"
+    );
     const breakIndices: number[] = [0];
 
     content?.forEach((node, i) => {
@@ -73,7 +81,12 @@ export const PreviewForm = () => {
       }
     }
 
-    // console.log(parsedDocs);
+    if (thankyouPage) {
+      parsedDocs.push({ type: "doc", content: [thankyouPage] });
+    } else {
+      parsedDocs.push({ type: "doc", content: [thankyouPageContent] });
+    }
+
     setDocs(parsedDocs);
 
     if (parsedDocs?.length === 1) {
@@ -94,7 +107,7 @@ export const PreviewForm = () => {
       });
     }
 
-    useFormStore.setState({ activeStep: 0 });
+    useFormStore.setState({ activeStep: 0, form });
   }, [jsonContent]);
 
   return (
@@ -106,12 +119,12 @@ export const PreviewForm = () => {
       </SheetTrigger>
       <SheetContent
         side="bottom"
-        className=" sm:max-w-full w-full h-full grid overflow-auto"
+        className=" font-sans sm:max-w-full w-full h-full grid overflow-auto"
       >
         <SheetHeader>
           <SheetTitle>Preview form</SheetTitle>
           {docs?.length > 1 && activeStep !== 0 && (
-            <div className="w-full max-w-lg mx-auto">
+            <div className="w-full max-w-3xl mx-auto">
               <Button
                 onClick={() => handleActiveIndex(activeStep - 1)}
                 variant={"secondary"}
@@ -127,7 +140,7 @@ export const PreviewForm = () => {
               return (
                 <FormEditor
                   key={i}
-                  className=" mx-auto max-w-xl   w-full rounded-2xl  dark:bg-accent/0 "
+                  className=" mx-auto max-w-3xl   w-full rounded-2xl  dark:bg-accent/0 "
                   isEditable={false}
                   content={d}
                 />

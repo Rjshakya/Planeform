@@ -62,7 +62,50 @@ export const defaultEditorContent = {
         },
       ],
     },
-    
   ],
   attrs: {},
 } satisfies JsonDoc;
+
+export const thankyouPageContent = {
+  type: "pageBreak",
+  attrs: {
+    isThankyouPage: true,
+  },
+  content: [
+    {
+      type: "paragraph",
+      attrs: {
+        textAlign: "center",
+      },
+      content: [
+        {
+          type: "text",
+          marks: [
+            {
+              type: "textStyle",
+              attrs: {
+                fontFamily: "var(--font-playfair-display)",
+              },
+            },
+          ],
+          text: "    ",
+        },
+        {
+          type: "text",
+          marks: [
+            {
+              type: "textStyle",
+              attrs: {
+                fontFamily: "var(--font-playfair-display)",
+              },
+            },
+            {
+              type: "italic",
+            },
+          ],
+          text: "Thankyou for responding",
+        },
+      ],
+    },
+  ],
+};

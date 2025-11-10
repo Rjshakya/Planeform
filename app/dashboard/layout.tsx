@@ -47,7 +47,7 @@ export default function DashboardLayout({
         </header>
         <div
           className={cn(
-            `flex flex-1 flex-col gap-4 px-4`,
+            `flex flex-1 flex-col gap-4 px-4 font-sans`,
             `${workspaceId && pathName?.includes("/form/create") && "py-0"}`,
             `${workspaceId && pathName?.includes(`/form/edit`) && "py-0"}`
           )}

@@ -1,6 +1,12 @@
 "use client";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+  TabsContents,
+} from "@/components/ui/shadcn-io/tabs";
 import { Submissions } from "./_components/Submissions";
 import { apiClient } from "@/lib/axios";
 import useSWR from "swr";
@@ -27,26 +33,27 @@ export default function Page() {
             {data?.data?.form?.name || "form"}
           </p>
         </div>
-        <TabsList className=" h-12 bg-accent rounded-sm ">
+        <TabsList className=" h-12  rounded-sm ">
           <TabsTrigger
-            className=" rounded-sm text-left md:text-lg w-full h-full py-4 px-5  data-[state=active]:bg-card dark:data-[state=active]:bg-card"
+            className=" rounded-sm text-left md:text-lg w-full h-full py-4 px-5"
             value="Submission"
           >
             Submission
           </TabsTrigger>
           <TabsTrigger
-            className=" rounded-sm text-left md:text-lg w-full h-full py-4 px-5  data-[state=active]:bg-card dark:data-[state=active]:bg-card"
+            className=" rounded-sm text-left md:text-lg w-full h-full py-4 px-5"
             value="Analytics"
           >
             Analytics
           </TabsTrigger>
           <TabsTrigger
-            className=" rounded-sm text-left md:text-lg w-full h-full py-4 px-5  data-[state=active]:bg-card dark:data-[state=active]:bg-card "
+            className=" rounded-sm text-left md:text-lg w-full h-full py-4 px-5 "
             value="Integrations"
           >
             Integrations
           </TabsTrigger>
         </TabsList>
+        <TabsContents>
         <TabsContent className="px-1  grid gap-2 mt-4 " value="Submission">
           <Submissions />
         </TabsContent>
@@ -60,6 +67,7 @@ export default function Page() {
             isLoading={isLoading}
           />
         </TabsContent>
+        </TabsContents>
       </Tabs>
     </main>
   );

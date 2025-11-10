@@ -20,7 +20,7 @@ export const useEditorStore = create<editorStore>()(
       editedContent: null,
     }),
     {
-      name: "editor",
+      name: "planetform-editor",
       partialize: (s) => ({ editedContent: s.editedContent }),
     }
   )
