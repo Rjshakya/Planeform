@@ -189,7 +189,7 @@ export const FontFamilyBox = ({ families }: { families: any[] }) => {
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover  open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -205,7 +205,7 @@ export const FontFamilyBox = ({ families }: { families: any[] }) => {
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className={cn(`p-0 mt-2`)}
+        className={cn(`p-0 mt-2 font-sans`)}
         style={{ width: `${buttonRef?.current?.offsetWidth}px` }}
       >
         <Command className="w-full">

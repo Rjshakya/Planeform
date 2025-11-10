@@ -49,7 +49,7 @@ import {
   SlashCmd,
 } from "@harshtalks/slash-tiptap";
 
-import { v4 } from "uuid";
+import { v4, v7 } from "uuid";
 import { Text } from "lucide-react";
 import { TiptapToolBar } from "./main-toolbar";
 import { EditorDragHandle } from "./drag-handle";
@@ -60,19 +60,14 @@ import "@/components/tiptap-node/list-node/list-node.scss";
 import "@/components/tiptap-node/image-node/image-node.scss";
 import "@/components/tiptap-node/heading-node/heading-node.scss";
 import "@/components/tiptap-node/paragraph-node/paragraph-node.scss";
-import { useDebounceCallBack } from "@/hooks/use-Debounce";
 import UploadImage from "tiptap-extension-upload-image";
-import { ImageExtension, ImageAligner } from "@harshtalks/image-tiptap";
 import { apiClient } from "@/lib/axios";
 import axios from "axios";
 import { fileUploadNode } from "@/components/custom-extensions/file-uplaod/node";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-
-interface IformVal {
-  name: string;
-  value: string;
-}
+import { PageBreakNode } from "@/components/custom-extensions/page-break/node";
+import { toast } from "sonner";
 
 const suggestions = createSuggestionsItems([
   {
@@ -343,6 +338,63 @@ const suggestions = createSuggestionsItems([
     icon: <FilePlus size={16} />,
     searchTerms: ["file upload", "upload", "file", "attachment"],
   },
+  {
+    title: "Thank-you Page",
+    command: ({ editor, range }) => {
+      const existings = editor?.$node("pageBreak");
+      if (existings?.pos) {
+        toast("you can have only one thankyou - page");
+        return;
+      }
+
+      editor
+        ?.chain()
+        ?.focus()
+        ?.deleteRange(range)
+        ?.insertPageBreak({ isThankyouPage: true })
+        ?.run();
+    },
+    description: "Add a custom thankyou page",
+    icon: (
+      <div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="size-5 fill-foreground"
+          viewBox="0 0 24 24"
+          // fill="#121212"
+        >
+          <g clipPath="url(#clip0_3261_13092)">
+            <path
+              opacity="0.4"
+              d="M17.69 4.30995V12.32L12.54 15.89L11.35 16.25L10.45 16.05L5.01001 12.32V4.30995C5.01001 2.72995 6.28001 1.44995 7.86001 1.44995H14.84C16.42 1.44995 17.69 2.72995 17.69 4.30995Z"
+              fill="white"
+              style={{ fill: "var(--fillg)" }}
+            />
+            <path
+              d="M14.5101 7.57993C14.5101 9.44993 11.4001 10.9699 11.3501 10.9699C11.2901 10.9699 8.18005 9.44993 8.18005 7.57993C8.18005 6.66993 8.93005 5.67993 10.0401 5.67993C10.6801 5.67993 11.1001 5.96993 11.3501 6.23993C11.5901 5.96993 12.0101 5.67993 12.6501 5.67993C13.7701 5.67993 14.5101 6.65993 14.5101 7.57993Z"
+              fill="white"
+              style={{ fill: "var(--fillg)" }}
+            />
+            <path
+              d="M22.88 19.0699C22.88 19.1399 22.84 19.2999 22.65 19.3599L21.67 19.6299C20.82 19.8599 20.18 20.4999 19.95 21.3499L19.69 22.3099C19.63 22.5299 19.46 22.5499 19.38 22.5499C19.3 22.5499 19.13 22.5299 19.07 22.3099L18.81 21.3399C18.58 20.4999 17.93 19.8599 17.09 19.6299L16.12 19.3699C15.91 19.3099 15.89 19.1299 15.89 19.0599C15.89 18.9799 15.91 18.7999 16.12 18.7399L17.1 18.4799C17.94 18.2399 18.58 17.5999 18.81 16.7599L19.09 15.7399C19.16 15.5699 19.32 15.5399 19.38 15.5399C19.44 15.5399 19.61 15.5599 19.67 15.7199L19.95 16.7499C20.18 17.5899 20.83 18.2299 21.67 18.4699L22.67 18.7499C22.87 18.8299 22.88 19.0099 22.88 19.0699Z"
+              fill="white"
+              style={{ fill: "var(--fillg)" }}
+            />
+            <path
+              d="M21.58 9.80994V17.3899C21.25 17.1999 20.99 16.8899 20.9 16.5099L20.59 15.3899C20.4 14.8899 19.96 14.5499 19.39 14.5499C18.84 14.5499 18.35 14.8799 18.17 15.3799L18.1 15.5499L17.85 16.4999C17.71 16.9999 17.34 17.3699 16.83 17.5199L15.86 17.7699C15.27 17.9399 14.89 18.4399 14.89 19.0499C14.89 19.6599 15.28 20.1599 15.85 20.3199L16.83 20.5899C17.18 20.6799 17.46 20.9099 17.65 21.1999H2.89C1.91 21.1999 1.12 20.3899 1.12 19.3999C1.12 19.3999 1.13 9.59994 1.13 9.56994C1.16 9.11994 1.35 8.68994 1.69 8.37994L5.01 5.30994V7.25994L2.66 9.42994C2.55 9.52994 2.54 9.63994 2.55 9.69994C2.55 9.76994 2.58 9.88994 2.7 9.96994L5.01 11.5299L10.57 15.2999C10.77 15.4399 11.02 15.5199 11.27 15.5399C11.57 15.5599 11.89 15.4699 12.15 15.2999L17.69 11.5399L20.01 9.96994C20.13 9.88994 20.15 9.76994 20.16 9.70994C20.16 9.64994 20.16 9.52994 20.05 9.43994L17.69 7.29994V5.37994C17.69 5.37994 17.73 5.39994 17.75 5.41994L21 8.37994C21.41 8.73994 21.62 9.25994 21.58 9.80994Z"
+              fill="white"
+              style={{ fill: "var(--fillg)" }}
+            />
+          </g>
+          <defs>
+            <clipPath id="clip0_3261_13092">
+              <rect width="24" height="24" fill="white" />
+            </clipPath>
+          </defs>
+        </svg>
+      </div>
+    ),
+  },
 ]);
 
 export function SimpleEditor({
@@ -357,24 +409,19 @@ export function SimpleEditor({
   const { formId } = useParams();
 
   const editorContentRef = React.useRef<HTMLDivElement>(null);
+  const { isLastStep, activeStep, maxStep, handleSubmit, getHookForm } =
+    useFormStore((s) => s);
 
   // form init
-  const form = useForm();
-  const { isLastStep, activeStep, maxStep, handleSubmit } = useFormStore(
-    (s) => s
-  );
+  const form = getHookForm();
 
   const uploadFn = async (file: File) => {
     const fileName = file?.name;
-    const formData = new FormData();
-    formData.append("image", file);
     let url = URL.createObjectURL(file);
     const res = await apiClient.post("/api/file", { fileName });
     if (res?.status === 200) {
       const signedUrl = res?.data?.url?.uploadUrl;
       url = res?.data?.url?.fileUrl;
-      console.log(res?.data);
-
       await axios.put(signedUrl, file);
     }
     return url;
@@ -402,7 +449,7 @@ export function SimpleEditor({
           openOnClick: true,
           enableClickSelection: true,
         },
-
+        trailingNode: false,
       }) as any,
       Slash.configure({
         suggestion: {
@@ -447,6 +494,7 @@ export function SimpleEditor({
       dateInputNode,
       actionButtonNode,
       fileUploadNode,
+      PageBreakNode,
       Focus.configure({
         className: "has-focus",
         mode: "all",
@@ -467,43 +515,42 @@ export function SimpleEditor({
       setTimeout(() => {
         const json = props.editor.getJSON();
         useEditorStore.setState({ editedContent: json });
-      } , 1000)
+      }, 1000);
     },
   });
 
-  const handleActiveIndex = React.useCallback(
-    (idx: number) => {
-      const index = idx < 0 ? 0 : Math.min(maxStep, idx);
+  const handleActiveIndex = (idx: number) => {
+    const index = idx < 0 ? 0 : Math.min(maxStep, idx);
 
-      if (isLastStep) return;
-      // setActiveStep(index);
-      console.log(index, idx);
-      console.log(maxStep === index);
-      useFormStore.setState({
-        activeStep: index,
-        isLastStep: maxStep === index,
-      });
-    },
-    [activeStep, maxStep, isLastStep]
-  );
+    if (useFormStore.getState().isLastStep) {
+      return;
+    }
 
-  const onSubmit = async (values: FieldValues) => {
-    // if (!formId) return;
-    console.log(values);
+    useFormStore.setState({
+      activeStep: idx,
+      isLastStep: maxStep === idx,
+    });
+  };
 
-    const isSubmitted = await handleSubmit(values, formId as string);
+  const handleOnSubmit = async (values: FieldValues) => {
     handleActiveIndex(activeStep + 1);
+    const isSubmitted = await handleSubmit(
+      values,
+      formId as string,
+      activeStep
+    );
 
-    if (isLastStep && isSubmitted) {
-      router.push(`/thank-you`);
-      form.reset();
+    if (useFormStore.getState().isLastStep && isSubmitted) {
+      // router.push(`/thank-you`);
+      useFormStore.setState({ activeStep: activeStep + 1 });
+      form?.reset();
+      return;
     }
   };
 
   React.useEffect(() => {
     useEditorStore.setState({ editor: editor });
-    useFormStore.setState({ form: form });
-  }, [editor, form]);
+  }, [editor]);
 
   if (!editor) {
     return null;
@@ -516,8 +563,10 @@ export function SimpleEditor({
 
         <Form {...form!}>
           <form
-            onSubmit={form?.handleSubmit?.(onSubmit)}
-            className={`w-full h-full px-2 ${isEditable && "max-w-xl"} mx-auto`}
+            onSubmit={form?.handleSubmit?.(handleOnSubmit)}
+            className={`w-full h-full px-2 ${
+              isEditable && "max-w-3xl"
+            } mx-auto`}
           >
             {isEditable && <EditorDragHandle editor={editor} />}
 
@@ -526,7 +575,7 @@ export function SimpleEditor({
                 <EditorContent
                   editor={editor}
                   role="presentation"
-                  className=" w-full h-full flex flex-col mx-auto  sm:px-4 sm:mt-0  px-2 mt-16  relative"
+                  className=" w-full h-full flex flex-col mx-auto  sm:px-4 sm:mt-0  px-2 mt-16 pb-10  relative"
                   ref={editorContentRef}
                 />
 

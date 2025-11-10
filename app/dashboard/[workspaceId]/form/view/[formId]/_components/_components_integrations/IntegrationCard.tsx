@@ -260,11 +260,11 @@ export const IntegrationCard = ({
                   {provider === "Webhook" && "Add url"}
                 </Button>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className=" font-sans">
                 <DialogHeader>
-                  <DialogTitle>
+                  <DialogTitle className="">
                     {provider === "Google" && (
-                      <div>
+                      <div className="flex items-center my-2 gap-4">
                         <Button
                           variant={"secondary"}
                           size={"icon"}
@@ -301,7 +301,7 @@ export const IntegrationCard = ({
                       </div>
                     )}
                     {provider === "Notion" && (
-                      <div>
+                      <div className="flex items-center my-2 gap-4">
                         <Button
                           variant={"secondary"}
                           size={"icon"}
@@ -340,7 +340,7 @@ export const IntegrationCard = ({
                       </div>
                     )}
                     {provider === "Webhook" && (
-                      <div>
+                      <div className="flex items-center my-2 gap-4">
                         <Button
                           variant={"secondary"}
                           size={"icon"}

@@ -54,13 +54,13 @@ const ShortInput = (props: NodeViewProps) => {
                     placeholder={placeholder}
                     type={type}
                     required={isRequired}
-                    // value={field?.value}
-                    // onChange={field?.onChange}
-                    // name={field?.name}
-                    // disabled={props?.editor?.isEditable}
-                    // ref={field?.ref}
-                    // onBlur={field?.onBlur}
-                    {...field}
+                    value={field?.value || ''}
+                    onChange={field?.onChange}
+                    name={field?.name}
+                    disabled={props?.editor?.isEditable}
+                    ref={field?.ref}
+                    onBlur={field?.onBlur}
+                    // {...field}
                   />
                 )}
               </FormControl>

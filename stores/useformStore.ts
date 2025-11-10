@@ -19,7 +19,8 @@ export interface IformStore {
   isSubmitting: boolean;
   handleSubmit: (
     values: Record<string, any>,
-    formId: string
+    formId: string,
+    step: number
   ) => Promise<boolean>;
   isSuccess: boolean;
   isLastStep: boolean;
@@ -40,7 +41,6 @@ export const useFormStore = create<IformStore>((set, get) => ({
     return get()?.form;
   },
   form: null,
-
   setHookForm: (form) => {
     set({
       form: form,
@@ -50,58 +50,22 @@ export const useFormStore = create<IformStore>((set, get) => ({
   },
   stepResponses: [],
   isSubmitting: false,
-  handleSubmit: async (values, formId) => {
-    const {
-      creator,
-      customerId,
-      isLastStep,
-      stepResponses,
-      isSingleForm,
-      respondentId,
-    } = get();
+  handleSubmit: async (values, formId, step) => {
+    const { creator, customerId, stepResponses, respondentId } = get();
 
     if (!values || !creator || !customerId) {
       toast("failed to submit form , please try again :customer");
       return false;
     }
 
-    // if (!formId) {
-    //   toast("failed to submit form , please try again :form");
-    //   return true;
-    // }
-
-    // if this is not last step then push values to stepresponses
-    if (!isLastStep) {
-      const id = Object.keys(values)[0];
-      if (!values[id]) return false;
-
-      const existing = stepResponses?.find((v, i) => {
-        const key = Object.keys(v)[0];
-        return key === id;
-      });
-      const existingIdx = stepResponses?.findIndex((v) => {
-        const key = Object.keys(v)[0];
-        return key === id;
-      });
-
-      if (existing) {
-        const copy = [...get()?.stepResponses];
-        copy[existingIdx] = values;
-        set({ stepResponses: copy });
-        return true;
-      }
-
-      stepResponses?.push(values);
+    if (!get().isLastStep) {
+      return true;
+    }
+    if (!formId) {
       return true;
     }
 
-    const allStepValues = [...stepResponses, values];
-
-    if (!formId) {
-      return false;
-    }
-
-    isLastStep && set({ isSubmitting: true });
+    get().isLastStep && set({ isSubmitting: true });
 
     try {
       let respondent = respondentId;
@@ -123,32 +87,33 @@ export const useFormStore = create<IformStore>((set, get) => ({
 
       let finalValues = [] as IsubmissionObj[];
 
-      if (isSingleForm) {
-        finalValues = Object.entries(values).map((o) => {
-          return {
-            form: formId,
-            form_field: o[0],
-            value: Array?.isArray(o[1]) ? o[1]?.join(",") : o[1],
-            respondent: respondent!,
-          };
-        });
-      }
+      finalValues = Object.entries(values).map((o) => {
+        return {
+          form: formId,
+          form_field: o[0],
+          value: Array?.isArray(o[1]) ? o[1]?.join(",") : o[1],
+          respondent: respondent!,
+        };
+      });
 
-      if (!isSingleForm) {
-        allStepValues?.forEach((valueObj) => {
-          const keys = Object.keys(valueObj);
-          keys?.forEach((key) => {
-            finalValues?.push({
-              form: formId,
-              form_field: key,
-              respondent: respondent!,
-              value: Array?.isArray(valueObj[key])
-                ? valueObj[key]?.join(",")
-                : valueObj[key],
-            });
-          });
-        });
-      }
+      console.log(finalValues);
+
+      // if (!isSingleForm) {
+      //   allStepValues?.forEach((valueObj) => {
+      //     const keys = Object.keys(valueObj);
+
+      //     keys?.forEach((key) => {
+      //       finalValues?.push({
+      //         form: formId,
+      //         form_field: key,
+      //         respondent: respondent!,
+      //         value: Array?.isArray(valueObj[key])
+      //           ? valueObj[key]?.join(",")
+      //           : valueObj[key],
+      //       });
+      //     });
+      //   });
+      // }
 
       const response = await apiClient.post(`/api/response/multiple`, {
         finalValues,
@@ -156,17 +121,17 @@ export const useFormStore = create<IformStore>((set, get) => ({
       });
 
       if (response?.status !== 200) {
-        await apiClient?.delete(`/api/respondent/${respondentId}`);
+        await apiClient?.delete(`/api/respondent/${respondent}`);
         return false;
       }
 
       mutate(`/api/response/form/${formId}?pageIndex=${0}&pageSize=${20}`);
+      toast("form submitted successfully")
+      set({ isSubmitting: false });
       return true;
     } catch (e) {
       toast("failed to submit form please try again later;");
       return false;
-    } finally {
-      set({ isSubmitting: false });
     }
   },
   isLastStep: true,

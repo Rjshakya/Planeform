@@ -2,6 +2,7 @@
 import { FormEditor } from "@/app/dashboard/[workspaceId]/form/_components/FormEditor";
 import { Button } from "@/components/ui/button";
 import { apiClient } from "@/lib/axios";
+import { thankyouPageContent } from "@/lib/content";
 import { JsonDoc } from "@/lib/types";
 import { useFormStore } from "@/stores/useformStore";
 import { ArrowLeft, Loader, TriangleAlert } from "lucide-react";
@@ -16,7 +17,6 @@ export const RenderForm = () => {
   const { formId } = useParams();
   const { data, isLoading, error } = useSWR(`/api/form/${formId}`, fetcher);
   const [docs, setDocs] = useState<JsonDoc[]>([]);
-  // const [activeIdx, setActiveIdx] = useState(0);
   const { activeStep, maxStep, isLastStep } = useFormStore((s) => s);
   const handleActiveIndex = useCallback(
     (idx: number) => {
@@ -49,7 +49,12 @@ export const RenderForm = () => {
       return;
     }
 
-    const content = [...form_schema?.content];
+    const thankyouPage = [...form_schema?.content]?.find(
+      (c) => c.type === "pageBreak"
+    );
+    const content = [...form_schema?.content].filter(
+      (c) => c?.type !== "pageBreak"
+    );
     const breakIndices: number[] = [0];
 
     content?.forEach((node, i) => {
@@ -69,6 +74,12 @@ export const RenderForm = () => {
       if (stepContent.length > 0) {
         parsedDocs.push({ type: "doc", content: stepContent });
       }
+    }
+
+    if (thankyouPage) {
+      parsedDocs.push({ type: "doc", content: [thankyouPage] });
+    } else {
+      parsedDocs.push({ type: "doc", content: [thankyouPageContent] });
     }
 
     setDocs(parsedDocs);
@@ -100,10 +111,6 @@ export const RenderForm = () => {
     handleCreateRespondent(formId as string, customerId);
   }, [formId, customerId]);
 
-  useEffect(() => {
-    useFormStore.setState({ activeStep: 0 });
-  }, []);
-
   if (error) {
     return (
       <div className="w-full h-screen flex items-center justify-center">
@@ -123,7 +130,7 @@ export const RenderForm = () => {
 
   return (
     <div className="pt-3">
-      {docs?.length > 1 && activeStep !== 0 && (
+      {docs?.length > 1 && activeStep !== 0 && activeStep < docs?.length -1 && (
         <div className="w-full max-w-lg mx-auto ">
           <Button
             onClick={() => handleActiveIndex(activeStep - 1)}
@@ -143,9 +150,6 @@ export const RenderForm = () => {
               className="max-w-xl mx-auto  w-full rounded-2xl  dark:bg-accent/0 "
               isEditable={false}
               content={content}
-              // isLast={docs?.length - 1 === activeStep}
-              // activeStep={i}
-              // maxStep={docs?.length - 1}
             />
           );
         }

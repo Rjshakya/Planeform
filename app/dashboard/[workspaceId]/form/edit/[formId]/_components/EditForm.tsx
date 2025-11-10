@@ -17,7 +17,7 @@ import { Loader } from "lucide-react";
 import { toast } from "sonner";
 import { apiClient } from "@/lib/axios";
 import { mutate } from "swr";
-import { filterFormFields } from "../../../create/_components/PublishForm";
+import { filterFormFields, handleFormSchema } from "../../../create/_components/PublishForm";
 
 export const EditForm = () => {
   const { editor } = useCurrentEditor();
@@ -32,14 +32,15 @@ export const EditForm = () => {
   const handleSaveEditForm = async () => {
     if (!editor) return;
     const json = editor.getJSON();
-    const fields = filterFormFields(json, formId as string);
+    const schema = handleFormSchema(json)
+    const fields = filterFormFields(schema, formId as string);
 
     setCreating(true);
     try {
       await apiClient.put(`/api/form/`, {
         formId,
         formName,
-        form_schema: JSON.stringify(json),
+        form_schema: JSON.stringify(schema),
         fields,
       });
 
@@ -81,7 +82,7 @@ export const EditForm = () => {
           </Button>
           <Button onClick={async () => await handleSaveEditForm()}>
             {creating && <Loader className={`animate-spin`} />}
-            <span>Ship it</span>
+            <span>Save</span>
           </Button>
         </DialogFooter>
       </DialogContent>

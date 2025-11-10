@@ -34,7 +34,6 @@ export const FileUploadInputView = (props: NodeViewProps) => {
     errors: [],
   });
   const pathName = usePathname();
-
   const inputRef = useRef<HTMLInputElement>(null);
 
   const validateFile = useCallback(
@@ -342,13 +341,6 @@ export const FileUploadInputView = (props: NodeViewProps) => {
       }
 
       if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-        // In single file mode, only use the first file
-        // if (!multiple) {
-        //   const file = e.dataTransfer.files[0];
-        //   addFiles([file]);
-        // } else {
-
-        // }
         return await addFiles(e.dataTransfer.files);
       }
     },
@@ -404,7 +396,7 @@ export const FileUploadInputView = (props: NodeViewProps) => {
                   }}
                   data-dragging={state.isDragging || undefined}
                   data-files={state.files.length > 0 || undefined}
-                  onClick={openFileDialog}
+                  // onClick={openFileDialog}
                   className="relative dark:bg-input/40 bg-input/70 flex min-h-52 flex-col items-center overflow-hidden rounded-xl border-4 border-dashed border-accent-foreground/20 p-4 transition-colors not-data-[files]:justify-center has-[input:focus]:border-ring has-[input:focus]:ring-[3px] has-[input:focus]:ring-ring/50 data-[dragging=true]:bg-accent/50"
                 >
                   <input
@@ -422,7 +414,9 @@ export const FileUploadInputView = (props: NodeViewProps) => {
                     type="file"
                     multiple={type === "multiple"}
                     required={isRequired}
+                    onBlur={onBlur}
                   />
+                  
                   <div className="flex flex-col items-center justify-center px-4 py-3 text-center">
                     <div
                       className="mb-2 flex size-11 shrink-0 items-center justify-center rounded-full border  bg-background"
@@ -449,6 +443,14 @@ export const FileUploadInputView = (props: NodeViewProps) => {
                       Select images
                     </Button> */}
                   </div>
+                  <Button
+                    onClick={openFileDialog}
+                    size={"sm"}
+                    variant={"outline"}
+                    type="button"
+                  >
+                    select files
+                  </Button>
                 </div>
                 {state.errors.length > 0 && (
                   <div

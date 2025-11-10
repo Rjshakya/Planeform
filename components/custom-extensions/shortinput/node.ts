@@ -1,7 +1,7 @@
 "use client";
 import { Node, mergeAttributes } from "@tiptap/core";
 import { ReactNodeViewRenderer } from "@tiptap/react";
-import { v4 } from "uuid";
+import { v7 } from "uuid";
 import ShortInput from "./View";
 
 interface InsertShortInputParams {
@@ -23,7 +23,7 @@ export const shortInputNode = Node.create({
 
   addAttributes() {
     return {
-      id: { default: v4() },
+      id: { default: v7() },
       label: { default: "Label:" },
       placeholder: { default: "" },
       type: { default: "text" },
@@ -39,7 +39,7 @@ export const shortInputNode = Node.create({
           if (typeof element === "string") return {};
 
           return {
-            id: element.getAttribute("data-id") || v4(),
+            id: element.getAttribute("data-id") || v7(),
             label: element.getAttribute("data-label") || "Label:",
             placeholder: element.getAttribute("data-placeholder") || "",
             type: element.getAttribute("data-type") || "text",

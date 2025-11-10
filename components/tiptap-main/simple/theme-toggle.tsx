@@ -13,12 +13,19 @@ import { Button } from "@/components/ui/button";
 export function ThemeToggle({ variant }: { variant?: any }) {
   const [isDarkMode, setIsDarkMode] = React.useState<boolean>(false);
 
+   React.useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
+    const handleChange = () => setIsDarkMode(mediaQuery.matches)
+    mediaQuery.addEventListener("change", handleChange)
+    return () => mediaQuery.removeEventListener("change", handleChange)
+  }, [])
+
   React.useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleChange = () => setIsDarkMode(mediaQuery.matches);
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
-  }, []);
+    const initialDarkMode =
+      !!document.querySelector('meta[name="color-scheme"][content="dark"]') ||
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+    setIsDarkMode(initialDarkMode)
+  }, [])
 
   React.useEffect(() => {
     document.documentElement.classList.toggle("dark", isDarkMode);
