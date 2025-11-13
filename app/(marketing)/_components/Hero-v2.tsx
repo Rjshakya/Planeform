@@ -120,39 +120,11 @@ const demoFormContent: JsonDoc = {
 } satisfies JsonDoc;
 
 // Component to track editor content from the store
-const EditorContentSync = ({
-  onContentChange,
-}: {
-  onContentChange: (content: JsonDoc) => void;
-}) => {
-  const editor = useEditorStore((state) => state.editor);
 
-  useEffect(() => {
-    if (!editor) return;
-
-    const handleUpdate = () => {
-      const json = editor.getJSON();
-      onContentChange(json as JsonDoc);
-    };
-
-    // Get initial content
-    handleUpdate();
-
-    // Listen for updates
-    editor.on("update", handleUpdate);
-
-    return () => {
-      editor.off("update", handleUpdate);
-    };
-  }, [editor, onContentChange]);
-
-  return null;
-};
 
 export const HeroV2 = () => {
   const form = useForm();
   const [showPreview, setShowPreview] = useState(true);
-  const [isVisible, setIsVisible] = useState(false);
   const { landingEditorContent } = useLandingStore((s) => s);
 
   useEffect(() => {
@@ -165,8 +137,6 @@ export const HeroV2 = () => {
       isSingleForm: true,
     });
 
-    // Trigger animation
-    setIsVisible(true);
   }, [form]);
 
   return (
@@ -189,8 +159,7 @@ export const HeroV2 = () => {
       <div className="text-center mb-12">
         <h1
           className={cn(
-            "text-6xl md:text-7xl mb-10 leading-tighter transition-opacity duration-1000",
-            isVisible ? "opacity-100" : "opacity-0"
+            "text-6xl md:text-7xl mb-10 leading-tighter transition-opacity duration-1000"
           )}
           style={{ fontFamily: "var(--font-insturment-serif)" }}
         >
