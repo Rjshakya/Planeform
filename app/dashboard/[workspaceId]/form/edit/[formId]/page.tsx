@@ -9,6 +9,7 @@ import { useUser } from "@/hooks/use-User";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useFormStore } from "@/stores/useformStore";
+import { Icustomisation, useEditorStore } from "@/stores/useEditorStore";
 
 const fetcher = (url: string) => apiClient.get(url);
 
@@ -16,10 +17,14 @@ export default function Page() {
   const { formId } = useParams();
   const { data, isLoading, error } = useSWR(`/api/form/${formId}`, fetcher);
   const form = useForm();
-  useUser();
+  const formData = data?.data?.form;
+  const form_schema = formData?.form_schema;
+  const customisation = formData?.customisation as Icustomisation;
+  // useUser();
   useEffect(() => {
     useFormStore.setState({ form });
-  }, [form]);
+    useEditorStore.setState({ ...customisation });
+  }, [form, formData ,customisation]);
 
   if (error) {
     return (
@@ -38,11 +43,6 @@ export default function Page() {
       </div>
     );
   }
-
-  const formData = data?.data?.form;
-  const form_schema = formData?.form_schema;
-
-
 
   return <FormEditor isEditable={true} content={form_schema} />;
 }

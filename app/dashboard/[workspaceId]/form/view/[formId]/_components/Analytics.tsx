@@ -14,6 +14,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
 
 interface IAnalytics {
   visitors: IAnalyticsObj[];
@@ -37,7 +43,7 @@ export const Analytics = () => {
     `/api/analytics/form?formId=${formId}&interval=${interval}`,
     fetcher
   );
-  const IntegrationsList = [
+  const AnalyticsTypes = [
     {
       id: 0,
       icon: (
@@ -277,24 +283,33 @@ export const Analytics = () => {
           </SelectContent>
         </Select>
       </div>
-      <div className=" grid md:grid-cols-2 grid-cols-1 gap-2">
-        {IntegrationsList?.map((I) => {
+      <div className=" grid md:grid-cols-2 grid-cols-1 md:gap-1 gap-2">
+        {AnalyticsTypes?.map((I) => {
           return (
-            <Card key={I.id} className=" rounded-sm border shadow-none">
-              <CardHeader>
+            <Card key={I.id} className=" rounded-none  bg-card/20 dark:bg-card/20 shadow-none border-none">
+              <CardHeader className="flex items-start justify-between mb-4 ">
                 <Button size={"icon"} variant={"secondary"}>
                   {" "}
                   {I.icon}
                 </Button>
+                <div className="  ">
+                  {I.data && I.data.length > 0 ? (
+                    <TotalCountComp arr={I.data} />
+                  ) : (
+                    <p className="text-2xl font-bold">0</p>
+                  )}
+                  <p className="text-xs text-muted-foreground">{I.text}</p>
+                </div>
               </CardHeader>
-              <CardContent className=" px-8">
-                {data?.visitors && data?.visitors?.length > 0 ? (
-                  <TotalCountComp arr={I.data!} />
+              <CardContent className="px-8">
+                
+                {I.data && I.data.length > 0 ? (
+                  <AnalyticsBarChart data={I.data} />
                 ) : (
-                  <p>0</p>
+                  <div className="h-[200px] flex items-center justify-center text-muted-foreground text-sm">
+                    No data available
+                  </div>
                 )}
-
-                <p>{I.text}</p>
               </CardContent>
             </Card>
           );
@@ -315,5 +330,67 @@ export const TotalCountComp = ({ arr }: { arr: IAnalyticsObj[] }) => {
     setTotalCount(total);
   }, [arr]);
 
-  return <p>{totalCount || 0}</p>;
+  return <p className="text-2xl font-bold">{totalCount || 0}</p>;
+};
+
+const AnalyticsBarChart = ({ data }: { data: IAnalyticsObj[] }) => {
+  // Format date for display (show only time for today, or date for longer periods)
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const isToday = date.toDateString() === now.toDateString();
+    
+    if (isToday) {
+      return date.toLocaleTimeString("en-US", { 
+        hour: "numeric", 
+        minute: "2-digit",
+        hour12: true 
+      });
+    }
+    
+    return date.toLocaleDateString("en-US", { 
+      month: "short", 
+      day: "numeric" 
+    });
+  };
+
+  const chartData = data.map((item) => ({
+    date: formatDate(item.date),
+    count: item.count,
+  }));
+
+  const chartConfig = {
+    count: {
+      label: "Count",
+      color: "var(--primary)",
+    },
+  };
+
+  return (
+    <ChartContainer config={chartConfig} className="h-[200px] w-full">
+      <BarChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+        {/* <CartesianGrid strokeDasharray="3 3" className="stroke-muted" /> */}
+        <XAxis
+          dataKey="date"
+          tick={{ fontSize: 12 }}
+          tickLine={false}
+          axisLine={false}
+        />
+        {/* <YAxis
+          tick={{ fontSize: 12 }}
+          tickLine={false}
+          axisLine={false}
+        /> */}
+        <ChartTooltip
+          content={<ChartTooltipContent />}
+        />
+        <Bar
+          dataKey="count"
+          fill="var(--color-count)"
+          radius={4}
+          // barSize={80}
+        />
+      </BarChart>
+    </ChartContainer>
+  );
 };

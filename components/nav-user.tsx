@@ -235,7 +235,7 @@ export function NavUser({
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage
-                  src={user.avatar}
+                  src={user.avatar || undefined}
                   alt={user.name}
                   referrerPolicy="no-referrer"
                 />

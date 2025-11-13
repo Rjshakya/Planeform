@@ -14,17 +14,19 @@ export default function Page() {
   }, [form]);
   // @ts-ignore
   return (
-    <FormEditor
-      content={
-        useEditorStore.getState().editedContent ||
-        useEditorStore.getState().content || {
-          type: "doc",
-          attrs: {},
-          content: [],
+    
+      <FormEditor
+        content={
+          useEditorStore.getState().editedContent ||
+          useEditorStore.getState().content || {
+            type: "doc",
+            attrs: {},
+            content: [],
+          }
         }
-      }
-      isEditable={true}
-      className=""
-    />
+        isEditable={true}
+        className=""
+      />
+   
   );
 }

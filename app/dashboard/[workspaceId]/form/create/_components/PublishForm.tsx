@@ -20,6 +20,8 @@ import { mutate } from "swr";
 import { Loader } from "lucide-react";
 import ShortUniqueId from "short-unique-id";
 import { v7 } from "uuid";
+import { useMultipleInputStore } from "@/stores/useMultipleInputStore";
+import { useEditorStore } from "@/stores/useEditorStore";
 
 const uid = new ShortUniqueId({ length: 10 });
 
@@ -46,17 +48,21 @@ export const PublishForm = () => {
     const creator = session?.user?.id;
     const name = formname;
     const customerId = session?.user?.dodoCustomerId;
+    const formCustomisation = JSON.stringify(getCustomization());
 
     setCreating(true);
 
     try {
       const res = await apiClient.post(`/api/form`, {
-        name,
-        workspace,
-        creator,
-        form_schema,
-        shortId,
-        customerId,
+        formValues: {
+          name,
+          workspace,
+          creator,
+          form_schema,
+          shortId,
+          customerId,
+        },
+        formCustomisation,
       });
 
       if (res.status === 201) {
@@ -65,11 +71,7 @@ export const PublishForm = () => {
         toast(`You have successfully created form : ${formname}`);
       }
     } catch (e) {
-      if (e instanceof Error) {
-        toast(`failed to create form: ${formname} , error: ${e.message}`);
-      } else {
-        toast(`failed to create form: ${formname}`);
-      }
+      toast(`failed to create form: ${formname}`);
     }
     mutate(`/api/form/workspace/${workspace}`);
     setCreating(false);
@@ -158,12 +160,35 @@ export const postFormFields = async (jsonDoc: JsonDoc, formId: string) => {
 export const handleFormSchema = (jsonDoc: JsonDoc): JsonDoc => {
   if (!jsonDoc) return;
   const doc = jsonDoc;
+  let currentMultipleInputId: string;
   const alterContent = doc?.content?.map((c) => {
-    if (c?.type?.includes("Input")) {
+    if (c?.type === "multipleChoiceInput") {
+      const id = v7();
+      currentMultipleInputId = id;
+      // useMultipleInputStore.setState({ id: id });
+      return { ...c, attrs: { ...c.attrs, id } };
+    }
+
+    if (c?.type === "optionNode") {
+      // const parentId = useMultipleInputStore.getState().id;
+      return { ...c, attrs: { ...c.attrs, parentId: currentMultipleInputId } };
+    }
+
+    if (c?.type?.includes("Input") && c?.type !== "multipleChoiceInput") {
       return { ...c, attrs: { ...c.attrs, id: v7() } };
     }
     return c;
   });
 
   return { ...jsonDoc, content: alterContent };
+};
+
+export const getCustomization = () => {
+  return {
+    formBackgroundColor: useEditorStore.getState().formBackgroundColor,
+    formFontFamliy: useEditorStore.getState().formFontFamliy,
+    formFontSize: useEditorStore.getState().formFontSize,
+    actionBtnColor: useEditorStore.getState().actionBtnColor,
+    formColorScheme: useEditorStore.getState().formColorScheme,
+  };
 };

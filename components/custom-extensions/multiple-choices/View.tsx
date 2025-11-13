@@ -39,7 +39,7 @@ export const MultipleChoiceView = (props: NodeViewProps) => {
                 id={id}
               >
                 <NodeViewContent
-                  onKeyDown={(e) => e?.key === "Enter" && e?.preventDefault()}
+                  // onKeyDown={(e) => e?.key === "Enter" && e?.preventDefault()}
                   className="content pl-1"
                 />
               </FormLabel>
@@ -52,7 +52,7 @@ export const MultipleChoiceView = (props: NodeViewProps) => {
 };
 
 export const Option = (props: NodeViewProps) => {
-  const { parentId, id, label, type } = props?.node?.attrs;
+  const { parentId, id, label, type } = props?.node?.attrs as Ioptions
   const optionLabel = props?.node?.content?.content[0]?.text;
   const isEditable = props.editor.isEditable;
 
@@ -76,7 +76,7 @@ export const Option = (props: NodeViewProps) => {
               ) : (
                 <Input
                   id={optionLabel}
-                  checked={field?.value?.includes?.(optionLabel)}
+                  checked={field?.value?.includes?.(optionLabel)||false}
                   className=" size-0  after:absolute after:inset-0  "
                   type="checkbox"
                   onChange={(e) => {

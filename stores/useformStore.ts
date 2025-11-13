@@ -17,11 +17,17 @@ export interface IformStore {
   form: UseFormReturn | null;
   setHookForm: (form: UseFormReturn) => UseFormReturn;
   isSubmitting: boolean;
-  handleSubmit: (
-    values: Record<string, any>,
-    formId: string,
-    step: number
-  ) => Promise<boolean>;
+  handleSubmit: ({
+    values,
+    formId,
+    step,
+    isEdit,
+  }: {
+    values: Record<string, any>;
+    formId: string;
+    step: number;
+    isEdit: boolean;
+  }) => Promise<boolean>;
   isSuccess: boolean;
   isLastStep: boolean;
   stepResponses: any[];
@@ -50,18 +56,20 @@ export const useFormStore = create<IformStore>((set, get) => ({
   },
   stepResponses: [],
   isSubmitting: false,
-  handleSubmit: async (values, formId, step) => {
-    const { creator, customerId, stepResponses, respondentId } = get();
+  handleSubmit: async ({ values, formId, step, isEdit }) => {
+    const { creator, customerId, respondentId } = get();
 
     if (!values || !creator || !customerId) {
-      toast("failed to submit form , please try again :customer");
+      // toast("failed to submit form , please try again :customer");
       return false;
     }
 
     if (!get().isLastStep) {
       return true;
     }
-    if (!formId) {
+    if (!formId || isEdit) {
+      const onlyValues = Object.values(values);
+      toast.success("Everything seems good! :)");
       return true;
     }
 
@@ -98,23 +106,6 @@ export const useFormStore = create<IformStore>((set, get) => ({
 
       console.log(finalValues);
 
-      // if (!isSingleForm) {
-      //   allStepValues?.forEach((valueObj) => {
-      //     const keys = Object.keys(valueObj);
-
-      //     keys?.forEach((key) => {
-      //       finalValues?.push({
-      //         form: formId,
-      //         form_field: key,
-      //         respondent: respondent!,
-      //         value: Array?.isArray(valueObj[key])
-      //           ? valueObj[key]?.join(",")
-      //           : valueObj[key],
-      //       });
-      //     });
-      //   });
-      // }
-
       const response = await apiClient.post(`/api/response/multiple`, {
         finalValues,
         creator,
@@ -126,7 +117,7 @@ export const useFormStore = create<IformStore>((set, get) => ({
       }
 
       mutate(`/api/response/form/${formId}?pageIndex=${0}&pageSize=${20}`);
-      toast("form submitted successfully")
+      toast("form submitted successfully");
       set({ isSubmitting: false });
       return true;
     } catch (e) {

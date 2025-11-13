@@ -41,11 +41,11 @@ export const IntegrationCard = ({
   i: number;
   customerId: string;
 }) => {
-  const { data, error, isLoading } = useSWR(isConnectedUri, fetcher);
+  // const { data, error, isLoading } = useSWR(isConnectedUri, fetcher);
   const clientUrl = process.env.NEXT_PUBLIC_CLIENT_URL;
 
   const handleLinkSocial = async () => {
-    if (data?.data?.isConnected) return;
+    // if (data?.data?.isConnected) return;
 
     if (provider === "Google") {
       await authClient.linkSocial({
@@ -127,9 +127,9 @@ export const IntegrationCard = ({
     mutate(`/api/form/${formId}/meta_data`);
   };
 
-  if (error) {
-    return <div>Error loading integrations</div>;
-  }
+  // if (error) {
+  //   return <div>Error loading integrations</div>;
+  // }
 
   return (
     <Card
@@ -454,7 +454,8 @@ export const IntegrationCard = ({
               onClick={handleLinkSocial}
               variant={"secondary"}
             >
-              {data?.data?.isConnected ? "connected" : "Connect"}
+              Connect
+              {/* {data?.data?.isConnected ? "connected" : "Connect"} */}
             </Button>
           </div>
         </div>

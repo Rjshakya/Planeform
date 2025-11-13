@@ -1,10 +1,10 @@
 import { cn } from "@/lib/utils";
 import React from "react";
 
-export const Logo = ({ className }: { className?: string }) => {
+export const Logo = ({ className , svgClassName }: { className?: string , svgClassName?:string }) => {
   return (
     <div className={cn(`logo `)}>
-      <span
+      <div
         className={cn(
           `font-bold flex items-center justify-center gap-2`,
           className
@@ -12,24 +12,38 @@ export const Logo = ({ className }: { className?: string }) => {
       >
         <div className="size-5 text-primary">
           <svg
-            width="100%"
-            height="100%"
-            viewBox="0 0 24 24"
+            className={cn(`size-5 fill-foreground` , svgClassName)}
+            viewBox="0 0 200 200"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <path
-              d="M12 2V22M19.0711 4.92893L4.92893 19.0711M22 12H2M19.0711 19.0711L4.92893 4.92893"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
+            <g clipPath="url(#clip0_2002_2668)">
+              <path
+                d="M27 199.999C9.66626 172.698 3.8147e-06 137.062 0 99.9993C0 62.9366 9.66625 27.3006 27 0V199.999Z"
+                fill="white"
+                style={{ fill: "var(--fillg)" }}
+              />
+              <path
+                d="M200 200C173.478 200 148.043 189.464 129.289 170.711C110.536 151.957 100 126.522 100 100C100 73.4784 110.536 48.043 129.289 29.2893C148.043 10.5357 173.478 9.5351e-06 200 4.37114e-06L200 200Z"
+                fill="white"
+                style={{ fill: "var(--fillg)" }}
+              />
+              <path
+                d="M60.2893 175.485C70.5101 186.396 82.7156 194.701 96 200V0C82.7156 5.2988 70.5101 13.6039 60.2893 24.5148C41.5357 44.5347 31 71.6875 31 99.9998C31 128.312 41.5357 155.465 60.2893 175.485Z"
+                fill="white"
+                style={{ fill: "var(--fillg)" }}
+              />
+            </g>
+            <defs>
+              <clipPath id="clip0_2002_2668">
+                <rect width="200" height="200" fill="white" />
+              </clipPath>
+            </defs>
           </svg>
         </div>
 
         <p className=" text-lg">Planetform</p>
-      </span>
+      </div>
     </div>
   );
 };

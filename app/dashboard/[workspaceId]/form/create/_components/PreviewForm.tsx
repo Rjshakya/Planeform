@@ -16,6 +16,7 @@ import { ArrowLeft } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { useForm } from "react-hook-form";
 import { thankyouPageContent } from "@/lib/content";
+import { useEditorStore } from "@/stores/useEditorStore";
 
 export const PreviewForm = () => {
   const [jsonContent, setJsonContent] = useState<JsonDoc>();
@@ -25,11 +26,13 @@ export const PreviewForm = () => {
 
   const { data: session } = authClient.useSession();
   const { activeStep, isLastStep, maxStep } = useFormStore((s) => s);
+  const { formBackgroundColor } = useEditorStore(s => s)
 
   const handlePreview = useCallback(() => {
     if (!editor) return;
     const json = editor.getJSON();
     console.log(json);
+    
 
     setJsonContent(json);
   }, [editor]);
@@ -37,8 +40,6 @@ export const PreviewForm = () => {
   const handleActiveIndex = useCallback(
     (idx: number) => {
       const index = idx < 0 ? 0 : Math.min(maxStep, idx);
-      console.log(index, idx);
-      console.log(maxStep === index);
 
       useFormStore.setState({
         activeStep: index,
@@ -58,7 +59,7 @@ export const PreviewForm = () => {
       (c) => c.type === "pageBreak"
     );
     const content = [...jsonContent?.content].filter(
-      (c) => c?.type !== "pageBreak"
+      (c) => c.type !== "pageBreak"
     );
     const breakIndices: number[] = [0];
 
@@ -108,7 +109,7 @@ export const PreviewForm = () => {
     }
 
     useFormStore.setState({ activeStep: 0, form });
-  }, [jsonContent]);
+  }, [jsonContent, editor ,form , session?.user?.dodoCustomerId , session?.user?.id]);
 
   return (
     <Sheet>
@@ -120,6 +121,9 @@ export const PreviewForm = () => {
       <SheetContent
         side="bottom"
         className=" font-sans sm:max-w-full w-full h-full grid overflow-auto"
+        style={{
+          backgroundColor: formBackgroundColor || undefined,
+        }}
       >
         <SheetHeader>
           <SheetTitle>Preview form</SheetTitle>
