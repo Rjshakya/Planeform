@@ -1,7 +1,7 @@
 import { mergeAttributes, Node } from "@tiptap/core";
 import { ReactNodeViewRenderer } from "@tiptap/react";
 import { UseFormReturn } from "react-hook-form";
-import { v4 } from "uuid";
+import { v7 } from "uuid";
 import { MultipleChoiceView, Option } from "./View";
 
 export interface Ioptions {
@@ -26,11 +26,10 @@ export const multipleChoiceNode = Node.create({
   isolating: true,
   addAttributes() {
     return {
-      id: { default: v4() },
+      id: { default: v7() },
       label: { default: "Label:" },
       type: { default: "multiple" },
       isRequired: { default: true },
-      
     };
   },
 
@@ -42,7 +41,7 @@ export const multipleChoiceNode = Node.create({
           if (typeof element === "string") return {};
 
           return {
-            id: element.getAttribute("data-id") || v4(),
+            id: element.getAttribute("data-id") || v7(),
             label: element.getAttribute("data-label") || "Label:",
             type: element.getAttribute("data-type") || "text",
             isRequired: element.getAttribute("data-required") === "true",
@@ -150,7 +149,7 @@ export const optionNode = Node.create({
           if (typeof element === "string") return {};
 
           return {
-            id: element.getAttribute("data-id") || v4(),
+            id: element.getAttribute("data-id") || v7(),
             label: element.getAttribute("data-label") || "Label:",
             type: element.getAttribute("data-type") || "text",
             parentId: element.getAttribute("data-parent-id") || "parentId",

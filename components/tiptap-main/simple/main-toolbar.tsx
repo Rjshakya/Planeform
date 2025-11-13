@@ -53,7 +53,8 @@ const MainToolbarContent = ({
   onLinkClick: () => void;
   isMobile: boolean;
 }) => {
-  const forEditPage = usePathname().includes(`/edit/`);
+  const path = usePathname();
+  const forEditPage = path.includes(`/edit/`);
 
   return (
     <div
@@ -66,9 +67,11 @@ const MainToolbarContent = ({
         }`
       )}
     >
-      <ToolbarGroup>
-        <SidebarTrigger />
-      </ToolbarGroup>
+      {path !== "/" && (
+        <ToolbarGroup>
+          <SidebarTrigger />
+        </ToolbarGroup>
+      )}
       {isMobile && <Separator className="mx-2" orientation="vertical" />}
       <div className="flex-1"></div>
       <ToolbarGroup>
@@ -135,9 +138,9 @@ const MainToolbarContent = ({
 
       <div className="flex-1"></div>
       {isMobile && <Separator className="mx-2" orientation="vertical" />}
-      <ToolbarGroup>
+      {/* <ToolbarGroup>
         <ThemeToggle />
-      </ToolbarGroup>
+      </ToolbarGroup> */}
       {/* {isMobile && <ToolbarSeparator />} */}
     </div>
   );
@@ -181,6 +184,7 @@ export const TiptapToolBar = memo(function ToolBarComp({
 }) {
   const isMobile = useIsMobile();
   const { height } = useWindowSize();
+  const path = usePathname();
   const [mobileView, setMobileView] = React.useState<
     "main" | "highlighter" | "link"
   >("main");
@@ -199,8 +203,9 @@ export const TiptapToolBar = memo(function ToolBarComp({
   return (
     <Toolbar
       className={cn(
-        "w-full z-30 px-1 ",
-        `${isMobile ? " fixed inset-x-0 top-0" : "sticky top-0"}`
+        "w-full z-30 ",
+        `${isMobile ? " fixed inset-x-0 top-0" : "sticky top-0"}`,
+        `${path === "/" && "hidden"}`
       )}
       ref={toolbarRef}
       // style={{

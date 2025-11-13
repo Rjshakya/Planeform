@@ -22,10 +22,12 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { NodeViewProps } from "@tiptap/core";
 import { NodeViewContent, NodeViewWrapper } from "@tiptap/react";
+import { InsertDateInputParams } from "./node";
 
 export const DateInputView = (props: NodeViewProps) => {
   const form = useFormStore.getState().getHookForm();
-  const { id, label } = props?.node?.attrs;
+  const { id, label, placeholder } = props?.node
+    ?.attrs as InsertDateInputParams;
 
   return (
     <NodeViewWrapper as={"div"}>
@@ -56,14 +58,15 @@ export const DateInputView = (props: NodeViewProps) => {
                   <Button
                     variant={"outline"}
                     className={cn(
-                      "w-full pl-3 h-[48px] text-left font-normal",
-                      !field.value && "text-muted-foreground"
+                      "w-full pl-3 h-[50px] text-left font-normal dark:bg-input/40 bg-input/70 border-secondary border-2 ",
+                      !field.value && "text-muted-foreground",
+                      "hover:bg-input/70"
                     )}
                   >
                     {field.value ? (
                       format(field.value, "PPP")
                     ) : (
-                      <span>Pick a date</span>
+                      <span>{placeholder || "Pick a date"}</span>
                     )}
                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                   </Button>

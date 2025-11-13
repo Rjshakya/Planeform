@@ -13,10 +13,7 @@ import useSWR from "swr";
 
 const fetcher = (url: string) => apiClient.get(url);
 
-export const RenderForm = () => {
-  const { formId } = useParams();
-  const { data, isLoading, error } = useSWR(`/api/form/${formId}`, fetcher);
-  const [docs, setDocs] = useState<JsonDoc[]>([]);
+export const RenderForm = ({ docs }: { docs: JsonDoc[] }) => {
   const { activeStep, maxStep, isLastStep } = useFormStore((s) => s);
   const handleActiveIndex = useCallback(
     (idx: number) => {
@@ -26,121 +23,24 @@ export const RenderForm = () => {
         isLastStep: maxStep === index,
       });
     },
-    [activeStep, isLastStep, maxStep]
+    [activeStep, isLastStep, maxStep , docs?.length]
   );
 
-  const handleCreateRespondent = async (formId: string, customerId: string) => {
-    const resp = await apiClient.post(`/api/respondent`, {
-      form: formId,
-      customerId: customerId,
-    });
-
-    const respondentId = resp?.data?.respondent?.id;
-    useFormStore?.setState({ respondentId });
-  };
-  const form = data?.data?.form;
-  const form_schema = form?.form_schema;
-  const creator = form?.creator;
-  const customerId = form?.customerId;
-
-  useEffect(() => {
-    if (!form_schema?.content) {
-      setDocs([]);
-      return;
-    }
-
-    const thankyouPage = [...form_schema?.content]?.find(
-      (c) => c.type === "pageBreak"
-    );
-    const content = [...form_schema?.content].filter(
-      (c) => c?.type !== "pageBreak"
-    );
-    const breakIndices: number[] = [0];
-
-    content?.forEach((node, i) => {
-      if (node.type === "horizontalRule") {
-        breakIndices.push(i);
-      }
-    });
-
-    breakIndices?.push(content?.length - 1);
-
-    const parsedDocs = [] as any[];
-    for (let i = 0; i < breakIndices.length - 1; i++) {
-      const stepContent = content
-        .slice(breakIndices[i], breakIndices[i + 1])
-        .filter((n) => n?.type !== "horizontalRule");
-
-      if (stepContent.length > 0) {
-        parsedDocs.push({ type: "doc", content: stepContent });
-      }
-    }
-
-    if (thankyouPage) {
-      parsedDocs.push({ type: "doc", content: [thankyouPage] });
-    } else {
-      parsedDocs.push({ type: "doc", content: [thankyouPageContent] });
-    }
-
-    setDocs(parsedDocs);
-
-    if (parsedDocs?.length === 1) {
-      useFormStore.setState({
-        isSingleForm: true,
-        creator: creator,
-        customerId: customerId,
-        isLastStep: true,
-        maxStep: parsedDocs?.length - 1,
-      });
-    } else {
-      useFormStore.setState({
-        isSingleForm: false,
-        creator: creator,
-        customerId: customerId,
-        isLastStep: false,
-        maxStep: parsedDocs?.length - 1,
-      });
-    }
-
-    //  useFormStore.setState({ activeStep: 0 });
-    // setActiveIdx(0); // Reset to first step
-  }, [form_schema, creator]);
-
-  useEffect(() => {
-    if (!formId || !customerId) return;
-    handleCreateRespondent(formId as string, customerId);
-  }, [formId, customerId]);
-
-  if (error) {
-    return (
-      <div className="w-full h-screen flex items-center justify-center">
-        <span>
-          <TriangleAlert className=" text-destructive" /> failed to get form
-        </span>
-      </div>
-    );
-  }
-  if (isLoading) {
-    return (
-      <div className="w-full h-screen flex items-center justify-center">
-        <Loader className="animate-spin " />
-      </div>
-    );
-  }
-
   return (
-    <div className="pt-3">
-      {docs?.length > 1 && activeStep !== 0 && activeStep < docs?.length -1 && (
-        <div className="w-full max-w-lg mx-auto ">
-          <Button
-            onClick={() => handleActiveIndex(activeStep - 1)}
-            variant={"secondary"}
-            size={"icon"}
-          >
-            <ArrowLeft size={16} />
-          </Button>
-        </div>
-      )}
+    <div className="pt-3 w-full">
+      {docs?.length > 1 &&
+        activeStep !== 0 &&
+        activeStep < docs?.length - 1 && (
+          <div className="w-full max-w-lg mx-auto fixed top-4 inset-x-0 ">
+            <Button
+              onClick={() => handleActiveIndex(activeStep - 1)}
+              variant={"secondary"}
+              size={"icon"}
+            >
+              <ArrowLeft size={16} />
+            </Button>
+          </div>
+        )}
 
       {docs?.map((content, i) => {
         if (activeStep === i) {

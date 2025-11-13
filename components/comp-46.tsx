@@ -8,8 +8,27 @@ import flags from "react-phone-number-input/flags";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
-export default function Component({value , valueChange , id ,placeholder}:{value:string ; valueChange:()=> void , id:string , placeholder:string}) {
+export default function Component({
+  value,
+  valueChange,
+  id,
+  placeholder,
+}: {
+  value: string;
+  valueChange: () => void;
+  id: string;
+  placeholder: string;
+}) {
   // const [value, setValue] = useState("");
 
   return (
@@ -30,7 +49,10 @@ export default function Component({value , valueChange , id ,placeholder}:{value
   );
 }
 
-export const PhoneInput = ({ className, ...props }: React.ComponentProps<"input">) => {
+export const PhoneInput = ({
+  className,
+  ...props
+}: React.ComponentProps<"input">) => {
   return (
     <Input
       data-slot="phone-input"
@@ -63,7 +85,7 @@ const CountrySelect = ({
   };
 
   return (
-    <div className="border-input bg-background text-muted-foreground focus-within:border-ring focus-within:ring-ring/50 hover:bg-accent hover:text-foreground has-aria-invalid:border-destructive/60 has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40 relative inline-flex items-center self-stretch rounded-s-md border py-2 ps-3 pe-2 transition-[color,box-shadow] outline-none focus-within:z-10 focus-within:ring-[3px] has-disabled:pointer-events-none has-disabled:opacity-50">
+    <div className="border-input bg-input/70 dark:bg-input/40 text-muted-foreground focus-within:border-ring focus-within:ring-ring/50 hover:bg-accent hover:text-foreground has-aria-invalid:border-destructive/60 has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40 relative inline-flex items-center self-stretch rounded-s-md border py-2 ps-3 pe-2 transition-[color,box-shadow] outline-none focus-within:z-10 focus-within:ring-[3px] has-disabled:pointer-events-none has-disabled:opacity-50">
       <div className="inline-flex items-center gap-1" aria-hidden="true">
         <FlagComponent country={value} countryName={value} aria-hidden="true" />
         <span className="text-muted-foreground/80">
@@ -74,7 +96,7 @@ const CountrySelect = ({
         disabled={disabled}
         value={value}
         onChange={handleSelect}
-        className="absolute inset-0 text-sm opacity-0"
+        className="absolute inset-0 text-sm opacity-0 bg-"
         aria-label="Select country"
       >
         <option key="default" value="">
@@ -98,7 +120,7 @@ const FlagComponent = ({ country, countryName }: RPNInput.FlagProps) => {
   const Flag = flags[country];
 
   return (
-    <span className="w-5 overflow-hidden rounded-sm">
+    <span className="w-5  rounded-sm">
       {Flag ? (
         <Flag title={countryName} />
       ) : (

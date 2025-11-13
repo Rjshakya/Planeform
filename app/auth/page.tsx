@@ -26,10 +26,6 @@ export default function Auth() {
     <main className="grid min-h-screen p-2 lg:grid-cols-2">
       <div className=" hidden  lg:flex items-center justify-center p-4">
         <div className="w-full h-full relative rounded-2xl">
-          {/* <div className="w-full h-full bg-primary rounded-2xl pt-8 flex flex-col  ">
-            <span className="pl-4 text-2xl font-bold tracking-tighter text-background">Forms that are actually good</span>
-            <span className="pl-8 text-2xl font-bold tracking-tighter text-background">Forms that are actually smart</span>
-          </div> */}
           <Image
             src={authImg}
             alt="Image"

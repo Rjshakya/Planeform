@@ -47,7 +47,7 @@ export const DashboardComp = () => {
                   viewBox="0 0 24 24"
                   fill="#fffcfc"
                 >
-                  <g clip-path="url(#clip0_4418_4295)">
+                  <g clipPath="url(#clip0_4418_4295)">
                     <path
                       d="M22 11.0704V16.6504C22 19.6004 19.6 22.0004 16.65 22.0004H7.35C4.4 22.0004 2 19.6004 2 16.6504V9.44043H21.74C21.89 9.89043 21.97 10.3504 21.99 10.8404C22 10.9104 22 11.0004 22 11.0704Z"
                       fill="white"
@@ -85,7 +85,7 @@ export const DashboardComp = () => {
                   viewBox="0 0 24 24"
                   fill="#fffcfc"
                 >
-                  <g clip-path="url(#clip0_4418_4828)">
+                  <g clipPath="url(#clip0_4418_4828)">
                     <path
                       opacity="0.4"
                       d="M21 7V17C21 20 19.5 22 16 22H8C4.5 22 3 20 3 17V7C3 4 4.5 2 8 2H16C19.5 2 21 4 21 7Z"

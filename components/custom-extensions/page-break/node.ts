@@ -50,7 +50,12 @@ export const PageBreakNode = Node.create({
           return commands.insertContent({
             type: "pageBreak",
             attrs: { isThankyouPage },
-            content:[  { type: "paragraph", content:[{type:"text" , text:"thankyou page"}] }]
+            content: [
+              {
+                type: "paragraph",
+                content: [{ type: "text", text: "thankyou page" }],
+              },
+            ],
           });
         },
     };
@@ -60,17 +65,37 @@ export const PageBreakNode = Node.create({
     return ReactNodeViewRenderer(PageBreak);
   },
 
-  onCreate({ editor }) {
-    const actionBtns = editor.$nodes("actionButton");
-    actionBtns?.forEach((btn, i) => {
-      if (i === actionBtns.length - 1) {
-        return;
-      }
-      btn.content = "next";
-    });
+  addKeyboardShortcuts() {
+    return {
+      Backspace: ({ editor }) => {
+        const { selection } = editor.state;
+        const { $from, empty } = selection;
+
+        // Check if cursor is at the start of the node content
+        if ($from.parent.type.name === this.name && $from.parentOffset === 0) {
+          // Delete the entire node
+          return editor.commands.deleteNode(this.name);
+        }
+
+        return false; // Let default behavior handle it
+      },
+      Delete: ({ editor }) => {
+        const { selection } = editor.state;
+        const { $from } = selection;
+
+        // Check if cursor is at the end of the node content
+        if (
+          $from.parent.type.name === this.name &&
+          $from.parentOffset === $from.parent.content.size
+        ) {
+          // Delete the entire node
+          return editor.commands.deleteNode(this.name);
+        }
+
+        return false;
+      },
+    };
   },
-
-
 });
 
 declare module "@tiptap/core" {

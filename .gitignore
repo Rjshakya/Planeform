@@ -56,3 +56,6 @@ docker-compose.yml
 
 # Drizzle config
 drizzle.config.ts
+
+# Authentication tokens
+.npmrc

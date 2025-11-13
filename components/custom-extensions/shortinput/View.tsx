@@ -1,6 +1,6 @@
 "use client";
 
-import DateComponent from "@/components/comp-41";
+
 import Component from "@/components/comp-46";
 import {
   FormControl,
@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useFormStore } from "@/stores/useformStore";
-import { parseDate } from "@internationalized/date";
 import { NodeViewContent } from "@tiptap/react";
 import { NodeViewWrapper, type NodeViewProps } from "@tiptap/react";
 import React from "react";
@@ -36,7 +35,7 @@ const ShortInput = (props: NodeViewProps) => {
               >
                 {/* {field?.} */}
                 <NodeViewContent
-                  onKeyDown={(e) => e?.key === "Enter" && e?.preventDefault()}
+                  // onKeyDown={(e) => e?.key === "Enter" && e?.preventDefault()}
                   as="div"
                   className=" min-w-[20px] w-full"
                 />
@@ -48,6 +47,7 @@ const ShortInput = (props: NodeViewProps) => {
                     valueChange={field?.onChange}
                     id={id}
                     placeholder={placeholder}
+                    // disabled={props?.editor?.isEditable}
                   />
                 ) : (
                   <Input

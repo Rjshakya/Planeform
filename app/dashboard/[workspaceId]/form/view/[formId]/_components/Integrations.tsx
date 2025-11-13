@@ -84,7 +84,7 @@ export const Integrations = ({
             {data?.map((i: any, index: number) => {
               if (i?.metaData) {
                 const metaData = JSON.parse(i?.metaData || "");
-                return <LiveConnection key={index} metaData={metaData} />;
+                return <LiveConnection key={index} metaData={metaData} id={i?.id} />;
               }
             })}
           </CardContent>

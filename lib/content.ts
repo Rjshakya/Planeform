@@ -23,6 +23,11 @@ export const defaultEditorContent = {
       attrs: {
         textAlign: null,
       },
+      content:[{
+        type:"text",
+        text:"press  “ / ”  to open the menu",
+        attrs:{}
+      }]
     },
     {
       type: "paragraph",
@@ -108,4 +113,4 @@ export const thankyouPageContent = {
       ],
     },
   ],
-};
+} 

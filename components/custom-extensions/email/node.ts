@@ -1,21 +1,22 @@
 "use client";
 import { Node, mergeAttributes } from "@tiptap/core";
 import { ReactNodeViewRenderer } from "@tiptap/react";
-import { v4 } from "uuid";
-import { DateInputView } from "./View";
+import { v7 } from "uuid";
+import { EmailInput } from "./View";
 
-export interface InsertDateInputParams {
+export interface InsertEmailInputParams {
   label: string;
   id: string;
   type: string;
   isRequired: boolean;
   placeholder: string;
+  prefix: string;
 }
 
 // Extend the Commands interface to include your custom command
 
-export const dateInputNode = Node.create({
-  name: "dateInput",
+export const emailInputNode = Node.create({
+  name: "emailInput",
   group: "block",
   draggable: true,
   allowGapCursor: true,
@@ -23,10 +24,11 @@ export const dateInputNode = Node.create({
 
   addAttributes() {
     return {
-      id: { default: v4() },
+      id: { default: v7() },
       label: { default: "Label:" },
-      placeholder: { default: "" },
-      type: { default: "text" },
+      placeholder: { default: "planetform.xyz" },
+      prefix: { default: "https://" },
+      type: { default: "email" },
       isRequired: { default: true },
     };
   },
@@ -34,15 +36,16 @@ export const dateInputNode = Node.create({
   parseHTML() {
     return [
       {
-        tag: "date-input",
+        tag: "email-input",
         getAttrs: (element) => {
           if (typeof element === "string") return {};
 
           return {
-            id: element.getAttribute("data-id") || v4(),
+            id: element.getAttribute("data-id") || v7(),
             label: element.getAttribute("data-label") || "Label:",
             placeholder: element.getAttribute("data-placeholder") || "",
-            type: element.getAttribute("data-type") || "text",
+            prefix: element.getAttribute("data-prefix") || "",
+            type: element.getAttribute("data-type") || "email",
             isRequired: element.getAttribute("data-required") === "true",
           };
         },
@@ -52,13 +55,14 @@ export const dateInputNode = Node.create({
 
   renderHTML({ HTMLAttributes, node }) {
     return [
-      "date-input",
+      "email-input",
       mergeAttributes(HTMLAttributes, {
         "data-id": node.attrs.id,
         "data-label": node.attrs.label,
         "data-placeholder": node.attrs.placeholder,
         "data-type": node.attrs.type,
         "data-required": node.attrs.isRequired,
+        "data-prefix": node.attrs.prefix,
       }),
       0,
     ];
@@ -66,22 +70,22 @@ export const dateInputNode = Node.create({
 
   addCommands() {
     return {
-      insertDateInput:
-        ({ label, id, type, isRequired, placeholder }) =>
+      insertEmailInput:
+        ({ label, id, type, isRequired, placeholder , prefix }) =>
         ({ commands }) => {
           return commands.insertContent({
-            type: "dateInput",
-            attrs: { label, id, type, isRequired, placeholder },
+            type: "emailInput",
+            attrs: { label, id, type, isRequired, placeholder ,prefix },
             content: label
               ? [{ type: "text", text: label }]
-              : [{ type: "text", text: "Label:" }],
+              : [{ type: "text", text: "Email" }],
           });
         },
     };
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(DateInputView);
+    return ReactNodeViewRenderer(EmailInput);
   },
 
   addKeyboardShortcuts() {
@@ -119,8 +123,8 @@ export const dateInputNode = Node.create({
 
 declare module "@tiptap/core" {
   interface Commands<ReturnType = any> {
-    dateInput: {
-      insertDateInput: (params: InsertDateInputParams) => ReturnType;
+    emailInput: {
+      insertEmailInput: (params: InsertEmailInputParams) => ReturnType;
     };
   }
 }

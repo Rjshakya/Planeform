@@ -22,7 +22,7 @@ export const FormEditor = ({
   
 
   return (
-    <div className={cn(`  w-full ${className || ""} `)}>
+    <div className={cn(`  w-full ${className || ""} `)} >
       <SimpleEditor
         isEditable={isEditable}
         content={content}
