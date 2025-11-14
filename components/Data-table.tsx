@@ -19,6 +19,7 @@ import {
   getFacetedUniqueValues,
   getFilteredRowModel,
   getSortedRowModel,
+  Header,
   PaginationState,
   Row,
   SortingState,
@@ -84,10 +85,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Iheads } from "@/app/dashboard/[workspaceId]/form/view/[formId]/_components/Submissions";
-import { mutate } from "swr";
+import { useSWRConfig } from "swr";
 import { toast } from "sonner";
 import { apiClient } from "@/lib/axios";
 import { useParams } from "next/navigation";
+import innerText from "react-innertext";
 
 type Item = {
   id: string;
@@ -120,23 +122,28 @@ const getPinningStyles = (column: Column<any>): CSSProperties => {
 
 export default function TanStackTable({
   columns,
-  tableData,
+  // tableData,
   states,
   formId,
+  data,
+  setData
 }: {
   columns: ColumnDef<Iheads>[];
-  tableData: any[];
+  // tableData: any[];
   states: {
     pagination: PaginationState;
     setPagination: Dispatch<SetStateAction<PaginationState>>;
     pageCount: number;
   };
   formId: string;
+  data:any[],
+  setData:(params:any)=> void
 }) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const { mutate} = useSWRConfig()
 
-  const [data, setData] = useState<any[]>(tableData);
+  // const [data, setData] = useState<any[]>(tableData);
 
   const handleDeleteRows = async () => {
     try {
@@ -146,11 +153,15 @@ export default function TanStackTable({
       );
       const selectedRowsId = selectedRows.map((r) => r?.original?.id);
       await apiClient.put(`/api/respondent/multiple`, selectedRowsId);
-      
+
       setData(updatedData);
       table.resetRowSelection();
       toast("selected rows deleted !");
-      mutate(`/api/response/form/${formId}?pageIndex=${states.pagination}&pageSize=${20}`);
+      mutate(
+        `/api/response/form/${formId}?pageIndex=${
+          states.pagination
+        }&pageSize=${20}`
+      );
     } catch (e) {
       toast("failed to delete selected rows");
     }
@@ -177,6 +188,17 @@ export default function TanStackTable({
     columnResizeMode: "onChange",
   });
 
+  const handleExportToCsv = () => {
+    const headers = table
+      .getHeaderGroups()
+      .map((x) => x.headers)
+      .flat();
+
+    const rows = table.getCoreRowModel().rows;
+
+    exportToCsv("form_data", headers, rows);
+  };
+
   return (
     <div className="space-y-4 overflow-auto">
       {/* Filters */}
@@ -197,7 +219,8 @@ export default function TanStackTable({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
-              {tableData && table?.getAllColumns()?.length &&
+              {data &&
+                table?.getAllColumns()?.length &&
                 table
                   ?.getAllColumns?.()
                   ?.filter((column) => column.getCanHide())
@@ -218,6 +241,29 @@ export default function TanStackTable({
                   })}
             </DropdownMenuContent>
           </DropdownMenu>
+          <Button
+            onClick={handleExportToCsv}
+            variant={"secondary"}
+            size={"default"}
+          >
+            Export
+            {/* <div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="size-4"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <path
+                  d="M22 12C22 17.52 17.52 22 12 22C6.48 22 3.11 16.44 3.11 16.44M3.11 16.44H7.63M3.11 16.44V21.44M2 12C2 6.48 6.44 2 12 2C18.67 2 22 7.56 22 7.56M22 7.56V2.56M22 7.56H17.56"
+                  stroke="#fff"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div> */}
+          </Button>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           {/* Delete button */}
@@ -267,15 +313,6 @@ export default function TanStackTable({
               </AlertDialogContent>
             </AlertDialog>
           )}
-          {/* Add user button */}
-          {/* <Button className="ml-auto" variant="outline">
-            <PlusIcon
-              className="-ms-1 opacity-60"
-              size={16}
-              aria-hidden="true"
-            />
-            Add
-          </Button> */}
         </div>
       </div>
 
@@ -504,28 +541,6 @@ export default function TanStackTable({
       {/* Pagination */}
       <div className="flex items-center justify-between gap-8">
         {/* Results per page */}
-        {/* <div className="flex items-center gap-3">
-          <Label htmlFor={id} className="max-sm:sr-only">
-            Rows per page
-          </Label>
-          <Select
-            value={table.getState().pagination.pageSize.toString()}
-            onValueChange={(value) => {
-              table.setPageSize(Number(value));
-            }}
-          >
-            <SelectTrigger id={id} className="w-fit whitespace-nowrap">
-              <SelectValue placeholder="Select number of results" />
-            </SelectTrigger>
-            <SelectContent className="[&_*[role=option]]:ps-2 [&_*[role=option]]:pe-8 [&_*[role=option]>span]:start-auto [&_*[role=option]>span]:end-2">
-              {[5, 10, 25, 50].map((pageSize) => (
-                <SelectItem key={pageSize} value={pageSize.toString()}>
-                  {pageSize}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div> */}
         {/* Page number information */}
         <div className="text-muted-foreground flex grow  text-sm whitespace-nowrap">
           <p
@@ -543,19 +558,6 @@ export default function TanStackTable({
         <div>
           <Pagination>
             <PaginationContent>
-              {/* First page button */}
-              {/* <PaginationItem>
-                <Button
-                  size="icon"
-                  variant="outline"
-                  className="disabled:pointer-events-none disabled:opacity-50"
-                  onClick={() => table.firstPage()}
-                  disabled={!table.getCanPreviousPage()}
-                  aria-label="Go to first page"
-                >
-                  <ChevronFirstIcon size={16} aria-hidden="true" />
-                </Button>
-              </PaginationItem> */}
               {/* Previous page button */}
               <PaginationItem>
                 <Button
@@ -563,11 +565,9 @@ export default function TanStackTable({
                   variant="outline"
                   className="disabled:pointer-events-none disabled:opacity-50"
                   onClick={async () => {
-                    await mutate(
-                      `/api/response/form/${formId}?pageIndex=${states.pagination.pageIndex}&pageSize=${states.pagination.pageSize}`,
-                      [],
-                      { revalidate: false }
-                    );
+                    // mutate(
+                    //   `/api/response/form/${formId}?pageIndex=${states.pagination.pageIndex}&pageSize=${states.pagination.pageSize}`
+                    // );
                     table.previousPage();
                   }}
                   disabled={!table.getCanPreviousPage()}
@@ -583,11 +583,9 @@ export default function TanStackTable({
                   variant="outline"
                   className="disabled:pointer-events-none disabled:opacity-50"
                   onClick={async () => {
-                    await mutate(
-                      `/api/response/form/${formId}?pageIndex=${states.pagination.pageIndex}&pageSize=${states.pagination.pageSize}`,
-                      [],
-                      { revalidate: false }
-                    );
+                    // mutate(
+                    //   `/api/response/form/${formId}?pageIndex=${states.pagination.pageIndex}&pageSize=${states.pagination.pageSize}`
+                    // );
                     table.nextPage();
                   }}
                   disabled={!table.getCanNextPage()}
@@ -596,19 +594,6 @@ export default function TanStackTable({
                   <ChevronRightIcon size={16} aria-hidden="true" />
                 </Button>
               </PaginationItem>
-              {/* Last page button */}
-              {/* <PaginationItem>
-                <Button
-                  size="icon"
-                  variant="outline"
-                  className="disabled:pointer-events-none disabled:opacity-50"
-                  onClick={() => table.lastPage()}
-                  disabled={!table.getCanNextPage()}
-                  aria-label="Go to last page"
-                >
-                  <ChevronLastIcon size={16} aria-hidden="true" />
-                </Button>
-              </PaginationItem> */}
             </PaginationContent>
           </Pagination>
         </div>
@@ -619,6 +604,7 @@ export default function TanStackTable({
 
 export function RowActions({ row }: { row: Row<any> }) {
   const [deleting, setDeleting] = useState(false);
+  const { mutate} = useSWRConfig()
 
   const { formId } = useParams();
   const handleDelete = async (id: string) => {
@@ -687,3 +673,59 @@ export function RowActions({ row }: { row: Row<any> }) {
     </DropdownMenu>
   );
 }
+
+export const exportToCsv = (
+  fileName = "data",
+  headers: Header<any, unknown>[],
+  rows: Row<any>[]
+) => {
+  const blob = getCsvBlob(headers, rows);
+  const link = document.createElement("a");
+  const url = window.URL.createObjectURL(blob);
+  link.href = url;
+  link.setAttribute("download", fileName);
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+};
+
+export const getHeaderNames = (headers: Header<any, unknown>[]): string[] =>
+  headers.map((header) => {
+    if (typeof header.column.columnDef.header === "function") {
+      const headerContext = header.column.columnDef.header(header.getContext());
+      if (typeof headerContext === "string") {
+        return headerContext;
+      }
+      return innerText(headerContext);
+    } else {
+      return header.column.columnDef.header ?? header.id;
+    }
+  });
+
+const getRowsData = (rows: Row<any>[]): string[][] => {
+  return rows.map((row: Row<any>) => {
+    const cells = row.getAllCells();
+
+    const cellsContent = cells
+      .filter((x) => x.column.getIsVisible())
+      // @ts-ignore
+      .map((x) => x.getValue()?.value as string);
+    return cellsContent;
+  });
+};
+
+export const getCsvBlob = (
+  headers: Header<any, unknown>[],
+  rows: Row<any>[]
+): Blob => {
+  let csvContent = "";
+  const headerNames = getHeaderNames(headers);
+  csvContent += headerNames.join(",") + "\n";
+
+  const data = getRowsData(rows);
+  data.forEach((row) => {
+    csvContent += row.join(",") + "\n";
+  });
+
+  return new Blob([csvContent], { type: "text/csv" });
+};

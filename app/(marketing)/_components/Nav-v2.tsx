@@ -106,18 +106,17 @@ export const NavV2 = () => {
               <Menu className="size-5" />
             </Button>
           </SheetTrigger>
-          <SheetContent className="font-sans -z-0" side="top">
+          <SheetContent className="font-sans" side="top">
             <SheetHeader>
               <SheetTitle>
                 <Logo className="justify-start" />
               </SheetTitle>
             </SheetHeader>
             <div className="flex flex-col gap-2 mt-6">
-              
               <Button variant="ghost" className="justify-start" asChild>
                 <Link href="/pricing">Pricing</Link>
               </Button>
-              
+
               <Button variant="ghost" className="justify-start" asChild>
                 <Link href="/auth">Sign up</Link>
               </Button>
@@ -125,7 +124,6 @@ export const NavV2 = () => {
           </SheetContent>
         </Sheet>
       </div>
-
     </nav>
   );
 };

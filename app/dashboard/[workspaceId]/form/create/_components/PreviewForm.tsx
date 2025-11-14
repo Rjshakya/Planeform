@@ -89,7 +89,7 @@ export const PreviewForm = () => {
     }
 
     setDocs(parsedDocs);
-
+    
     if (parsedDocs?.length === 1) {
       useFormStore.setState({
         isSingleForm: true,

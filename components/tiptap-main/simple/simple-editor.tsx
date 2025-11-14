@@ -845,7 +845,8 @@ const suggestions = createSuggestionsItems([
       </div>
     ),
   },
-])
+  
+]);
 
 export function SimpleEditor({
   content,
@@ -862,7 +863,6 @@ export function SimpleEditor({
     useFormStore((s) => s);
   const { formBackgroundColor, formFontFamliy, formFontSize, formColorScheme } =
     useEditorStore((s) => s);
-  const { landingEditorContent, setContent } = useLandingStore((s) => s);
 
   // form init
   const form = getHookForm();
@@ -951,6 +951,7 @@ export function SimpleEditor({
       Focus.configure({
         className: "has-focus",
         mode: "all",
+
       }),
       TextStyle,
       FontFamily,
@@ -962,16 +963,18 @@ export function SimpleEditor({
         uploadFn: uploadFn,
       }),
     ],
-    autofocus: true,
+    // autofocus: true,
     editable: isEditable,
     content: content,
     onUpdate(props) {
-      const json = props.editor.getJSON();
-      setContent(json);
+      if (pathName?.includes("/form/edit")) {
+        return;
+      }
       setTimeout(() => {
-        useEditorStore.setState({ editedContent: json });
+        useEditorStore.setState({ editedContent: props.editor.getJSON() });
       }, 1000);
     },
+
   });
 
   const handleActiveIndex = (idx: number) => {

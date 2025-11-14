@@ -32,8 +32,8 @@ export const EditForm = () => {
   const handleSaveEditForm = async () => {
     if (!editor) return;
     const json = editor.getJSON();
-    const schema = handleFormSchema(json)
-    const fields = filterFormFields(schema, formId as string);
+    // const schema = handleFormSchema(json)
+    const fields = filterFormFields(json, formId as string);
     const formCustomisation = JSON.stringify(getCustomization())
 
     setCreating(true);
@@ -41,7 +41,7 @@ export const EditForm = () => {
       await apiClient.put(`/api/form/`, {
         formId,
         formName,
-        form_schema: JSON.stringify(schema),
+        form_schema: JSON.stringify(json),
         fields,
         formCustomisation
       });

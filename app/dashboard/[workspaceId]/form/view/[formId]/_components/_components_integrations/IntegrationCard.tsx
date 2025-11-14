@@ -28,14 +28,12 @@ import { Loader } from "lucide-react";
 const fetcher = (url: string) => apiClient.get(url);
 export const IntegrationCard = ({
   provider,
-  isConnectedUri,
   workspaceId,
   formId,
   customerId,
   i,
 }: {
   provider: string;
-  isConnectedUri: string;
   workspaceId: string;
   formId: string;
   i: number;
@@ -61,6 +59,14 @@ export const IntegrationCard = ({
     if (provider === "Notion") {
       await authClient.linkSocial({
         provider: "notion",
+        callbackURL: `${clientUrl}/dashboard/${workspaceId}/form/view/${formId}`,
+      });
+    }
+
+    if (provider === "Slack") {
+      await authClient.linkSocial({
+        provider: "slack",
+        scopes: ["channels:read", "chat:write"],
         callbackURL: `${clientUrl}/dashboard/${workspaceId}/form/view/${formId}`,
       });
     }
@@ -239,12 +245,18 @@ export const IntegrationCard = ({
               </svg>
             </Button>
           )}
-          {provider}
+          {provider === "Slack" && (
+            <div className="flex items-center gap-2">
+              <p>Slack</p>
+              <p>comming soon</p>
+            </div>
+          )}
         </CardTitle>
         <CardDescription>
           {provider === "Google" && "Get submission in your google sheet"}
           {provider === "Notion" && "Get submission in your notion page"}
           {provider === "Webhook" && "Get submission to webhook url"}
+          {provider === "Slack" && "Get submission in your slack"}
         </CardDescription>
       </CardHeader>
 
@@ -254,7 +266,10 @@ export const IntegrationCard = ({
             {" "}
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
               <DialogTrigger asChild>
-                <Button className="w-full" variant={"ghost"}>
+                <Button
+                  className={`${provider === "Slack" && "hidden"}`}
+                  variant={"ghost"}
+                >
                   {provider === "Google" && "Add sheet"}
                   {provider === "Notion" && "Add Page"}
                   {provider === "Webhook" && "Add url"}
@@ -450,6 +465,7 @@ export const IntegrationCard = ({
           <div className="w-full">
             {" "}
             <Button
+              disabled={provider === "Slack"}
               className="w-full bg-green-400 dark:bg-green-700"
               onClick={handleLinkSocial}
               variant={"secondary"}

@@ -50,6 +50,12 @@ export const Integrations = ({
       workspaceId,
       formId,
     },
+    {
+      id:4,
+      provider:"Slack",
+      workspaceId,
+      formId,
+    }
   ];
 
   if (error) {
@@ -118,7 +124,7 @@ export const Integrations = ({
                   i={index}
                   key={index}
                   formId={(i.formId as string) || ""}
-                  isConnectedUri={i.isConnectedUri}
+                  
                   provider={i.provider}
                   workspaceId={(i.workspaceId as string) || ""}
                   customerId={user?.dodoCustomerId || ""}

@@ -77,6 +77,7 @@
     "react-dom": "19.1.0",
     "react-hook-form": "^7.65.0",
     "react-hotkeys-hook": "^5.2.1",
+    "react-innertext": "^1.1.5",
     "react-phone-number-input": "^3.4.12",
     "recharts": "2.15.4",
     "short-unique-id": "^5.3.2",

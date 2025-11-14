@@ -13,7 +13,11 @@ import useSWR from "swr";
 import { JsonDoc } from "@/lib/types";
 import { thankyouPageContent } from "@/lib/content";
 import { Loader, TriangleAlert } from "lucide-react";
-import { Icustomisation, IeditorStore, useEditorStore } from "@/stores/useEditorStore";
+import {
+  Icustomisation,
+  IeditorStore,
+  useEditorStore,
+} from "@/stores/useEditorStore";
 
 const fetcher = (url: string) => apiClient.get(url);
 export default function Page() {
@@ -21,11 +25,6 @@ export default function Page() {
   const { formId } = useParams();
   const { data, isLoading, error } = useSWR(`/api/form/${formId}`, fetcher);
   const [docs, setDocs] = useState<JsonDoc[]>([]);
-  const formData = data?.data?.form;
-  const form_schema = formData?.form_schema;
-  const creator = formData?.creator;
-  const customerId = formData?.customerId;
-  const customisation = formData?.customisation as Icustomisation
 
   const handleCreateRespondent = async (formId: string, customerId: string) => {
     const resp = await apiClient.post(`/api/respondent`, {
@@ -37,19 +36,18 @@ export default function Page() {
     useFormStore?.setState({ respondentId });
   };
 
-  
-
   useEffect(() => {
     useFormStore.setState({ activeStep: 0, form: form });
   }, [form]);
 
   useEffect(() => {
-    if (!formId || !customerId) return;
-    handleCreateRespondent(formId as string, customerId);
-    useEditorStore.setState({...customisation})
-  }, [formId, customerId , customisation]);
+    if (!data) return;
+    const formData = data.data?.form;
+    const form_schema = formData?.form_schema;
+    const creator = formData?.creator;
+    const customerId = formData?.customerId;
+    const customisation = formData?.customisation as Icustomisation;
 
-  useEffect(() => {
     if (!form_schema?.content) {
       setDocs([]);
       return;
@@ -107,7 +105,9 @@ export default function Page() {
         maxStep: parsedDocs?.length - 1,
       });
     }
-  }, [form_schema, creator , customerId]);
+    useEditorStore.setState({ ...customisation });
+    handleCreateRespondent(formId as string, customerId);
+  }, [data]);
 
   if (error) {
     return (

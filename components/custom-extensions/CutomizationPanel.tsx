@@ -189,6 +189,7 @@ export const CutomizationPanel = () => {
     { name: "Roboto Serif", value: "var(--font-roboto-serif)" },
     { name: "Poppins", value: "var(--font-poppins)" },
     { name: "Acme", value: "var(--font-acme)" },
+    {name:"Instrumental serif" , value:"var(--font-insturment-serif)"}
   ];
 
   const fontSizes = [
