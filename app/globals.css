@@ -3,20 +3,7 @@
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
-/* --tt-color-highlight-green: green;
-  --tt-color-highlight-blue: blue;
-  --tt-color-highlight-red: red;
-  --tt-color-highlight-purple: purple;
-  --tt-color-highlight-yellow: yellow; 
 
-  theme
-
-  --tt-color-highlight-green: var(--tt-color-highlight-green);
-  --tt-color-highlight-blue: var(--tt-color-highlight-blue);
-  --tt-color-highlight-red: var(--tt-color-highlight-red);
-  --tt-color-highlight-purple: var(--tt-color-highlight-purple);
-  --tt-color-highlight-yellow: var(--tt-color-highlight-yellow);
-  */
 
 :root {
   --background: oklch(1 0 0);
@@ -51,7 +38,7 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-  --radius: 0.85rem;
+  --radius: 0.5rem;
   --shadow-x: 0;
   --shadow-y: 1px;
   --shadow-blur: 3px;
@@ -113,7 +100,7 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(0.275 0 0);
   --sidebar-ring: oklch(0.439 0 0);
-  --radius: 0.85rem;
+  --radius: 0.5rem;
   --shadow-x: 0;
   --shadow-y: 1px;
   --shadow-blur: 3px;

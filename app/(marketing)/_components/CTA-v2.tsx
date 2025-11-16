@@ -9,7 +9,7 @@ export const CTAV2 = () => {
     <section className="relative z-10 border-x max-w-5xl mx-auto pt-36 pb-24">
       <div className="px-4 md:px-6">
         <div className="border-y py-24 md:py-32">
-          <div className="text-center space-y-8 max-w-2xl mx-auto">
+          <div className="text-center space-y-8 max-w-3xl mx-auto">
             <h2
               style={{ fontFamily: "var(--font-insturment-serif)" }}
               className="text-4xl md:text-5xl lg:text-6xl"
@@ -20,14 +20,14 @@ export const CTAV2 = () => {
               Join thousands of teams using Planetform to create beautiful,
               modern forms with powerful analytics and seamless integrations.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-              <Button size="lg" asChild className="gap-2">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 max-w-3xl ">
+              <Button size="lg" asChild className="gap-2 ">
                 <Link href="/auth">
                   Start for free
-                  <ArrowRight className="size-4" />
+                  <ArrowRight className="size-3" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" asChild>
+              <Button size="lg" variant="secondary" className=" " >
                 <Link href="#features">View features</Link>
               </Button>
             </div>

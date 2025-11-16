@@ -25,8 +25,16 @@ export default function Page() {
   const { formId } = useParams();
   const { data, isLoading, error } = useSWR(`/api/form/${formId}`, fetcher);
   const [docs, setDocs] = useState<JsonDoc[]>([]);
+  const { formColorScheme } = useEditorStore((s) => s);
+  const [closedState, setClosed] = useState({
+    isClosed: false,
+    closedMessage: "The form is closed",
+  });
 
   const handleCreateRespondent = async (formId: string, customerId: string) => {
+
+    if(useFormStore.getState().respondentId)return;
+
     const resp = await apiClient.post(`/api/respondent`, {
       form: formId,
       customerId: customerId,
@@ -43,10 +51,17 @@ export default function Page() {
   useEffect(() => {
     if (!data) return;
     const formData = data.data?.form;
+    const closed = formData?.closed;
+    const closedMessage = formData?.closedMessage
     const form_schema = formData?.form_schema;
     const creator = formData?.creator;
     const customerId = formData?.customerId;
     const customisation = formData?.customisation as Icustomisation;
+
+    if (closed) {
+      setClosed({ ...closedState, isClosed: closed  , closedMessage});
+      return;
+    }
 
     if (!form_schema?.content) {
       setDocs([]);
@@ -109,6 +124,11 @@ export default function Page() {
     handleCreateRespondent(formId as string, customerId);
   }, [data]);
 
+  useEffect(() => {
+    const val = document.documentElement.classList.value;
+    document.documentElement.classList.replace(val, formColorScheme);
+  }, [formColorScheme]);
+
   if (error) {
     return (
       <div className="w-full h-screen flex items-center justify-center">
@@ -127,14 +147,16 @@ export default function Page() {
   }
 
   return (
-    <div className=" w-full relative">
+    <section className=" w-full relative ">
       <div
         className={cn(
           ` max-w-6xl w-full mx-auto px-2 min-h-screen flex items-center justify-center relative`
         )}
       >
-        <RenderForm docs={docs} />
+        {closedState.isClosed ? <div className="w-full text-center">
+          <p>{closedState.closedMessage}</p>
+        </div> : <RenderForm docs={docs} />}
       </div>
-    </div>
+    </section>
   );
 }

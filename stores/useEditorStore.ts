@@ -46,7 +46,7 @@ export const useEditorStore = create<IeditorStore>()(
       formFontSize: null,
       actionBtnSize: null,
       actionBtnColor: null,
-      formColorScheme: "light",
+      formColorScheme: "dark",
       setFormFontFamliy: (family) => set({ formFontFamliy: family }),
       setFormFontSize: (size) => set({ formFontSize: size }),
       setActionBtnSize: (size) => set({ actionBtnSize: size }),

@@ -15,6 +15,7 @@ import { Integrations } from "./_components/Integrations";
 import { Analytics } from "./_components/Analytics";
 import { authClient, signOut } from "@/lib/auth-client";
 import { useUser } from "@/hooks/use-User";
+import { Settings } from "./_components/Settings";
 
 const fetcher = (url: string) => apiClient.get(url);
 export default function Page() {
@@ -52,21 +53,30 @@ export default function Page() {
           >
             Integrations
           </TabsTrigger>
+          <TabsTrigger
+            className=" rounded-sm text-left md:text-lg w-full h-full py-4 px-5 "
+            value="Settings"
+          >
+            Settings
+          </TabsTrigger>
         </TabsList>
         <TabsContents>
-        <TabsContent className="px-1  grid gap-2 mt-4 " value="Submission">
-          <Submissions />
-        </TabsContent>
-        <TabsContent className="px-1 mt-4" value="Analytics">
-          <Analytics />
-        </TabsContent>
-        <TabsContent className="px-1 mt-4" value="Integrations">
-          <Integrations
-            data={data?.data?.form?.integrations}
-            error={error}
-            isLoading={isLoading}
-          />
-        </TabsContent>
+          <TabsContent className="px-1  grid gap-2 mt-4 " value="Submission">
+            <Submissions />
+          </TabsContent>
+          <TabsContent className="px-1 mt-4" value="Analytics">
+            <Analytics />
+          </TabsContent>
+          <TabsContent className="px-1 mt-4" value="Integrations">
+            <Integrations
+              data={data?.data?.form?.integrations}
+              error={error}
+              isLoading={isLoading}
+            />
+          </TabsContent>
+          <TabsContent className="px-1 mt-4" value="Settings">
+            <Settings />
+          </TabsContent>
         </TabsContents>
       </Tabs>
     </main>

@@ -20,7 +20,7 @@ export const ActionButtonView = (props: NodeViewProps) => {
       <Button
         size={"sm"}
         className={cn(
-          `px-4 py-5 hover:bg-[${actionBtnColor}]/70  `
+          `px-4 py-[18px] hover:bg-[${actionBtnColor}]/70  `
           // `ring-[${actionBtnColor}]`
         )}
         id={id}

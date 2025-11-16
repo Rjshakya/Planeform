@@ -4,123 +4,12 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Eye, Sparkles, Zap, TrendingUp } from "lucide-react";
 import { useState, useEffect } from "react";
 import { FormEditor } from "@/app/dashboard/[workspaceId]/form/_components/FormEditor";
-import { JsonDoc } from "@/lib/types";
-import { v4 } from "uuid";
 import { useForm } from "react-hook-form";
 import { useFormStore } from "@/stores/useformStore";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { useEditorStore } from "@/stores/useEditorStore";
 import { useLandingStore } from "@/stores/useLandingStore";
-
-// Demo form content for landing page
-const demoFormContent: JsonDoc = {
-  type: "doc",
-  content: [
-    {
-      type: "heading",
-      attrs: {
-        textAlign: null,
-        level: 1,
-      },
-      content: [
-        {
-          type: "text",
-          text: "Get Started Today",
-          attrs: {},
-        },
-      ],
-    },
-    {
-      type: "paragraph",
-      attrs: {
-        textAlign: null,
-      },
-      content: [
-        {
-          type: "text",
-          text: "Join thousands of teams building better forms. Start creating in seconds.",
-          attrs: {},
-        },
-      ],
-    },
-    {
-      type: "paragraph",
-      attrs: {
-        textAlign: null,
-      },
-    },
-    {
-      type: "shortInput",
-      attrs: {
-        id: v4(),
-        label: "Full Name",
-        placeholder: "Enter your full name",
-        type: "text",
-        isRequired: true,
-      },
-      content: [
-        {
-          type: "text",
-          text: "Full Name",
-          attrs: {},
-        },
-      ],
-    },
-    {
-      type: "shortInput",
-      attrs: {
-        id: v4(),
-        label: "Email Address",
-        placeholder: "you@example.com",
-        type: "email",
-        isRequired: true,
-      },
-      content: [
-        {
-          type: "text",
-          text: "Email Address",
-          attrs: {},
-        },
-      ],
-    },
-    {
-      type: "longInput",
-      attrs: {
-        id: v4(),
-        label: "Tell us about your project",
-        placeholder: "Describe what you're building...",
-        isRequired: false,
-      },
-      content: [
-        {
-          type: "text",
-          text: "Tell us about your project",
-          attrs: {},
-        },
-      ],
-    },
-    {
-      type: "actionButton",
-      attrs: {
-        id: v4(),
-        type: "submit",
-        text: "Get Started",
-      },
-      content: [
-        {
-          type: "text",
-          text: "Get Started",
-          attrs: {},
-        },
-      ],
-    },
-  ],
-  attrs: {},
-} satisfies JsonDoc;
-
-// Component to track editor content from the store
-
+import { Badge } from "@/components/ui/badge";
 
 export const HeroV2 = () => {
   const form = useForm();
@@ -136,23 +25,20 @@ export const HeroV2 = () => {
       isLastStep: true,
       isSingleForm: true,
     });
-
   }, [form]);
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-4 md:px-6 pt-48 pb-24  border-x">
+    <div className="w-full max-w-5xl mx-auto px-4 md:px-6 pt-48 pb-24  border-x ">
       {/* Promo Badge */}
-      <div className="flex justify-center mb-10">
-        <Button
-          variant="outline"
-          size="sm"
-          className="gap-2 rounded-full hover:bg-primary/80 hover:text-white dark:hover:bg-primary/80 bg-primary ring-primary text-background dark:bg-primary dark:text-foreground "
-        >
-          <Link href={"/auth"} className="flex items-center gap-2">
-            <span className="pl-1">Start for free</span>
-            <ArrowRight className="size-4" />
-          </Link>
-        </Button>
+      <div className="flex justify-center mb-10  ">
+        <div className="relative size-fit rounded-md">
+          <Badge className=" p-1.5 ">
+            <Link href={"/auth"} className="flex items-center gap-1">
+              <span className="pl-1">Start for free</span>
+              <ArrowRight className="size-3" />
+            </Link>
+          </Badge>
+        </div>
       </div>
 
       {/* Main Headline */}

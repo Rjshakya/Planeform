@@ -57,7 +57,7 @@ const playFairDisplay = Playfair_Display({
 const playfair = Playfair({
   variable: "--font-playfair",
   subsets: ["latin"],
-})
+});
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -86,10 +86,10 @@ const acme = Acme({
 });
 
 const instrumentSerif = Instrument_Serif({
-  variable:"--font-insturment-serif",
+  variable: "--font-insturment-serif",
   subsets: ["latin"],
-  weight:"400"
-})
+  weight: "400",
+});
 
 export const metadata: Metadata = {
   title: "Planetform",
@@ -122,7 +122,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body
         className={cn(`${dmSans.variable} ${geistMono.variable} ${inter.variable} ${geist.variable} ${spaceGrotesk.variable} ${playFairDisplay.variable} antialiased , ${roboto.variable}
           ${robotoMono.variable} ${robotoSerif.variable} ${poppins.variable} ${acme.variable} ${playfair.variable} ${instrumentSerif.variable}`)}

@@ -60,7 +60,6 @@ export const useFormStore = create<IformStore>((set, get) => ({
     const { creator, customerId, respondentId } = get();
 
     if (!values || !creator || !customerId) {
-      // toast("failed to submit form , please try again :customer");
       return false;
     }
 
@@ -68,7 +67,6 @@ export const useFormStore = create<IformStore>((set, get) => ({
       return true;
     }
     if (!formId || isEdit) {
-      const onlyValues = Object.values(values);
       toast.success("Everything seems good! :)");
       return true;
     }
@@ -117,11 +115,11 @@ export const useFormStore = create<IformStore>((set, get) => ({
       }
 
       mutate(`/api/response/form/${formId}?pageIndex=${0}&pageSize=${20}`);
-      toast("form submitted successfully");
+      toast.success("form submitted successfully");
       set({ isSubmitting: false });
       return true;
     } catch (e) {
-      toast("failed to submit form please try again later;");
+      toast.error("failed to submit form please try again later;");
       return false;
     }
   },

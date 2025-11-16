@@ -12,6 +12,7 @@ import { Logo } from "@/components/Logo";
 import { ArrowRight, Eye, Sparkles, Zap, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
+
 const featureHighlights = [
   {
     title: "Block-based editor",
@@ -35,47 +36,12 @@ const featureHighlights = [
   },
 ];
 
-const comparisonRows = [
-  {
-    feature: "Visual editor depth",
-    planetform: "Advanced block layout, logic, and styling controls.",
-    typeform: "Linear question flow with limited layout options.",
-    google: "Single-column form builder with minimal styling.",
-  },
-  {
-    feature: "Collaboration",
-    planetform: "Live co-editing, roles, and comment threads.",
-    typeform: "Basic sharing; no real-time presence.",
-    google: "Simple link sharing; no roles or presence.",
-  },
-  {
-    feature: "Brand customization",
-    planetform: "Custom themes, fonts, animations, and embeds.",
-    typeform: "Preset themes and restricted layout changes.",
-    google: "Light theme edits; no advanced design options.",
-  },
-  {
-    feature: "Automation",
-    planetform: "Native CRM sync, webhook triggers, Zapier, Make.",
-    typeform: "Zapier & Make integrations on higher tiers.",
-    google: "Manual exports or Apps Script required.",
-  },
-  {
-    feature: "Analytics & insights",
-    planetform: "Conversion funnels, drop-off heatmaps, exports.",
-    typeform: "Basic completion metrics, reports.",
-    google: "Response list and charts; no funnel insights.",
-  },
-];
-
 export default function LandingV2() {
   return (
     <>
-      <main className="relative min-h-screen bg-input/40 overflow-hidden">
-        {/* Grid Background Pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)] opacity-70 " />
-
+      <main className="relative min-h-screen bg-input/40  overflow-hidden">
         {/* Background Decorative Elements */}
+        
         <div className="absolute inset-0 pointer-events-none">
           {/* Top Left Label */}
           <div className="absolute top-20 left-8 md:left-16 text-xs text-muted-foreground/40 font-mono">
@@ -161,12 +127,12 @@ export default function LandingV2() {
         </div>
 
         {/* Navigation */}
-        <div className=" z-50 w-full fixed  px-2 pt-2">
+        <div className=" z-30 w-full fixed  px-2 pt-2">
           <NavV2 />
         </div>
 
         {/* Hero Section */}
-        <div className="relative z-10 px-2 ">
+        <div className="relative z-0 px-2 ">
           <HeroV2 />
           {/* <div className=" max-w-5xl mx-auto border-x   h-full">
             <div className="h-20 bg-input/90 "></div>
@@ -420,15 +386,15 @@ export default function LandingV2() {
           <CTAV2 />
         </div>
 
-        {/* Theme Toggle */}
-        {/* <div className="fixed bottom-4 right-4 z-30">
+        <div>
           <ThemeToggle />
-        </div> */}
+        </div>
+       
       </main>
 
       {/* Footer */}
-      <footer className="w-full px-4 md:px-6  bg-foreground text-background">
-        <div className="w-full border-t border-border/20 pt-10 pb-6">
+      <footer className="w-full px-4 md:px-6  bg-foreground text-background ">
+        <div className="w-full border-t border-border/20 pt-10 pb-6 ">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-6xl mx-auto">
             <div className="md:col-span-2 flex flex-col justify-end gap-3">
               <div className="flex items-center gap-2">

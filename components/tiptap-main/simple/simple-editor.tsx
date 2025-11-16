@@ -861,7 +861,7 @@ export function SimpleEditor({
   const editorContentRef = React.useRef<HTMLDivElement>(null);
   const { isLastStep, activeStep, maxStep, handleSubmit, getHookForm } =
     useFormStore((s) => s);
-  const { formBackgroundColor, formFontFamliy, formFontSize, formColorScheme } =
+  const { formBackgroundColor, formFontFamliy, formFontSize } =
     useEditorStore((s) => s);
 
   // form init
@@ -1028,7 +1028,6 @@ export function SimpleEditor({
       )}
       style={{
         backgroundColor: formBackgroundColor || undefined,
-        colorScheme: formColorScheme,
       }}
     >
       <EditorContext.Provider value={{ editor }}>

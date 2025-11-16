@@ -38,7 +38,7 @@ const fetcher = (url: string) =>
 
 export const Analytics = () => {
   const { formId } = useParams();
-  const [interval, setInterval] = useState("today");
+  const [interval, setInterval] = useState("24h");
   const { data, error, isLoading } = useSWR(
     `/api/analytics/form?formId=${formId}&interval=${interval}`,
     fetcher
@@ -277,8 +277,9 @@ export const Analytics = () => {
             <SelectValue placeholder="Time" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="today">Today</SelectItem>
-            <SelectItem value="1d">Last 24 hr</SelectItem>
+            <SelectItem value="6h">Last 6 hr</SelectItem>
+            <SelectItem value="12h">Last 12 hr</SelectItem>
+            <SelectItem value="24h">Last 24 hr</SelectItem>
             <SelectItem value="7d">Last 7 days</SelectItem>
           </SelectContent>
         </Select>
@@ -367,28 +368,24 @@ const AnalyticsBarChart = ({ data }: { data: IAnalyticsObj[] }) => {
   };
 
   return (
-    <ChartContainer config={chartConfig} className="h-[200px] w-full">
-      <BarChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-        {/* <CartesianGrid strokeDasharray="3 3" className="stroke-muted" /> */}
+    <ChartContainer  config={chartConfig} className=" w-full">
+      <BarChart accessibilityLayer data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }} barSize={40}  >
+      {/* <CartesianGrid vertical={false} /> */}
         <XAxis
           dataKey="date"
           tick={{ fontSize: 12 }}
           tickLine={false}
           axisLine={false}
+          tickMargin={10}
         />
-        {/* <YAxis
-          tick={{ fontSize: 12 }}
-          tickLine={false}
-          axisLine={false}
-        /> */}
         <ChartTooltip
+          cursor={false}
           content={<ChartTooltipContent />}
         />
         <Bar
           dataKey="count"
           fill="var(--color-count)"
           radius={4}
-          // barSize={80}
         />
       </BarChart>
     </ChartContainer>
