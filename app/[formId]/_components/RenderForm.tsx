@@ -8,10 +8,7 @@ import { useFormStore } from "@/stores/useformStore";
 import { ArrowLeft, Loader, TriangleAlert } from "lucide-react";
 import { useParams } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
-
-import useSWR from "swr";
-
-const fetcher = (url: string) => apiClient.get(url);
+import { motion } from "motion/react";
 
 export const RenderForm = ({ docs }: { docs: JsonDoc[] }) => {
   const { activeStep, maxStep, isLastStep } = useFormStore((s) => s);
@@ -23,7 +20,7 @@ export const RenderForm = ({ docs }: { docs: JsonDoc[] }) => {
         isLastStep: maxStep === index,
       });
     },
-    [activeStep, isLastStep, maxStep , docs?.length]
+    [ maxStep, docs?.length]
   );
 
   return (
@@ -31,7 +28,7 @@ export const RenderForm = ({ docs }: { docs: JsonDoc[] }) => {
       {docs?.length > 1 &&
         activeStep !== 0 &&
         activeStep < docs?.length - 1 && (
-          <div className="w-full max-w-lg mx-auto fixed top-4 inset-x-0 ">
+          <div className="w-full max-w-2xl mx-auto fixed top-4 inset-x-0  z-20">
             <Button
               onClick={() => handleActiveIndex(activeStep - 1)}
               variant={"secondary"}
@@ -42,18 +39,31 @@ export const RenderForm = ({ docs }: { docs: JsonDoc[] }) => {
           </div>
         )}
 
+      {docs?.length > 0 && activeStep === docs?.length && (
+        <div className="max-w-3xl mx-auto text-center">
+          <p>Thankyou</p>
+        </div>
+      )}
+
       {docs?.map((content, i) => {
         if (activeStep === i) {
           return (
-            <FormEditor
+            <motion.div
               key={activeStep}
-              className="max-w-xl mx-auto  w-full rounded-2xl  dark:bg-accent/0 "
-              isEditable={false}
-              content={content}
-            />
+              initial={{ opacity: 0, y: -700, filter: "blur(5px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
+              className="w-full"
+            >
+              <FormEditor
+                key={activeStep}
+                className="max-w-xl mx-auto  w-full rounded-2xl  dark:bg-accent/0 "
+                isEditable={false}
+                content={content}
+              />
+            </motion.div>
           );
         }
-        return null;
       })}
     </div>
   );

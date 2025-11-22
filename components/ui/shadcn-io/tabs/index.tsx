@@ -177,7 +177,7 @@ function TabsTrigger({
   }, [value, registerTrigger]);
 
   return (
-    <MotionHighlightItem value={value} className="size-full">
+    <MotionHighlightItem value={value} className="size-full  ">
       <motion.button
         ref={localRef}
         data-slot="tabs-trigger"
@@ -207,8 +207,8 @@ function TabsContents({
   className,
   transition = {
     type: 'spring',
-    stiffness: 300,
-    damping: 30,
+    stiffness: 200,
+    damping: 20,
     bounce: 0,
     restDelta: 0.01,
   },

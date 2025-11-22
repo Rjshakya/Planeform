@@ -8,6 +8,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useFormStore } from "@/stores/useformStore";
@@ -43,7 +44,7 @@ const ShortInput = (props: NodeViewProps) => {
               <FormControl>
                 {type === "phone" ? (
                   <Component
-                    value={field?.value}
+                    value={field?.value || ''}
                     valueChange={field?.onChange}
                     id={id}
                     placeholder={placeholder}
@@ -60,10 +61,13 @@ const ShortInput = (props: NodeViewProps) => {
                     disabled={props?.editor?.isEditable}
                     ref={field?.ref}
                     onBlur={field?.onBlur}
+                    className=""
+                    
                     // {...field}
                   />
                 )}
               </FormControl>
+              <FormMessage/>
             </FormItem>
           )}
         />

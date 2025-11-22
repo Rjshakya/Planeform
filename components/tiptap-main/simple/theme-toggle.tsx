@@ -11,7 +11,7 @@ import { SunIcon } from "@/components/tiptap-icons/sun-icon";
 import { Button } from "@/components/ui/button";
 
 export function ThemeToggle({ variant }: { variant?: any }) {
-  const [isDarkMode, setIsDarkMode] = React.useState<boolean>(false);
+  const [isDarkMode, setIsDarkMode] = React.useState<boolean>();
 
    React.useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")

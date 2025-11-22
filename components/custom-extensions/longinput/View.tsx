@@ -7,6 +7,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { useFormStore } from "@/stores/useformStore";
@@ -42,7 +43,7 @@ export const LongInputView = (props: NodeViewProps) => {
                   disabled={props?.editor?.isEditable}
                 />
               </FormControl>
-              {/* <FormDescription>{placeholder?.toString()}</FormDescription> */}
+              <FormMessage/>
             </FormItem>
           )}
         />

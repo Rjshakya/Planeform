@@ -17,7 +17,11 @@ import { Loader } from "lucide-react";
 import { toast } from "sonner";
 import { apiClient } from "@/lib/axios";
 import { mutate } from "swr";
-import { filterFormFields, getCustomization, handleFormSchema } from "../../../create/_components/PublishForm";
+import {
+  filterFormFields,
+  getCustomization,
+  handleFormSchema,
+} from "../../../create/_components/PublishForm";
 
 export const EditForm = () => {
   const { editor } = useCurrentEditor();
@@ -34,18 +38,18 @@ export const EditForm = () => {
     const json = editor.getJSON();
     // const schema = handleFormSchema(json)
     const fields = filterFormFields(json, formId as string);
-    const formCustomisation = JSON.stringify(getCustomization())
+    const formCustomisation = JSON.stringify(getCustomization());
 
     setCreating(true);
     try {
-      await apiClient.put(`/api/form/`, {
+      await apiClient.put(`/api/form`, {
         formId,
         formName,
         form_schema: JSON.stringify(json),
         fields,
-        formCustomisation
+        formCustomisation,
       });
-      
+
       toast(`form updated. successfully`);
       setOpen(false);
       router.push(`/dashboard/workspace/${workspaceId}`);

@@ -12,7 +12,7 @@ import { useEditorStore } from "@/stores/useEditorStore";
 export const ActionButtonView = (props: NodeViewProps) => {
   const { id, text, type } = props?.node?.attrs as InsertActionButtonParams;
   const { isSubmitting } = useFormStore((s) => s);
-  const { actionBtnColor } = useEditorStore((s) => s);
+  const { actionBtnColor , actionBtnTextColor , actionBtnBorderColor } = useEditorStore((s) => s);
 
   // bg-pink-400 ring-pink-400 hover:bg-pink-400
   return (
@@ -28,7 +28,8 @@ export const ActionButtonView = (props: NodeViewProps) => {
         style={
           {
             backgroundColor: actionBtnColor || undefined,
-            "--tw-ring-color": actionBtnColor,
+            "--tw-ring-color": actionBtnBorderColor||actionBtnColor,
+            color:actionBtnTextColor||undefined
           } as React.CSSProperties & Record<`--tw-ring-color`, string>
         }
       >

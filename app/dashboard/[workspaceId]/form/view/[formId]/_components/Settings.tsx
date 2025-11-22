@@ -71,31 +71,34 @@ export const Settings = () => {
 
   return (
     <div className="grid gap-6 pb-4">
-      <p>Form settings</p>
+      {/* <p>Form settings</p> */}
       <div className="grid gap-4">
-        <div className=" flex items-center justify-between gap-2 bg-card p-3">
-          <Label>Closed</Label>
+        <Label htmlFor="check" className=" flex items-center justify-between gap-2  p-4 bg-muted rounded-sm">
+          <span>Closed</span>
           <Switch
+            id="check"
             checked={state.closed}
             onCheckedChange={(c) => {
               setState({ ...state, closed: c });
             }}
           />
-        </div>
-        <div className=" flex flex-col   gap-2 bg-card p-3">
+        </Label>
+        <div className=" flex flex-col   gap-2  p-4 bg-muted rounded-sm">
           <Label>Closing message</Label>
           <Textarea
+            className=" appearance-none bg-transparent border-none shadow-none"
             value={state.closedMessage}
             onChange={(e) => {
               setState({ ...state, closedMessage: e?.currentTarget?.value });
             }}
           />
         </div>
-        <div className="flex justify-end mt-8">
+        <div className="flex justify-start pl-1 ">
           <Button
             onClick={handleSubmit}
             variant={"destructive"}
-            className="w-[100px]"
+            className="w-[120px]"
+            size={"lg"}
           >
             Submit
           </Button>

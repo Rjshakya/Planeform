@@ -12,7 +12,6 @@ import { Logo } from "@/components/Logo";
 import { ArrowRight, Eye, Sparkles, Zap, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
-
 const featureHighlights = [
   {
     title: "Block-based editor",
@@ -41,7 +40,9 @@ export default function LandingV2() {
     <>
       <main className="relative min-h-screen bg-input/40  overflow-hidden">
         {/* Background Decorative Elements */}
-        
+
+       
+
         <div className="absolute inset-0 pointer-events-none">
           {/* Top Left Label */}
           <div className="absolute top-20 left-8 md:left-16 text-xs text-muted-foreground/40 font-mono">
@@ -131,14 +132,14 @@ export default function LandingV2() {
           <NavV2 />
         </div>
 
-        {/* Hero Section */}
+        {/* Content Section */}
         <div className="relative z-0 px-2 ">
           <HeroV2 />
           {/* <div className=" max-w-5xl mx-auto border-x   h-full">
             <div className="h-20 bg-input/90 "></div>
           </div> */}
 
-          <div className=" max-w-5xl mx-auto border-x pt-24">
+          <div className=" max-w-5xl mx-auto border-x pt-0">
             {/* Floating Action Buttons - Firecrawl style */}
             <div className="grid grid-cols-2 md:grid-cols-4  border-t ">
               <div className=" flex  justify-center border-b border-r py-14">
@@ -389,7 +390,6 @@ export default function LandingV2() {
         <div>
           <ThemeToggle />
         </div>
-       
       </main>
 
       {/* Footer */}

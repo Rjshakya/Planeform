@@ -133,36 +133,111 @@ export default function Workspace() {
               Your workspaces
             </h3>
           </div>
-          <DropdownMenu>
+          <div>
+            <Dialog open={open} onOpenChange={setOpen}>
+              <DialogTrigger asChild>
+                <Button variant={"secondary"}>
+                  <div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="size-5 fill-foreground "
+                      viewBox="0 0 24 24"
+                      fill="none"
+                    >
+                      <g clipPath="url(#clip0_4418_9825)">
+                        <path
+                          className="stroke-foreground"
+                          d="M6 12H18"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          className="stroke-foreground"
+                          d="M12 18V6"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </g>
+                      <defs>
+                        <clipPath id="clip0_4418_9825">
+                          <rect width="24" height="24" fill="white" />
+                        </clipPath>
+                      </defs>
+                    </svg>
+                  </div>
+                  <span onClick={() => setOpen(true)}>Workspace</span>
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="gap-4 px-5 font-sans tracking-tighter p-8">
+                <DialogHeader>
+                  <DialogTitle className="text-base font-medium">Create new workspace</DialogTitle>
+                </DialogHeader>
+                <div className="grid gap-1">
+                <Label className="pl-1 text-lg">Name</Label>
+                <Input
+                 placeholder="my-workspace-1"
+                  value={workspaceName}
+                  onChange={(e) => setWorkspaceName(e?.currentTarget?.value)}
+                  onKeyDown={async (e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      await handleCreateWorkspace({
+                        name: workspaceName,
+                        owner: userId || "",
+                        customerId: customerId || "",
+                      });
+                    }
+                  }}
+                />
+                </div>
+                <DialogFooter>
+                  <Button
+                    onClick={async () =>
+                      handleCreateWorkspace({
+                        name: workspaceName,
+                        owner: userId || "",
+                        customerId: customerId || "",
+                      })
+                    }
+                  >
+                    {creating && <Loader className={`animate-spin`} />}
+                    <span>Submitt</span>
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
+          {/* <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button className="">
                 <div>
+                 
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="size-5 fill-white"
+                    className="size-5"
                     viewBox="0 0 24 24"
-                    fill="#fffcfc"
+                    fill="none"
                   >
-                    <g clipPath="url(#clip0_4418_4716)">
+                    <g clipPath="url(#clip0_4418_9825)">
                       <path
-                        opacity="0.4"
-                        d="M18.5698 22H13.9998C11.7098 22 10.5698 20.86 10.5698 18.57V11.43C10.5698 9.14 11.7098 8 13.9998 8H18.5698C20.8598 8 21.9998 9.14 21.9998 11.43V18.57C21.9998 20.86 20.8598 22 18.5698 22Z"
-                        fill="white"
-                        style={{ fill: "var(--fillg)" }}
+                        d="M6 12H18"
+                        stroke="#fff"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       />
                       <path
-                        d="M13.43 5.43V6.77C10.81 6.98 9.32 8.66 9.32 11.43V16H5.43C3.14 16 2 14.86 2 12.57V5.43C2 3.14 3.14 2 5.43 2H10C12.29 2 13.43 3.14 13.43 5.43Z"
-                        fill="white"
-                        style={{ fill: "var(--fillg)" }}
-                      />
-                      <path
-                        d="M18.1301 14.2491H17.2501V13.3691C17.2501 12.9591 16.9101 12.6191 16.5001 12.6191C16.0901 12.6191 15.7501 12.9591 15.7501 13.3691V14.2491H14.8701C14.4601 14.2491 14.1201 14.5891 14.1201 14.9991C14.1201 15.4091 14.4601 15.7491 14.8701 15.7491H15.7501V16.6291C15.7501 17.0391 16.0901 17.3791 16.5001 17.3791C16.9101 17.3791 17.2501 17.0391 17.2501 16.6291V15.7491H18.1301C18.5401 15.7491 18.8801 15.4091 18.8801 14.9991C18.8801 14.5891 18.5401 14.2491 18.1301 14.2491Z"
-                        fill="white"
-                        style={{ fill: "var(--fillg)" }}
+                        d="M12 18V6"
+                        stroke="#fff"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       />
                     </g>
                     <defs>
-                      <clipPath id="clip0_4418_4716">
+                      <clipPath id="clip0_4418_9825">
                         <rect width="24" height="24" fill="white" />
                       </clipPath>
                     </defs>
@@ -174,55 +249,76 @@ export default function Workspace() {
             <DropdownMenuContent align="end" className="m-1.5">
               <DropdownMenuGroup>
                 <DropdownMenuItem>
-                  <FilePlus />
+                  <div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className=" size-5 fill-foreground"
+                      viewBox="0 0 24 24"
+                      fill="#fff"
+                    >
+                      <g clipPath="url(#clip0_4418_4823)">
+                        <path
+                          opacity="0.4"
+                          d="M20.5 10.19H17.61C15.24 10.19 13.31 8.26 13.31 5.89V3C13.31 2.45 12.86 2 12.31 2H8.07C4.99 2 2.5 4 2.5 7.57V16.43C2.5 20 4.99 22 8.07 22H15.93C19.01 22 21.5 20 21.5 16.43V11.19C21.5 10.64 21.05 10.19 20.5 10.19Z"
+                          fill="white"
+                          style={{ fill: "var(--fillg)" }}
+                        />
+                        <path
+                          d="M15.8002 2.21048C15.3902 1.80048 14.6802 2.08048 14.6802 2.65048V6.14048C14.6802 7.60048 15.9202 8.81048 17.4302 8.81048C18.3802 8.82048 19.7002 8.82048 20.8302 8.82048C21.4002 8.82048 21.7002 8.15048 21.3002 7.75048C19.8602 6.30048 17.2802 3.69048 15.8002 2.21048Z"
+                          fill="white"
+                          style={{ fill: "var(--fillg)" }}
+                        />
+                        <path
+                          d="M11.5299 12.47L9.52994 10.47C9.51994 10.46 9.50994 10.46 9.50994 10.45C9.44994 10.39 9.36994 10.34 9.28994 10.3C9.27994 10.3 9.27994 10.3 9.26994 10.3C9.18994 10.27 9.10994 10.26 9.02994 10.25C8.99994 10.25 8.97994 10.25 8.94994 10.25C8.88994 10.25 8.81994 10.27 8.75994 10.29C8.72994 10.3 8.70994 10.31 8.68994 10.32C8.60994 10.36 8.52994 10.4 8.46994 10.47L6.46994 12.47C6.17994 12.76 6.17994 13.24 6.46994 13.53C6.75994 13.82 7.23994 13.82 7.52994 13.53L8.24994 12.81V17C8.24994 17.41 8.58994 17.75 8.99994 17.75C9.40994 17.75 9.74994 17.41 9.74994 17V12.81L10.4699 13.53C10.6199 13.68 10.8099 13.75 10.9999 13.75C11.1899 13.75 11.3799 13.68 11.5299 13.53C11.8199 13.24 11.8199 12.76 11.5299 12.47Z"
+                          fill="white"
+                          style={{ fill: "var(--fillg)" }}
+                        />
+                      </g>
+                      <defs>
+                        <clipPath id="clip0_4418_4823">
+                          <rect width="24" height="24" fill="white" />
+                        </clipPath>
+                      </defs>
+                    </svg>
+                  </div>
                   <span onClick={handleCreateForm}>New form</span>
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
                 <DropdownMenuItem>
-                  <Folder />
+                  <div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="size-5 fill-foreground"
+                      viewBox="0 0 24 24"
+                      fill="#fff"
+                    >
+                      <g clipPath="url(#clip0_4418_4297)">
+                        <path
+                          opacity="0.4"
+                          d="M21.74 9.44H2V6.42C2 3.98 3.98 2 6.42 2H8.75C10.38 2 10.89 2.53 11.54 3.4L12.94 5.26C13.25 5.67 13.29 5.73 13.87 5.73H16.66C19.03 5.72 21.05 7.28 21.74 9.44Z"
+                          fill="white"
+                          style={{ fill: "var(--fillg)" }}
+                        />
+                        <path
+                          d="M21.99 10.8404C21.97 10.3504 21.89 9.89043 21.74 9.44043H2V16.6504C2 19.6004 4.4 22.0004 7.35 22.0004H16.65C19.6 22.0004 22 19.6004 22 16.6504V11.0704C22 11.0004 22 10.9104 21.99 10.8404ZM14.5 16.2504H12.81V18.0004C12.81 18.4104 12.47 18.7504 12.06 18.7504C11.65 18.7504 11.31 18.4104 11.31 18.0004V16.2504H9.5C9.09 16.2504 8.75 15.9104 8.75 15.5004C8.75 15.0904 9.09 14.7504 9.5 14.7504H11.31V13.0004C11.31 12.5904 11.65 12.2504 12.06 12.2504C12.47 12.2504 12.81 12.5904 12.81 13.0004V14.7504H14.5C14.91 14.7504 15.25 15.0904 15.25 15.5004C15.25 15.9104 14.91 16.2504 14.5 16.2504Z"
+                          fill="white"
+                          style={{ fill: "var(--fillg)" }}
+                        />
+                      </g>
+                      <defs>
+                        <clipPath id="clip0_4418_4297">
+                          <rect width="24" height="24" fill="white" />
+                        </clipPath>
+                      </defs>
+                    </svg>
+                  </div>
                   <span onClick={() => setOpen(true)}>New workspace</span>
                 </DropdownMenuItem>
               </DropdownMenuGroup>
             </DropdownMenuContent>
-          </DropdownMenu>
-          <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent className="gap-6 px-5">
-              <DialogHeader>
-                <DialogTitle>Create new workspace</DialogTitle>
-              </DialogHeader>
-              <Label className="pl-1">Workspace name</Label>
-              <Input
-                value={workspaceName}
-                onChange={(e) => setWorkspaceName(e?.currentTarget?.value)}
-                onKeyDown={async (e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    await handleCreateWorkspace({
-                      name: workspaceName,
-                      owner: userId || "",
-                      customerId: customerId || "",
-                    });
-                  }
-                }}
-              />
-              <DialogFooter>
-                <Button
-                  onClick={async () =>
-                    handleCreateWorkspace({
-                      name: workspaceName,
-                      owner: userId || "",
-                      customerId: customerId || "",
-                    })
-                  }
-                >
-                  {creating && <Loader className={`animate-spin`} />}
-                  <span>Submitt</span>
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          </DropdownMenu> */}
         </div>
       </div>
 

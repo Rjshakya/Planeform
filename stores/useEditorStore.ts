@@ -21,8 +21,20 @@ export interface IeditorStore {
   ) => void;
   actionBtnColor: string | null;
   setActionBtnColor: (color: string | null) => void;
+  formTextColor: string | null;
+  setFormTextColor: (color: string | null) => void;
+  actionBtnTextColor: string | null;
+  setActionBtnTextColor: (color: string | null) => void;
+  inputBackgroundColor: string | null;
+  setInputBackgroundColor: (color: string | null) => void;
+  inputBorderColor: string | null;
+  setInputBorderColor: (color: string | null) => void;
+  actionBtnBorderColor: string | null;
+  setActionBtnBorderColor: (color: string | null) => void;
   formColorScheme: string;
   setFormColorScheme: (scheme: string) => void;
+  customThankyouMessage: string;
+  setCustomThankyouMessage: (msg: string) => void;
 }
 
 export interface Icustomisation {
@@ -46,12 +58,25 @@ export const useEditorStore = create<IeditorStore>()(
       formFontSize: null,
       actionBtnSize: null,
       actionBtnColor: null,
+      formTextColor: null,
+      actionBtnTextColor: null,
+      inputBackgroundColor: null,
+      inputBorderColor: null,
+      actionBtnBorderColor: null,
       formColorScheme: "dark",
       setFormFontFamliy: (family) => set({ formFontFamliy: family }),
       setFormFontSize: (size) => set({ formFontSize: size }),
       setActionBtnSize: (size) => set({ actionBtnSize: size }),
       setActionBtnColor: (color) => set({ actionBtnColor: color }),
+      setFormTextColor: (color) => set({ formTextColor: color }),
+      setActionBtnTextColor: (color) => set({ actionBtnTextColor: color }),
+      setInputBackgroundColor: (color) => set({ inputBackgroundColor: color }),
+      setInputBorderColor: (color) => set({ inputBorderColor: color }),
+      setActionBtnBorderColor: (color) => set({ actionBtnBorderColor: color }),
       setFormColorScheme: (scheme) => set({ formColorScheme: scheme }),
+
+      customThankyouMessage: "Thankyou your responses are submitted",
+      setCustomThankyouMessage: (msg) => set({ customThankyouMessage: msg }),
     }),
 
     {

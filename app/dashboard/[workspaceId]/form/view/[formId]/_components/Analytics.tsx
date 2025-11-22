@@ -50,7 +50,7 @@ export const Analytics = () => {
         <div>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="size-6 fill-foreground"
+            className="size-4 fill-foreground"
             viewBox="0 0 24 24"
             fill="#fffcfc"
           >
@@ -100,7 +100,7 @@ export const Analytics = () => {
         <div>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="size-6 fill-foreground"
+            className="size-4 fill-foreground"
             viewBox="0 0 24 24"
             fill="#fffcfc"
           >
@@ -150,7 +150,7 @@ export const Analytics = () => {
         <div>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="size-6 fill-foreground"
+            className="size-4 fill-foreground"
             viewBox="0 0 24 24"
             fill="#fffcfc"
           >
@@ -200,7 +200,7 @@ export const Analytics = () => {
         <div>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="size-6 fill-foreground"
+            className="size-4 fill-foreground"
             viewBox="0 0 24 24"
             fill="#fffcfc"
           >
@@ -284,11 +284,14 @@ export const Analytics = () => {
           </SelectContent>
         </Select>
       </div>
-      <div className=" grid md:grid-cols-2 grid-cols-1 md:gap-1 gap-2">
+      <div className=" grid md:grid-cols-4 grid-cols-1 md:gap-1 gap-2 mt-4">
         {AnalyticsTypes?.map((I) => {
           return (
-            <Card key={I.id} className=" rounded-none  bg-card/20 dark:bg-card/20 shadow-none border-none">
-              <CardHeader className="flex items-start justify-between mb-4 ">
+            <Card key={I.id} className=" rounded-md bg-muted/50 dark:bg-muted/40 shadow-none border-none py-3 ">
+              
+              <CardHeader className=" mb-4 gap-3  ">
+              <p className="text-xs text-muted-foreground">{I.text}</p>
+              <div className="flex items-start justify-between gap-1">
                 <Button size={"icon"} variant={"secondary"}>
                   {" "}
                   {I.icon}
@@ -297,9 +300,10 @@ export const Analytics = () => {
                   {I.data && I.data.length > 0 ? (
                     <TotalCountComp arr={I.data} />
                   ) : (
-                    <p className="text-2xl font-bold">0</p>
+                    <p className="text-lg font-bold">0</p>
                   )}
-                  <p className="text-xs text-muted-foreground">{I.text}</p>
+                 
+                </div>
                 </div>
               </CardHeader>
               <CardContent className="px-8">
@@ -307,7 +311,7 @@ export const Analytics = () => {
                 {I.data && I.data.length > 0 ? (
                   <AnalyticsBarChart data={I.data} />
                 ) : (
-                  <div className="h-[200px] flex items-center justify-center text-muted-foreground text-sm">
+                  <div className=" flex items-center justify-center text-muted-foreground text-sm">
                     No data available
                   </div>
                 )}
@@ -331,7 +335,7 @@ export const TotalCountComp = ({ arr }: { arr: IAnalyticsObj[] }) => {
     setTotalCount(total);
   }, [arr]);
 
-  return <p className="text-2xl font-bold">{totalCount || 0}</p>;
+  return <p className="text-lg font-bold">{totalCount || 0}</p>;
 };
 
 const AnalyticsBarChart = ({ data }: { data: IAnalyticsObj[] }) => {
@@ -369,7 +373,7 @@ const AnalyticsBarChart = ({ data }: { data: IAnalyticsObj[] }) => {
 
   return (
     <ChartContainer  config={chartConfig} className=" w-full">
-      <BarChart accessibilityLayer data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }} barSize={40}  >
+      <BarChart accessibilityLayer data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }} barSize={15}  >
       {/* <CartesianGrid vertical={false} /> */}
         <XAxis
           dataKey="date"

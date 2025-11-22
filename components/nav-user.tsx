@@ -65,6 +65,7 @@ import {
   usePlans,
   useSubscriptions,
 } from "@/hooks/use-subscriptions";
+import { ThemeToggle } from "./tiptap-main/simple/theme-toggle";
 
 export function NavUser({
   user,
@@ -77,8 +78,6 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
-
-
   const [address, setAddress] = useState({
     street: "",
     city: "",
@@ -91,8 +90,6 @@ export function NavUser({
   const { loadingSubscriptions, subscriptionsData, plan } = useSubscriptions();
   const { plans, loadingPlans } = usePlans();
   const [step, setStep] = useState(0);
-  const router = useRouter()
-
   const handleSubmit = async () => {
     if (!address) return;
     if (!user?.email) return;
@@ -241,10 +238,13 @@ export function NavUser({
                 />
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
-              </div>
+              {user && (
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-medium">{user?.name}</span>
+                  <span className="truncate text-xs">{user.email}</span>
+                </div>
+              )}
+
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
@@ -254,19 +254,21 @@ export function NavUser({
             align="end"
             sideOffset={4}
           >
-            <DropdownMenuLabel className="p-0 font-normal">
+            <DropdownMenuLabel className="p-0 font-normal mb-4">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar||""} alt={user.name} />
+                  <AvatarImage src={user.avatar || ""} alt={user.name} />
                   <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                 </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
-                </div>
+                {user && (
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-medium">{user?.name}</span>
+                    <span className="truncate text-xs">{user?.email}</span>
+                  </div>
+                )}
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
+
             <DropdownMenuGroup>
               <DropdownMenuItem
                 onClick={async () => {
@@ -278,25 +280,20 @@ export function NavUser({
                 Upgrade to Pro
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
+
             <DropdownMenuGroup>
-              {/* <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem> */}
               <DropdownMenuItem onClick={customerPortal}>
                 <CreditCard />
                 Billing
               </DropdownMenuItem>
-              {/* <DropdownMenuItem>
-                <Bell />
-                Notifications
-              </DropdownMenuItem> */}
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={async () => {
-              await signOut();
-            }}>
+
+            <DropdownMenuItem
+              variant="destructive"
+              onClick={async () => {
+                await signOut();
+              }}
+            >
               <LogOut />
               Log out
             </DropdownMenuItem>
@@ -368,7 +365,10 @@ export function NavUser({
 
             <DialogFooter>
               <Button
-                onClick={() => setOpenDialog(false)}
+                onClick={() => {
+                  setStep(0);
+                  setOpenDialog(false);
+                }}
                 variant={"secondary"}
               >
                 Close

@@ -54,8 +54,7 @@ import { Button } from "@/components/ui/button";
 import { PageBreakNode } from "@/components/custom-extensions/page-break/node";
 import { toast } from "sonner";
 import { emailInputNode } from "@/components/custom-extensions/email/node";
-import { cn } from "@/lib/utils";
-import { useLandingStore } from "@/stores/useLandingStore";
+
 
 const suggestions = createSuggestionsItems([
   {
@@ -186,7 +185,56 @@ const suggestions = createSuggestionsItems([
   },
 
   {
-    title: "Phone Number",
+    title: "Email",
+    command: ({ editor, range }) => {
+      editor
+        ?.chain()
+        ?.focus()
+        ?.deleteRange(range)
+        ?.insertEmailInput({
+          id: v7(),
+          isRequired: true,
+          label: "Email",
+          placeholder: "user@planteform.com",
+          prefix: "https://",
+          type: "email",
+        })
+        .run();
+    },
+    description: "Add email field",
+    icon: (
+      <div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="size-5 fill-foreground"
+          viewBox="0 0 24 24"
+          fill="#fff"
+        >
+          <g clipPath="url(#clip0_4418_4516)">
+            <path
+              opacity="0.4"
+              d="M17 20.5H7C4 20.5 2 19 2 15.5V8.5C2 5 4 3.5 7 3.5H17C20 3.5 22 5 22 8.5V15.5C22 19 20 20.5 17 20.5Z"
+              fill="white"
+              style={{ fill: "var(--fillg)" }}
+            />
+            <path
+              d="M11.9998 12.87C11.1598 12.87 10.3098 12.61 9.65978 12.08L6.52978 9.57997C6.20978 9.31997 6.14978 8.84997 6.40978 8.52997C6.66978 8.20997 7.13978 8.14997 7.45978 8.40997L10.5898 10.91C11.3498 11.52 12.6398 11.52 13.3998 10.91L16.5298 8.40997C16.8498 8.14997 17.3298 8.19997 17.5798 8.52997C17.8398 8.84997 17.7898 9.32997 17.4598 9.57997L14.3298 12.08C13.6898 12.61 12.8398 12.87 11.9998 12.87Z"
+              fill="white"
+              style={{ fill: "var(--fillg)" }}
+            />
+          </g>
+          <defs>
+            <clipPath id="clip0_4418_4516">
+              <rect width="24" height="24" fill="white" />
+            </clipPath>
+          </defs>
+        </svg>
+      </div>
+    ),
+  },
+
+  {
+    title: "Phone",
     searchTerms: ["phone", "contact", "number", "mobile"],
     command: ({ editor, range }) => {
       editor
@@ -321,18 +369,8 @@ const suggestions = createSuggestionsItems([
           id,
           label: "Single Choice",
           type: "single",
-        })
-        .insertOption({
-          parentId: id,
-          id: "1",
-          label: "Option 1",
-          type: "single",
-        })
-        .insertOption({
-          parentId: id,
-          id: "2",
-          label: "Option 2",
-          type: "single",
+          isDropdown: false,
+          isRequired: true,
         })
         .run();
 
@@ -406,18 +444,8 @@ const suggestions = createSuggestionsItems([
           id,
           label: "Multiple Choice",
           type: "multiple",
-        })
-        .insertOption({
-          parentId: id,
-          id: "1",
-          label: "Option 1",
-          type: "multiple",
-        })
-        ?.insertOption({
-          parentId: id,
-          id: "2",
-          label: "Option 2",
-          type: "multiple",
+          isDropdown: false,
+          isRequired: true,
         })
         ?.run();
     },
@@ -467,224 +495,66 @@ const suggestions = createSuggestionsItems([
       </div>
     ),
   },
-  {
-    title: "Add page",
-    command: ({ editor, range }) => {
-      editor
-        ?.chain()
-        ?.focus()
-        ?.deleteRange(range)
-        .setHorizontalRule()
-        .insertLongInput({
-          id: v4(),
-          isRequired: true,
-          label: "Ask anything:",
-          placeholder: "Type anything here",
-          rows: 4,
-        })
-        .insertActionButton({ id: v4(), text: "submit", type: "submit" })
-        .run();
+  // {
+  //   title: "Add option",
+  //   command: ({ editor, range }) => {
+  //     const { from } = editor.state.selection;
+  //     const optionNodes = editor.$nodes("optionNode");
 
-      const actionBtns = editor.$nodes("actionButton");
-      actionBtns?.forEach((btn, i) => {
-        if (i === actionBtns.length - 1) {
-          return;
-        }
-        btn.content = "next";
-      });
-    },
-    description: "Add new page for multi-step forms",
-    icon: (
-      <div>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className=" size-5 fill-foreground"
-          viewBox="0 0 24 24"
-          fill="#fff"
-        >
-          <g clipPath="url(#clip0_4418_4830)">
-            <path
-              opacity="0.4"
-              d="M20.5 10.19H17.61C15.24 10.19 13.31 8.26 13.31 5.89V3C13.31 2.45 12.86 2 12.31 2H8.07C4.99 2 2.5 4 2.5 7.57V16.43C2.5 20 4.99 22 8.07 22H15.93C19.01 22 21.5 20 21.5 16.43V11.19C21.5 10.64 21.05 10.19 20.5 10.19Z"
-              fill="white"
-              style={{ fill: "var(--fillg)" }}
-            />
-            <path
-              d="M15.8002 2.21048C15.3902 1.80048 14.6802 2.08048 14.6802 2.65048V6.14048C14.6802 7.60048 15.9202 8.81048 17.4302 8.81048C18.3802 8.82048 19.7002 8.82048 20.8302 8.82048C21.4002 8.82048 21.7002 8.15048 21.3002 7.75048C19.8602 6.30048 17.2802 3.69048 15.8002 2.21048Z"
-              fill="white"
-              style={{ fill: "var(--fillg)" }}
-            />
-            <path
-              d="M12.2799 14.72C11.9899 14.43 11.5099 14.43 11.2199 14.72L10.4999 15.44V11.25C10.4999 10.84 10.1599 10.5 9.74994 10.5C9.33994 10.5 8.99994 10.84 8.99994 11.25V15.44L8.27994 14.72C7.98994 14.43 7.50994 14.43 7.21994 14.72C6.92994 15.01 6.92994 15.49 7.21994 15.78L9.21994 17.78C9.22994 17.79 9.23994 17.79 9.23994 17.8C9.29994 17.86 9.37994 17.91 9.45994 17.95C9.55994 17.98 9.64994 18 9.74994 18C9.84994 18 9.93994 17.98 10.0299 17.94C10.1199 17.9 10.1999 17.85 10.2799 17.78L12.2799 15.78C12.5699 15.49 12.5699 15.01 12.2799 14.72Z"
-              fill="white"
-              style={{ fill: "var(--fillg)" }}
-            />
-          </g>
-          <defs>
-            <clipPath id="clip0_4418_4830">
-              <rect width="24" height="24" fill="white" />
-            </clipPath>
-          </defs>
-        </svg>
-      </div>
-    ),
-    searchTerms: [
-      "add page",
-      "page",
-      "break",
-      "new page",
-      "multi-step",
-      "step",
-    ],
-  },
-  {
-    title: "Submit button",
-    command: ({ editor, range }) => {
-      editor
-        ?.chain()
-        ?.focus()
-        ?.deleteRange(range)
-        .insertActionButton({ id: v4(), text: "Submit", type: "submit" })
-        .run();
-    },
-    description: "Add Submit button",
-    icon: (
-      <div>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="size-5 fill-foreground"
-          viewBox="0 0 24 24"
-          fill="#fff"
-        >
-          <g clipPath="url(#clip0_4418_4947)">
-            <path
-              opacity="0.4"
-              d="M9.50978 4.23062L18.0698 8.51062C21.9098 10.4306 21.9098 13.5706 18.0698 15.4906L9.50978 19.7706C3.74978 22.6506 1.39978 20.2906 4.27978 14.5406L5.14978 12.8106C5.39978 12.3006 5.39978 11.7106 5.14978 11.2006L4.27978 9.46062C1.39978 3.71062 3.75978 1.35062 9.50978 4.23062Z"
-              fill="white"
-              style={{ fill: "var(--fillg)" }}
-            />
-            <path
-              d="M14.8399 12.75H9.43994C9.02994 12.75 8.68994 12.41 8.68994 12C8.68994 11.59 9.02994 11.25 9.43994 11.25H14.8399C15.2499 11.25 15.5899 11.59 15.5899 12C15.5899 12.41 15.2499 12.75 14.8399 12.75Z"
-              fill="white"
-              style={{ fill: "var(--fillg)" }}
-            />
-          </g>
-          <defs>
-            <clipPath id="clip0_4418_4947">
-              <rect width="24" height="24" fill="white" />
-            </clipPath>
-          </defs>
-        </svg>
-      </div>
-    ),
-    searchTerms: ["submit", "button", "action button"],
-  },
-  {
-    title: "Add image",
-    command: ({ editor, range }) => {
-      editor.chain().focus().addImage().run();
-    },
-    description: "Add images or brand assets in your form",
-    icon: (
-      <div>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className=" size-5 fill-foreground"
-          viewBox="0 0 24 24"
-          fill="#fff"
-        >
-          <g clipPath="url(#clip0_4418_4351)">
-            <path
-              d="M22.0001 13.8996V16.1896C22.0001 19.8296 19.8301 21.9996 16.1901 21.9996H7.81006C5.26006 21.9996 3.42006 20.9296 2.56006 19.0296L2.67006 18.9496L7.59006 15.6496C8.39006 15.1096 9.52006 15.1696 10.2301 15.7896L10.5701 16.0696C11.3501 16.7396 12.6101 16.7396 13.3901 16.0696L17.5501 12.4996C18.3301 11.8296 19.5901 11.8296 20.3701 12.4996L22.0001 13.8996Z"
-              fill="white"
-              style={{ fill: "var(--fillg)" }}
-            />
-            <path
-              opacity="0.4"
-              d="M20.97 8H18.03C16.76 8 16 7.24 16 5.97V3.03C16 2.63 16.08 2.29 16.22 2C16.21 2 16.2 2 16.19 2H7.81C4.17 2 2 4.17 2 7.81V16.19C2 17.28 2.19 18.23 2.56 19.03L2.67 18.95L7.59 15.65C8.39 15.11 9.52 15.17 10.23 15.79L10.57 16.07C11.35 16.74 12.61 16.74 13.39 16.07L17.55 12.5C18.33 11.83 19.59 11.83 20.37 12.5L22 13.9V7.81C22 7.8 22 7.79 22 7.78C21.71 7.92 21.37 8 20.97 8Z"
-              fill="white"
-              style={{ fill: "var(--fillg)" }}
-            />
-            <path
-              d="M9.00012 10.3801C10.3146 10.3801 11.3801 9.31456 11.3801 8.00012C11.3801 6.68568 10.3146 5.62012 9.00012 5.62012C7.68568 5.62012 6.62012 6.68568 6.62012 8.00012C6.62012 9.31456 7.68568 10.3801 9.00012 10.3801Z"
-              fill="white"
-              style={{ fill: "var(--fillg)" }}
-            />
-            <path
-              d="M20.97 1H18.03C16.76 1 16 1.76 16 3.03V5.97C16 7.24 16.76 8 18.03 8H20.97C22.24 8 23 7.24 23 5.97V3.03C23 1.76 22.24 1 20.97 1ZM21.91 4.93C21.81 5.03 21.66 5.1 21.5 5.11H20.09L20.1 6.5C20.09 6.67 20.03 6.81 19.91 6.93C19.81 7.03 19.66 7.1 19.5 7.1C19.17 7.1 18.9 6.83 18.9 6.5V5.1L17.5 5.11C17.17 5.11 16.9 4.83 16.9 4.5C16.9 4.17 17.17 3.9 17.5 3.9L18.9 3.91V2.51C18.9 2.18 19.17 1.9 19.5 1.9C19.83 1.9 20.1 2.18 20.1 2.51L20.09 3.9H21.5C21.83 3.9 22.1 4.17 22.1 4.5C22.09 4.67 22.02 4.81 21.91 4.93Z"
-              fill="white"
-              style={{ fill: "var(--fillg)" }}
-            />
-          </g>
-          <defs>
-            <clipPath id="clip0_4418_4351">
-              <rect width="24" height="24" fill="white" />
-            </clipPath>
-          </defs>
-        </svg>
-      </div>
-    ),
-    searchTerms: ["image", "assets", "brand"],
-  },
-  {
-    title: "Add option",
-    command: ({ editor, range }) => {
-      const { from } = editor.state.selection;
-      const optionNodes = editor.$nodes("optionNode");
+  //     // Filter nodes that are before or contain the cursor, get the last one
+  //     if (optionNodes) {
+  //       const closestNode = optionNodes
+  //         .filter(({ pos, node }) => pos <= from)
+  //         .sort((a, b) => b.pos - a.pos)[0];
 
-      // Filter nodes that are before or contain the cursor, get the last one
-      if (optionNodes) {
-        const closestNode = optionNodes
-          .filter(({ pos, node }) => pos <= from)
-          .sort((a, b) => b.pos - a.pos)[0];
+  //       const { parentId, type, id } = closestNode?.node.attrs as Ioptions;
+  //       const option = Number(id || "1");
+  //       editor
+  //         .chain()
+  //         .focus()
+  //         .deleteRange(range)
+  //         .insertOption({
+  //           id: `${option + 1}`,
+  //           label: "option" + `${option + 1}`,
+  //           parentId,
+  //           type,
+  //         })
+  //         .run();
+  //       console.log(closestNode?.node.attrs);
+  //     }
+  //   },
+  //   description: "Add new option for multiple choice or single choice",
+  //   icon: (
+  //     <div>
+  //       <svg
+  //         xmlns="http://www.w3.org/2000/svg"
+  //         className=" size-5 fill-foreground"
+  //         viewBox="0 0 24 24"
+  //         fill="#fff"
+  //       >
+  //         <g clipPath="url(#clip0_4418_4944)">
+  //           <path
+  //             opacity="0.4"
+  //             d="M16.19 2H7.81C4.17 2 2 4.17 2 7.81V16.18C2 19.83 4.17 22 7.81 22H16.18C19.82 22 21.99 19.83 21.99 16.19V7.81C22 4.17 19.83 2 16.19 2Z"
+  //             fill="white"
+  //             style={{ fill: "var(--fillg)" }}
+  //           />
+  //           <path
+  //             d="M16 11.25H12.75V8C12.75 7.59 12.41 7.25 12 7.25C11.59 7.25 11.25 7.59 11.25 8V11.25H8C7.59 11.25 7.25 11.59 7.25 12C7.25 12.41 7.59 12.75 8 12.75H11.25V16C11.25 16.41 11.59 16.75 12 16.75C12.41 16.75 12.75 16.41 12.75 16V12.75H16C16.41 12.75 16.75 12.41 16.75 12C16.75 11.59 16.41 11.25 16 11.25Z"
+  //             fill="white"
+  //             style={{ fill: "var(--fillg)" }}
+  //           />
+  //         </g>
+  //         <defs>
+  //           <clipPath id="clip0_4418_4944">
+  //             <rect width="24" height="24" fill="white" />
+  //           </clipPath>
+  //         </defs>
+  //       </svg>
+  //     </div>
+  //   ),
+  // },
 
-        const { parentId, type, id } = closestNode?.node.attrs as Ioptions;
-        const option = Number(id || "1");
-        editor
-          .chain()
-          .focus()
-          .deleteRange(range)
-          .insertOption({
-            id: `${option + 1}`,
-            label: "option" + `${option + 1}`,
-            parentId,
-            type,
-          })
-          .run();
-        console.log(closestNode?.node.attrs);
-      }
-    },
-    description: "Add new option for multiple choice or single choice",
-    icon: (
-      <div>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className=" size-5 fill-foreground"
-          viewBox="0 0 24 24"
-          fill="#fff"
-        >
-          <g clipPath="url(#clip0_4418_4944)">
-            <path
-              opacity="0.4"
-              d="M16.19 2H7.81C4.17 2 2 4.17 2 7.81V16.18C2 19.83 4.17 22 7.81 22H16.18C19.82 22 21.99 19.83 21.99 16.19V7.81C22 4.17 19.83 2 16.19 2Z"
-              fill="white"
-              style={{ fill: "var(--fillg)" }}
-            />
-            <path
-              d="M16 11.25H12.75V8C12.75 7.59 12.41 7.25 12 7.25C11.59 7.25 11.25 7.59 11.25 8V11.25H8C7.59 11.25 7.25 11.59 7.25 12C7.25 12.41 7.59 12.75 8 12.75H11.25V16C11.25 16.41 11.59 16.75 12 16.75C12.41 16.75 12.75 16.41 12.75 16V12.75H16C16.41 12.75 16.75 12.41 16.75 12C16.75 11.59 16.41 11.25 16 11.25Z"
-              fill="white"
-              style={{ fill: "var(--fillg)" }}
-            />
-          </g>
-          <defs>
-            <clipPath id="clip0_4418_4944">
-              <rect width="24" height="24" fill="white" />
-            </clipPath>
-          </defs>
-        </svg>
-      </div>
-    ),
-  },
   {
     title: "File Upload",
     command: ({ editor, range }) => {
@@ -741,111 +611,115 @@ const suggestions = createSuggestionsItems([
     searchTerms: ["file upload", "upload", "file", "attachment"],
   },
   {
-    title: "Thank-you page",
-    command: ({ editor, range }) => {
-      const existings = editor?.$node("pageBreak");
-      if (existings?.pos) {
-        toast("you can have only one thankyou - page");
-        return;
-      }
-
-      editor
-        ?.chain()
-        ?.focus()
-        ?.deleteRange(range)
-        ?.insertPageBreak({ isThankyouPage: true })
-        ?.run();
-    },
-    description: "Add a custom thankyou page",
-    icon: (
-      <div>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="size-5 fill-foreground"
-          viewBox="0 0 24 24"
-          // fill="#121212"
-        >
-          <g clipPath="url(#clip0_3261_13092)">
-            <path
-              opacity="0.4"
-              d="M17.69 4.30995V12.32L12.54 15.89L11.35 16.25L10.45 16.05L5.01001 12.32V4.30995C5.01001 2.72995 6.28001 1.44995 7.86001 1.44995H14.84C16.42 1.44995 17.69 2.72995 17.69 4.30995Z"
-              fill="white"
-              style={{ fill: "var(--fillg)" }}
-            />
-            <path
-              d="M14.5101 7.57993C14.5101 9.44993 11.4001 10.9699 11.3501 10.9699C11.2901 10.9699 8.18005 9.44993 8.18005 7.57993C8.18005 6.66993 8.93005 5.67993 10.0401 5.67993C10.6801 5.67993 11.1001 5.96993 11.3501 6.23993C11.5901 5.96993 12.0101 5.67993 12.6501 5.67993C13.7701 5.67993 14.5101 6.65993 14.5101 7.57993Z"
-              fill="white"
-              style={{ fill: "var(--fillg)" }}
-            />
-            <path
-              d="M22.88 19.0699C22.88 19.1399 22.84 19.2999 22.65 19.3599L21.67 19.6299C20.82 19.8599 20.18 20.4999 19.95 21.3499L19.69 22.3099C19.63 22.5299 19.46 22.5499 19.38 22.5499C19.3 22.5499 19.13 22.5299 19.07 22.3099L18.81 21.3399C18.58 20.4999 17.93 19.8599 17.09 19.6299L16.12 19.3699C15.91 19.3099 15.89 19.1299 15.89 19.0599C15.89 18.9799 15.91 18.7999 16.12 18.7399L17.1 18.4799C17.94 18.2399 18.58 17.5999 18.81 16.7599L19.09 15.7399C19.16 15.5699 19.32 15.5399 19.38 15.5399C19.44 15.5399 19.61 15.5599 19.67 15.7199L19.95 16.7499C20.18 17.5899 20.83 18.2299 21.67 18.4699L22.67 18.7499C22.87 18.8299 22.88 19.0099 22.88 19.0699Z"
-              fill="white"
-              style={{ fill: "var(--fillg)" }}
-            />
-            <path
-              d="M21.58 9.80994V17.3899C21.25 17.1999 20.99 16.8899 20.9 16.5099L20.59 15.3899C20.4 14.8899 19.96 14.5499 19.39 14.5499C18.84 14.5499 18.35 14.8799 18.17 15.3799L18.1 15.5499L17.85 16.4999C17.71 16.9999 17.34 17.3699 16.83 17.5199L15.86 17.7699C15.27 17.9399 14.89 18.4399 14.89 19.0499C14.89 19.6599 15.28 20.1599 15.85 20.3199L16.83 20.5899C17.18 20.6799 17.46 20.9099 17.65 21.1999H2.89C1.91 21.1999 1.12 20.3899 1.12 19.3999C1.12 19.3999 1.13 9.59994 1.13 9.56994C1.16 9.11994 1.35 8.68994 1.69 8.37994L5.01 5.30994V7.25994L2.66 9.42994C2.55 9.52994 2.54 9.63994 2.55 9.69994C2.55 9.76994 2.58 9.88994 2.7 9.96994L5.01 11.5299L10.57 15.2999C10.77 15.4399 11.02 15.5199 11.27 15.5399C11.57 15.5599 11.89 15.4699 12.15 15.2999L17.69 11.5399L20.01 9.96994C20.13 9.88994 20.15 9.76994 20.16 9.70994C20.16 9.64994 20.16 9.52994 20.05 9.43994L17.69 7.29994V5.37994C17.69 5.37994 17.73 5.39994 17.75 5.41994L21 8.37994C21.41 8.73994 21.62 9.25994 21.58 9.80994Z"
-              fill="white"
-              style={{ fill: "var(--fillg)" }}
-            />
-          </g>
-          <defs>
-            <clipPath id="clip0_3261_13092">
-              <rect width="24" height="24" fill="white" />
-            </clipPath>
-          </defs>
-        </svg>
-      </div>
-    ),
-  },
-  {
-    title: "Email",
+    title: "Add page",
     command: ({ editor, range }) => {
       editor
         ?.chain()
         ?.focus()
         ?.deleteRange(range)
-        ?.insertEmailInput({
+        .setHorizontalRule()
+        .insertContent("<h2>New Page</h2>")
+        .insertContent("<p> </p>")
+        .insertLongInput({
           id: v7(),
           isRequired: true,
-          label: "Email",
-          placeholder: "user@planteform.com",
-          prefix: "https://",
-          type: "email",
+          label: "Ask anything:",
+          placeholder: "Type anything here",
+          rows: 4,
         })
         .run();
     },
-    description: "Add email field",
+    description: "Add new page for multi-step forms",
     icon: (
       <div>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="size-5 fill-foreground"
+          className=" size-5 fill-foreground"
           viewBox="0 0 24 24"
           fill="#fff"
         >
-          <g clipPath="url(#clip0_4418_4516)">
+          <g clipPath="url(#clip0_4418_4830)">
             <path
               opacity="0.4"
-              d="M17 20.5H7C4 20.5 2 19 2 15.5V8.5C2 5 4 3.5 7 3.5H17C20 3.5 22 5 22 8.5V15.5C22 19 20 20.5 17 20.5Z"
+              d="M20.5 10.19H17.61C15.24 10.19 13.31 8.26 13.31 5.89V3C13.31 2.45 12.86 2 12.31 2H8.07C4.99 2 2.5 4 2.5 7.57V16.43C2.5 20 4.99 22 8.07 22H15.93C19.01 22 21.5 20 21.5 16.43V11.19C21.5 10.64 21.05 10.19 20.5 10.19Z"
               fill="white"
               style={{ fill: "var(--fillg)" }}
             />
             <path
-              d="M11.9998 12.87C11.1598 12.87 10.3098 12.61 9.65978 12.08L6.52978 9.57997C6.20978 9.31997 6.14978 8.84997 6.40978 8.52997C6.66978 8.20997 7.13978 8.14997 7.45978 8.40997L10.5898 10.91C11.3498 11.52 12.6398 11.52 13.3998 10.91L16.5298 8.40997C16.8498 8.14997 17.3298 8.19997 17.5798 8.52997C17.8398 8.84997 17.7898 9.32997 17.4598 9.57997L14.3298 12.08C13.6898 12.61 12.8398 12.87 11.9998 12.87Z"
+              d="M15.8002 2.21048C15.3902 1.80048 14.6802 2.08048 14.6802 2.65048V6.14048C14.6802 7.60048 15.9202 8.81048 17.4302 8.81048C18.3802 8.82048 19.7002 8.82048 20.8302 8.82048C21.4002 8.82048 21.7002 8.15048 21.3002 7.75048C19.8602 6.30048 17.2802 3.69048 15.8002 2.21048Z"
+              fill="white"
+              style={{ fill: "var(--fillg)" }}
+            />
+            <path
+              d="M12.2799 14.72C11.9899 14.43 11.5099 14.43 11.2199 14.72L10.4999 15.44V11.25C10.4999 10.84 10.1599 10.5 9.74994 10.5C9.33994 10.5 8.99994 10.84 8.99994 11.25V15.44L8.27994 14.72C7.98994 14.43 7.50994 14.43 7.21994 14.72C6.92994 15.01 6.92994 15.49 7.21994 15.78L9.21994 17.78C9.22994 17.79 9.23994 17.79 9.23994 17.8C9.29994 17.86 9.37994 17.91 9.45994 17.95C9.55994 17.98 9.64994 18 9.74994 18C9.84994 18 9.93994 17.98 10.0299 17.94C10.1199 17.9 10.1999 17.85 10.2799 17.78L12.2799 15.78C12.5699 15.49 12.5699 15.01 12.2799 14.72Z"
               fill="white"
               style={{ fill: "var(--fillg)" }}
             />
           </g>
           <defs>
-            <clipPath id="clip0_4418_4516">
+            <clipPath id="clip0_4418_4830">
               <rect width="24" height="24" fill="white" />
             </clipPath>
           </defs>
         </svg>
       </div>
     ),
+    searchTerms: [
+      "add page",
+      "page",
+      "break",
+      "new page",
+      "multi-step",
+      "step",
+    ],
   },
-  
+  {
+    title: "Add image",
+    command: ({ editor, range }) => {
+      editor.chain().focus().addImage().run();
+    },
+    description: "Add images or brand assets in your form",
+    icon: (
+      <div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className=" size-5 fill-foreground"
+          viewBox="0 0 24 24"
+          fill="#fff"
+        >
+          <g clipPath="url(#clip0_4418_4351)">
+            <path
+              d="M22.0001 13.8996V16.1896C22.0001 19.8296 19.8301 21.9996 16.1901 21.9996H7.81006C5.26006 21.9996 3.42006 20.9296 2.56006 19.0296L2.67006 18.9496L7.59006 15.6496C8.39006 15.1096 9.52006 15.1696 10.2301 15.7896L10.5701 16.0696C11.3501 16.7396 12.6101 16.7396 13.3901 16.0696L17.5501 12.4996C18.3301 11.8296 19.5901 11.8296 20.3701 12.4996L22.0001 13.8996Z"
+              fill="white"
+              style={{ fill: "var(--fillg)" }}
+            />
+            <path
+              opacity="0.4"
+              d="M20.97 8H18.03C16.76 8 16 7.24 16 5.97V3.03C16 2.63 16.08 2.29 16.22 2C16.21 2 16.2 2 16.19 2H7.81C4.17 2 2 4.17 2 7.81V16.19C2 17.28 2.19 18.23 2.56 19.03L2.67 18.95L7.59 15.65C8.39 15.11 9.52 15.17 10.23 15.79L10.57 16.07C11.35 16.74 12.61 16.74 13.39 16.07L17.55 12.5C18.33 11.83 19.59 11.83 20.37 12.5L22 13.9V7.81C22 7.8 22 7.79 22 7.78C21.71 7.92 21.37 8 20.97 8Z"
+              fill="white"
+              style={{ fill: "var(--fillg)" }}
+            />
+            <path
+              d="M9.00012 10.3801C10.3146 10.3801 11.3801 9.31456 11.3801 8.00012C11.3801 6.68568 10.3146 5.62012 9.00012 5.62012C7.68568 5.62012 6.62012 6.68568 6.62012 8.00012C6.62012 9.31456 7.68568 10.3801 9.00012 10.3801Z"
+              fill="white"
+              style={{ fill: "var(--fillg)" }}
+            />
+            <path
+              d="M20.97 1H18.03C16.76 1 16 1.76 16 3.03V5.97C16 7.24 16.76 8 18.03 8H20.97C22.24 8 23 7.24 23 5.97V3.03C23 1.76 22.24 1 20.97 1ZM21.91 4.93C21.81 5.03 21.66 5.1 21.5 5.11H20.09L20.1 6.5C20.09 6.67 20.03 6.81 19.91 6.93C19.81 7.03 19.66 7.1 19.5 7.1C19.17 7.1 18.9 6.83 18.9 6.5V5.1L17.5 5.11C17.17 5.11 16.9 4.83 16.9 4.5C16.9 4.17 17.17 3.9 17.5 3.9L18.9 3.91V2.51C18.9 2.18 19.17 1.9 19.5 1.9C19.83 1.9 20.1 2.18 20.1 2.51L20.09 3.9H21.5C21.83 3.9 22.1 4.17 22.1 4.5C22.09 4.67 22.02 4.81 21.91 4.93Z"
+              fill="white"
+              style={{ fill: "var(--fillg)" }}
+            />
+          </g>
+          <defs>
+            <clipPath id="clip0_4418_4351">
+              <rect width="24" height="24" fill="white" />
+            </clipPath>
+          </defs>
+        </svg>
+      </div>
+    ),
+    searchTerms: ["image", "assets", "brand"],
+  },
 ]);
 
 export function SimpleEditor({
@@ -859,14 +733,23 @@ export function SimpleEditor({
   const pathName = usePathname();
 
   const editorContentRef = React.useRef<HTMLDivElement>(null);
-  const { isLastStep, activeStep, maxStep, handleSubmit, getHookForm } =
+  const { activeStep, maxStep, handleSubmit, getHookForm, isLastStep } =
     useFormStore((s) => s);
-  const { formBackgroundColor, formFontFamliy, formFontSize } =
-    useEditorStore((s) => s);
+  const {
+    formBackgroundColor,
+    formFontFamliy,
+    formFontSize,
+    formTextColor,
+    inputBackgroundColor,
+    inputBorderColor,
+    actionBtnColor,
+    actionBtnBorderColor,
+    actionBtnSize,
+    actionBtnTextColor,
+  } = useEditorStore((s) => s);
 
   // form init
-  const form = getHookForm();
-
+  const form = useFormStore.getState().getHookForm()
   const uploadFn = async (file: File) => {
     const fileName = file?.name;
     let url = URL.createObjectURL(file);
@@ -889,7 +772,7 @@ export function SimpleEditor({
         autocorrect: "off",
         autocapitalize: "on",
         "aria-label": "Main content area, start typing to enter text.",
-        class: `${isEditable && "pb-30"} flex-1 md:px-12 pt-4`,
+        class: `flex-1 pt-4`,
       },
       handleDOMEvents: {
         keydown: (_, v) => enableKeyboardNavigation(v),
@@ -951,7 +834,6 @@ export function SimpleEditor({
       Focus.configure({
         className: "has-focus",
         mode: "all",
-
       }),
       TextStyle,
       FontFamily,
@@ -963,10 +845,10 @@ export function SimpleEditor({
         uploadFn: uploadFn,
       }),
     ],
-    // autofocus: true,
     editable: isEditable,
     content: content,
     onUpdate(props) {
+      if (!isEditable) return;
       if (pathName?.includes("/form/edit")) {
         return;
       }
@@ -974,7 +856,6 @@ export function SimpleEditor({
         useEditorStore.setState({ editedContent: props.editor.getJSON() });
       }, 1000);
     },
-
   });
 
   const handleActiveIndex = (idx: number) => {
@@ -983,10 +864,10 @@ export function SimpleEditor({
       index = 0;
     }
     if (index > maxStep) {
-      index = maxStep;
-    }
-
-    if (useFormStore.getState().isLastStep) {
+      index = maxStep + 1;
+      useFormStore.setState({
+        activeStep: index,
+      });
       return;
     }
 
@@ -997,7 +878,6 @@ export function SimpleEditor({
   };
 
   const handleOnSubmit = async (values: FieldValues) => {
-    handleActiveIndex(activeStep + 1);
     const isSubmitted = await handleSubmit({
       values,
       formId: formId as string,
@@ -1005,17 +885,19 @@ export function SimpleEditor({
       isEdit: pathName.includes("/form/edit/"),
     });
 
-    if (useFormStore.getState().isLastStep && isSubmitted) {
-      // router.push(`/thank-you`);
-      useFormStore.setState({ activeStep: activeStep + 1 });
-      form?.reset();
-      return;
+    if (isLastStep && isSubmitted) {
+      handleActiveIndex(activeStep + 1);
+      return form?.reset();
     }
+
+    handleActiveIndex(activeStep + 1);
   };
 
   React.useEffect(() => {
     useEditorStore.setState({ editor: editor });
   }, [editor]);
+
+ 
 
   if (!editor) {
     return null;
@@ -1023,12 +905,14 @@ export function SimpleEditor({
 
   return (
     <div
-      className={cn(
-        `w-full simple-editor-wrapper selection:bg-blue-200/40 dark:selection:bg-blue-700/40 relative`
-      )}
-      style={{
-        backgroundColor: formBackgroundColor || undefined,
-      }}
+      className={`w-full simple-editor-wrapper selection:bg-blue-200/40 dark:selection:bg-blue-700/40 relative pb-4`}
+      style={
+        {
+          backgroundColor: formBackgroundColor || undefined,
+          color: formTextColor || undefined,
+          "--input": inputBackgroundColor || undefined,
+        } as React.CSSProperties & Record<string, string>
+      }
     >
       <EditorContext.Provider value={{ editor }}>
         {isEditable && <TiptapToolBar editor={editor} />}
@@ -1037,11 +921,14 @@ export function SimpleEditor({
           <form
             onSubmit={form?.handleSubmit?.(handleOnSubmit)}
             className={`w-full h-full px-2 `}
-            style={{
-              fontFamily: formFontFamliy || undefined,
-              fontSize: formFontSize || undefined,
-              // maxWidth: isEditable ? "var(--container-3xl)":undefined,
-            }}
+            style={
+              {
+                fontFamily: formFontFamliy || undefined,
+                fontSize: formFontSize || undefined,
+                // "--color-input": inputBackgroundColor || undefined,
+              } as React.CSSProperties & Record<string, string>
+            }
+            // noValidate
           >
             {isEditable && <EditorDragHandle editor={editor} />}
 
@@ -1050,8 +937,8 @@ export function SimpleEditor({
                 <EditorContent
                   editor={editor}
                   role="presentation"
-                  className={`w-full h-full flex flex-col mx-auto  sm:px-4 sm:mt-0  px-2 mt-16 pb-10  relative ${
-                    isEditable && "max-w-3xl mx-auto"
+                  className={`w-full h-full flex flex-col mx-auto px-1 sm:mt-0  mt-16   relative ${
+                    isEditable && "max-w-3xl mx-auto pb-4"
                   }`}
                   ref={editorContentRef}
                 />
@@ -1062,7 +949,7 @@ export function SimpleEditor({
                       No commands available
                     </SlashCmd.Empty>
                     <ScrollArea className="h-[200px] w-full">
-                      <SlashCmd.List className=" w-full grid gap-5 px-2 py-1 rounded-md ">
+                      <SlashCmd.List className=" w-full grid gap-5 px-2 py-1 rounded-md font-sans font-medium tracking-tighter">
                         {suggestions?.map?.((item) => {
                           // if (!item || !item.title) return null;
                           return (
@@ -1075,15 +962,14 @@ export function SimpleEditor({
                               className=" flex gap-2 my-1 items-center justify-start pr-2 dark:hover:bg-accent/30 hover:bg-accent/30 hover:backdrop-blur-lg rounded-md dark:border-border/40 "
                             >
                               <Button
-                                className=""
-                                variant={"ghost"}
-                                size={"sm"}
+                                className=" shadow-none"
+                                variant={"outline"}
+                                size={"icon"}
                               >
                                 {item.icon}
+                                {/* <span className="">{item.icon}</span> */}
                               </Button>
-                              <p className="text-sm font-medium py-2">
-                                {item.title}
-                              </p>
+                              <p className="text-sm  py-2">{item.title}</p>
                             </SlashCmd.Item>
                           );
                         })}
@@ -1103,6 +989,21 @@ export function SimpleEditor({
                 ref={editorContentRef}
               />
             )}
+            <div className={`${isEditable && "max-w-3xl"} mx-auto px-[0.5rem]`}>
+              <Button
+                style={
+                  {
+                    backgroundColor: actionBtnColor || undefined,
+                    "--tw-ring-color": actionBtnBorderColor || actionBtnColor,
+                    color: actionBtnTextColor || undefined,
+                  } as React.CSSProperties & Record<`--tw-ring-color`, string>
+                }
+                type="submit"
+                size={"lg"}
+              >
+                Submit
+              </Button>
+            </div>
           </form>
         </Form>
       </EditorContext.Provider>

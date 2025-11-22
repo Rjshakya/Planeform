@@ -6,6 +6,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { useFormStore } from "@/stores/useformStore";
 // import FileUploadComp from "@/components/comp-547";
@@ -516,6 +517,7 @@ export const FileUploadInputView = (props: NodeViewProps) => {
                 )}
               </div>
             </FormControl>
+            <FormMessage/>
           </FormItem>
         )}
       />

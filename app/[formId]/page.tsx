@@ -5,7 +5,7 @@ import { ThemeToggle } from "@/components/tiptap-main/simple/theme-toggle";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Button } from "@/components/ui/button";
 import { useFormStore } from "@/stores/useformStore";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { apiClient } from "@/lib/axios";
 import { useParams } from "next/navigation";
@@ -18,10 +18,11 @@ import {
   IeditorStore,
   useEditorStore,
 } from "@/stores/useEditorStore";
+import { zodResolver } from "@hookform/resolvers/zod";
+import z, { ZodObject } from "zod";
 
 const fetcher = (url: string) => apiClient.get(url);
 export default function Page() {
-  const form = useForm({});
   const { formId } = useParams();
   const { data, isLoading, error } = useSWR(`/api/form/${formId}`, fetcher);
   const [docs, setDocs] = useState<JsonDoc[]>([]);
@@ -31,9 +32,28 @@ export default function Page() {
     closedMessage: "The form is closed",
   });
 
-  const handleCreateRespondent = async (formId: string, customerId: string) => {
+  // const [schemaConfig, setSchemaConfig] = useState<{
+  //   schema: Record<string, any>;
+  //   defaults: Record<string, any>;
+  // }>({
+  //   schema: {},
+  //   defaults: {},
+  // });
 
-    if(useFormStore.getState().respondentId)return;
+  // const zodSchema = useMemo(() => {
+  //   if (Object.keys(schemaConfig.schema).length === 0) {
+  //     return z.object({});
+  //   }
+  //   return z.object(schemaConfig.schema);
+  // }, [schemaConfig.schema]);
+
+  const form = useForm<Record<string, any>>({
+    // resolver: zodResolver(zodSchema) as any,
+    // defaultValues: schemaConfig.defaults,
+  });
+
+  const handleCreateRespondent = async (formId: string, customerId: string) => {
+    if (useFormStore.getState().respondentId) return;
 
     const resp = await apiClient.post(`/api/respondent`, {
       form: formId,
@@ -45,21 +65,19 @@ export default function Page() {
   };
 
   useEffect(() => {
-    useFormStore.setState({ activeStep: 0, form: form });
-  }, [form]);
-
-  useEffect(() => {
     if (!data) return;
     const formData = data.data?.form;
     const closed = formData?.closed;
-    const closedMessage = formData?.closedMessage
+    const closedMessage = formData?.closedMessage;
     const form_schema = formData?.form_schema;
     const creator = formData?.creator;
     const customerId = formData?.customerId;
     const customisation = formData?.customisation as Icustomisation;
+    const zSchema = {} as Record<string, any>;
+    const defaultValues = {} as Record<string, any>;
 
     if (closed) {
-      setClosed({ ...closedState, isClosed: closed  , closedMessage});
+      setClosed({ ...closedState, isClosed: closed, closedMessage });
       return;
     }
 
@@ -67,18 +85,42 @@ export default function Page() {
       setDocs([]);
       return;
     }
-
-    const thankyouPage = [...form_schema?.content]?.find(
-      (c) => c.type === "pageBreak"
-    );
-    const content = [...form_schema?.content].filter(
-      (c) => c?.type !== "pageBreak"
-    );
+    const content = [...form_schema?.content];
     const breakIndices: number[] = [0];
 
     content?.forEach((node, i) => {
       if (node.type === "horizontalRule") {
         breakIndices.push(i);
+      }
+      if (
+        node?.type?.includes("Input") &&
+        node?.type !== "multipleChoiceInput"
+      ) {
+        defaultValues[node?.attrs?.id] = " ";
+        if (node?.attrs?.isRequired) {
+          zSchema[node?.attrs?.id] = z
+            .string()
+            .nonempty({ error: "field is required" });
+        }
+      }
+
+      if (node?.type === "multipleChoiceInput") {
+        if (node?.attrs?.type === "single") {
+          defaultValues[node?.attrs?.id] = "";
+
+          if (node?.attrs?.isRequired) {
+            zSchema[node?.attrs?.id] = z
+              .string()
+              .min(1, { message: "field is required" });
+          }
+        }
+
+        if (node?.attrs?.type !== "single") {
+          defaultValues[node?.attrs?.id] = [];
+          if (node?.attrs?.isRequired) {
+            zSchema[node?.attrs?.id] = z.array(z.string());
+          }
+        }
       }
     });
 
@@ -95,13 +137,11 @@ export default function Page() {
       }
     }
 
-    if (thankyouPage) {
-      parsedDocs.push({ type: "doc", content: [thankyouPage] });
-    } else {
-      parsedDocs.push({ type: "doc", content: [thankyouPageContent] });
-    }
-
     setDocs(parsedDocs);
+    // setSchemaConfig({
+    //   schema: zSchema,
+    //   defaults: defaultValues,
+    // });
 
     if (parsedDocs?.length === 1) {
       useFormStore.setState({
@@ -110,6 +150,8 @@ export default function Page() {
         customerId: customerId,
         isLastStep: true,
         maxStep: parsedDocs?.length - 1,
+        activeStep: 0,
+        form,
       });
     } else {
       useFormStore.setState({
@@ -118,6 +160,8 @@ export default function Page() {
         customerId: customerId,
         isLastStep: false,
         maxStep: parsedDocs?.length - 1,
+        activeStep: 0,
+        form,
       });
     }
     useEditorStore.setState({ ...customisation });
@@ -153,9 +197,13 @@ export default function Page() {
           ` max-w-6xl w-full mx-auto px-2 min-h-screen flex items-center justify-center relative`
         )}
       >
-        {closedState.isClosed ? <div className="w-full text-center">
-          <p>{closedState.closedMessage}</p>
-        </div> : <RenderForm docs={docs} />}
+        {closedState.isClosed ? (
+          <div className="w-full text-center">
+            <p>{closedState.closedMessage}</p>
+          </div>
+        ) : (
+          <>{<RenderForm docs={docs} />}</>
+        )}
       </div>
     </section>
   );
