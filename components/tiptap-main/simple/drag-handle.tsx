@@ -65,8 +65,11 @@ export const EditorDragHandle = memo(function Dragcomp({
         ></div>
         <Popover open={openPopover} onOpenChange={setOpenPopover}>
           {currentNode && (
-            <PopoverTrigger className=" cursor-pointer">
-              <GripVertical size={16} />
+            <PopoverTrigger asChild className=" cursor-pointer">
+              <div className="flex items-center gap-2">
+                <GripVertical size={16} />
+                {/* <Button type="button" className="" size={"icon"} variant={"ghost"}>d</Button> */}
+              </div>
             </PopoverTrigger>
           )}
 
@@ -149,56 +152,36 @@ export const EditorDragHandle = memo(function Dragcomp({
                       </div>
                     );
                   }
-                })}
-              {isInputNode &&
-                currentNode &&
-                currentNode?.type?.name === "multipleChoiceInput" && (
-                  <div className="flex items-center justify-between gap-2 w-full px-1">
-                    <Label className="pl-1">{"Add Option"}</Label>
-                    <div className="">
-                      <Button
-                        onClick={() => {
-                          if (!editor) return;
-                          const { from } = editor?.state.selection;
-                          const optionNodes = editor.$nodes("optionNode");
-
-                          // Filter nodes that are before or contain the cursor, get the last one
-                          if (optionNodes) {
-                            const closestNode = optionNodes
-                              .filter(({ pos, node }) => pos <= from)
-                              .sort((a, b) => b.pos - a.pos)[0];
-
-                            if (!closestNode?.node) return;
-
-                            const {
-                              parentId = "parent",
-                              type,
-                              id,
-                            } = closestNode?.node.attrs as Ioptions;
-                            const option = Number(id || "1");
-                            editor
-                              .chain()
-                              .focus()
-                              .insertOption({
-                                id: `${option + 1}`,
-                                label: "option" + `${option + 1}`,
-                                parentId,
-                                type,
-                              })
-                              .run();
-                            console.log(closestNode?.node.attrs);
-                          }
-                        }}
-                        variant={"ghost"}
-                        size={"icon"}
-                        className="size-6"
+                  if (o?.[0] === "isDropdown") {
+                    return (
+                      <div
+                        key={i}
+                        className="flex items-center justify-between gap-2 w-full px-1.5"
                       >
-                        <Plus />
-                        {/* {currentNode?.attrs["type"]} */}
-                      </Button>
-                    </div>
-                  </div>
-                )}
+                        <Label htmlFor="requiredCheck" className=" ">
+                          {"Dropdown"}
+                        </Label>
+                        <div className="">
+                          <Switch
+                            id="requiredCheck"
+                            className=""
+                            defaultChecked={o[1]}
+                            onCheckedChange={(e) => {
+                              const checked = e;
+                              editor
+                                ?.chain()
+                                ?.setNodeSelection(nodePosition!)
+                                ?.updateAttributes(currentNode?.type?.name, {
+                                  [o[0]]: checked,
+                                })
+                                .run();
+                            }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  }
+                })}
 
               {currentNode && (
                 <div className="flex items-center justify-between gap-2 w-full px-1.5">

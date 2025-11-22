@@ -1,12 +1,11 @@
 import "client-only";
-import { useUserStore } from "@/stores/useUserStore";
 import { createAuthClient } from "better-auth/react";
 import { redirect } from "next/navigation";
 import { toast } from "sonner";
 import { dodopaymentsClient } from "@dodopayments/better-auth";
 import { inferAdditionalFields } from "better-auth/client/plugins";
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 const clientUrl = process.env.NEXT_PUBLIC_CLIENT_URL;
 
 export const authClient = createAuthClient({
@@ -18,6 +17,7 @@ export const authClient = createAuthClient({
         dodoCustomerId: { type: "string" },
       },
     }),
+    
   ],
 });
 export const signIn = async () => {
@@ -29,7 +29,6 @@ export const signIn = async () => {
     });
 
     const session = await authClient.getSession();
-    useUserStore.setState({ user: session?.data?.user });
   } catch (e) {
     toast("failed to initiate sign in");
   }

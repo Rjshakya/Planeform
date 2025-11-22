@@ -52,21 +52,6 @@ export const defaultEditorContent = {
         },
       ],
     },
-    {
-      type: "actionButton",
-      attrs: {
-        id: v4(),
-        type: "submit",
-        text: "Submit",
-      },
-      content: [
-        {
-          type: "text",
-          text: "Submit",
-          attrs: {},
-        },
-      ],
-    },
   ],
   attrs: {},
 } satisfies JsonDoc;

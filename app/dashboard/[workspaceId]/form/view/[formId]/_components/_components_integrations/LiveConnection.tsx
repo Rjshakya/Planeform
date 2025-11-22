@@ -95,9 +95,6 @@ export const LiveConnection = ({
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-        <Button size={"sm"} variant={"ghost"}>
-          sync
-        </Button>
         <Button
           onClick={() => handleDelete(id)}
           size={"icon"}

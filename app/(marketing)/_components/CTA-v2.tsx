@@ -27,9 +27,7 @@ export const CTAV2 = () => {
                   <ArrowRight className="size-3" />
                 </Link>
               </Button>
-              <Button size="lg" variant="secondary" className=" " >
-                <Link href="#features">View features</Link>
-              </Button>
+              
             </div>
           </div>
         </div>

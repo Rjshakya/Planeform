@@ -52,7 +52,7 @@ export const useFormStore = create<IformStore>((set, get) => ({
       form: form,
     });
 
-    return get()?.form!;
+    return form;
   },
   stepResponses: [],
   isSubmitting: false,
@@ -68,6 +68,8 @@ export const useFormStore = create<IformStore>((set, get) => ({
     }
     if (!formId || isEdit) {
       toast.success("Everything seems good! :)");
+      console.log(values);
+
       return true;
     }
 
@@ -101,9 +103,6 @@ export const useFormStore = create<IformStore>((set, get) => ({
           respondent: respondent!,
         };
       });
-
-      console.log(finalValues);
-
       const response = await apiClient.post(`/api/response/multiple`, {
         finalValues,
         creator,

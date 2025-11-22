@@ -15,24 +15,24 @@ import { useFormStore } from "@/stores/useformStore";
 import { ArrowLeft } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { useForm } from "react-hook-form";
-import { thankyouPageContent } from "@/lib/content";
 import { useEditorStore } from "@/stores/useEditorStore";
 
 export const PreviewForm = () => {
   const [jsonContent, setJsonContent] = useState<JsonDoc>();
   const { editor } = useCurrentEditor();
   const [docs, setDocs] = useState<JsonDoc[]>([]);
-  const form = useForm();
+  const form = useForm({
+    shouldUseNativeValidation:true
+  });
 
   const { data: session } = authClient.useSession();
   const { activeStep, isLastStep, maxStep } = useFormStore((s) => s);
-  const { formBackgroundColor } = useEditorStore(s => s)
+  const { formBackgroundColor } = useEditorStore((s) => s);
 
   const handlePreview = useCallback(() => {
     if (!editor) return;
     const json = editor.getJSON();
     console.log(json);
-    
 
     setJsonContent(json);
   }, [editor]);
@@ -46,7 +46,7 @@ export const PreviewForm = () => {
         isLastStep: maxStep === index,
       });
     },
-    [activeStep, isLastStep, maxStep]
+    [maxStep]
   );
 
   useEffect(() => {
@@ -55,12 +55,7 @@ export const PreviewForm = () => {
       return;
     }
 
-    const thankyouPage = [...jsonContent?.content]?.find(
-      (c) => c.type === "pageBreak"
-    );
-    const content = [...jsonContent?.content].filter(
-      (c) => c.type !== "pageBreak"
-    );
+    const content = [...jsonContent?.content]
     const breakIndices: number[] = [0];
 
     content?.forEach((node, i) => {
@@ -82,14 +77,8 @@ export const PreviewForm = () => {
       }
     }
 
-    if (thankyouPage) {
-      parsedDocs.push({ type: "doc", content: [thankyouPage] });
-    } else {
-      parsedDocs.push({ type: "doc", content: [thankyouPageContent] });
-    }
-
     setDocs(parsedDocs);
-    
+
     if (parsedDocs?.length === 1) {
       useFormStore.setState({
         isSingleForm: true,
@@ -109,7 +98,13 @@ export const PreviewForm = () => {
     }
 
     useFormStore.setState({ activeStep: 0, form });
-  }, [jsonContent, editor ,form , session?.user?.dodoCustomerId , session?.user?.id]);
+  }, [
+    jsonContent,
+    editor,
+    form,
+    session?.user?.dodoCustomerId,
+    session?.user?.id,
+  ]);
 
   return (
     <Sheet>
@@ -120,14 +115,16 @@ export const PreviewForm = () => {
       </SheetTrigger>
       <SheetContent
         side="bottom"
-        className=" font-sans sm:max-w-full w-full h-full grid overflow-auto"
+        className=" font-sans h-full grid overflow-auto"
         style={{
           backgroundColor: formBackgroundColor || undefined,
         }}
       >
         <SheetHeader>
           <SheetTitle>Preview form</SheetTitle>
-          {docs?.length > 1 && activeStep !== 0 && (
+        </SheetHeader>
+        <div className="pt-2 pb-4">
+        {docs?.length > 1 && activeStep !== 0 && (
             <div className="w-full max-w-3xl mx-auto">
               <Button
                 onClick={() => handleActiveIndex(activeStep - 1)}
@@ -136,6 +133,12 @@ export const PreviewForm = () => {
               >
                 <ArrowLeft size={16} />
               </Button>
+            </div>
+          )}
+
+          {docs?.length > 0 && activeStep === docs?.length && (
+            <div className="max-w-3xl mx-auto text-center">
+              <p>Thankyou</p>
             </div>
           )}
 
@@ -152,7 +155,7 @@ export const PreviewForm = () => {
             }
             return null;
           })}
-        </SheetHeader>
+        </div>
       </SheetContent>
     </Sheet>
   );

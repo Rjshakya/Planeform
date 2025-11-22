@@ -37,6 +37,8 @@ export const InsertMultipleChoice = ({
       id: parentId,
       label,
       type,
+      isDropdown: false,
+      isRequired: true,
     });
 
     options?.forEach((o) => editor?.commands?.insertOption(o));
@@ -53,6 +55,7 @@ export const InsertMultipleChoice = ({
       id: `${copy?.length + 1}`,
       parentId: pId,
       type,
+      isRequired:true
     });
     setOptions(copy);
   };

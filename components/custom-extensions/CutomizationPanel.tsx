@@ -23,162 +23,19 @@ import {
   InputGroup,
   InputGroupButton,
   InputGroupInput,
+  InputGroupTextarea,
 } from "../ui/input-group";
-import { toast } from "sonner";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const CutomizationPanel = () => {
-  const { editor } = useCurrentEditor();
-
-  const {
-    isGiestMono = false,
-    isInter = false,
-    isPlayFair = false,
-    isRoboto = false,
-    isPoppins = false,
-    isAcme = false,
-    isRobotoMono = false,
-    isRobotoSerif = false,
-    currentFontSize = "",
-  } = useEditorState({
-    editor,
-    selector: (ctx) => {
-      const marks = editor?.state.selection.$from.marks() || [];
-      const textStyleMark = marks.find(
-        (mark) => mark.type.name === "textStyle"
-      );
-      const fontSize = textStyleMark?.attrs?.fontSize || "";
-
-      return {
-        isGiestMono: editor?.isActive("textStyle", {
-          fontFamily: "var(--font-geist-mono)",
-        }),
-        isInter: editor?.isActive("textStyle", {
-          fontFamily: "var(--font-inter)",
-        }),
-        isPlayFair: editor?.isActive("textStyle", {
-          fontFamily: "var(--font-playfair-display)",
-        }),
-        isRoboto: editor?.isActive("textStyle", {
-          fontFamily: "var(--font-roboto)",
-        }),
-        isPoppins: editor?.isActive("textStyle", {
-          fontFamily: "var(--font-poppins)",
-        }),
-        isAcme: editor?.isActive("textStyle", {
-          fontFamily: "var(--font-acme)",
-        }),
-        isRobotoMono: editor?.isActive("textStyle", {
-          fontFamily: "var(--font-roboto-mono)",
-        }),
-        isRobotoSerif: editor?.isActive("textStyle", {
-          fontFamily: "var(--font-roboto-serif)",
-        }),
-        currentFontSize: fontSize,
-      };
-    },
-  }) ?? {};
-
-  const formBackgroundColor = useEditorStore((s) => s.formBackgroundColor);
-
-  const fontFamilies = [
-    {
-      name: "Default",
-      onclick: () =>
-        editor
-          ?.chain()
-          .selectAll()
-          .setFontFamily("var(--font-space-grotesk)")
-          .blur()
-          .run(),
-      className: "",
-      variant: "ghost",
-    },
-    {
-      name: "Geist-mono",
-      onclick: () =>
-        editor
-          ?.chain()
-          .selectAll()
-          .setFontFamily("var(--font-geist-mono)")
-          .run(),
-      isGiestMono,
-      variant: isGiestMono ? "secondary" : "ghost",
-      className: "",
-    },
-    {
-      name: "Inter",
-      onclick: () =>
-        editor?.chain().selectAll().setFontFamily("var(--font-inter)").run(),
-      isInter,
-      variant: isInter ? "secondary" : "ghost",
-      className: "",
-    },
-    {
-      name: "Playfair Display",
-      onclick: () =>
-        editor
-          ?.chain()
-          ?.selectAll()
-          ?.setFontFamily("var(--font-playfair-display)")
-          .run(),
-      className: "",
-      isPlayFair,
-      variant: isPlayFair ? "secondary" : "ghost",
-    },
-    {
-      name: "Roboto",
-      onclick: () =>
-        editor?.chain()?.selectAll().setFontFamily("var(--font-roboto)").run(),
-      className: "",
-      isRoboto,
-      variant: isRoboto ? "secondary" : "ghost",
-    },
-    {
-      name: "Roboto Mono",
-      onclick: () =>
-        editor
-          ?.chain()
-          ?.selectAll()
-          .setFontFamily("var(--font-roboto-mono)")
-          .run(),
-      className: "",
-      isRobotoMono,
-      variant: isRobotoMono ? "secondary" : "ghost",
-    },
-    {
-      name: "Roboto Serif",
-      onclick: () =>
-        editor
-          ?.chain()
-          ?.selectAll()
-          .setFontFamily("var(--font-roboto-serif)")
-          .run(),
-      className: "",
-      isRobotoSerif,
-      variant: isRobotoSerif ? "secondary" : "ghost",
-    },
-    {
-      name: "Poppins",
-      onclick: () =>
-        editor
-          ?.chain()
-          ?.selectAll()
-          ?.setFontFamily("var(--font-poppins)")
-          .run(),
-      className: "",
-      isPoppins,
-      variant: isPoppins ? "secondary" : "ghost",
-    },
-    {
-      name: "Acme",
-      onclick: () =>
-        editor?.chain()?.selectAll()?.setFontFamily("var(--font-acme)").run(),
-      className: "",
-      isAcme,
-      variant: isAcme ? "secondary" : "ghost",
-    },
-  ];
-
   const formFontFamily = [
     { name: "Default", value: "var(--font-space-grotesk)" },
     { name: "Geist-mono", value: "var(--font-geist-mono)" },
@@ -189,7 +46,7 @@ export const CutomizationPanel = () => {
     { name: "Roboto Serif", value: "var(--font-roboto-serif)" },
     { name: "Poppins", value: "var(--font-poppins)" },
     { name: "Acme", value: "var(--font-acme)" },
-    {name:"Instrumental serif" , value:"var(--font-insturment-serif)"}
+    { name: "Instrumental serif", value: "var(--font-insturment-serif)" },
   ];
 
   const fontSizes = [
@@ -208,10 +65,6 @@ export const CutomizationPanel = () => {
     { name: "64px", value: "64px" },
   ];
 
- 
-
-  if (!editor) return;
-
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -219,28 +72,87 @@ export const CutomizationPanel = () => {
           <Bolt />
         </Button>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent className=" min-h-screen overflow-x-auto pb-6">
         <SheetTitle className="p-3">Customization Panel</SheetTitle>
 
-        <div className=" px-2 grid gap-4">
+        <div className=" px-2 grid gap-6">
           <div className="grid gap-2">
-            <Label className=" text-sm pl-1">Font family</Label>
+            <Label className=" text-muted-foreground/80 text-sm pl-1">
+              Font family
+            </Label>
             <FontFamilyBox families={formFontFamily} />
           </div>
 
           <div className="grid gap-2">
-            <Label className=" text-sm pl-1">Font size</Label>
-            <FontSizeBox sizes={fontSizes} currentSize={currentFontSize} />
+            <Label className=" text-muted-foreground/80 text-sm pl-1">
+              Font size
+            </Label>
+            <FontSizeBox
+              sizes={fontSizes}
+              currentSize={useEditorStore.getState().formFontSize || ""}
+            />
           </div>
 
-          <div className="grid gap-2">
-            <Label className=" text-sm pl-1">Form background color</Label>
+          <div className="flex items-center justify-between gap-2 pr-2">
+            <Label className=" text-muted-foreground/80 text-sm pl-1">
+              Background color
+            </Label>
             <FormBackgroundColorBox />
           </div>
 
-          <div className="grid gap-2">
-            <Label className=" text-sm pl-1">Action Button color</Label>
+          <div className="flex items-center justify-between gap-2 pr-2">
+            <Label className=" text-muted-foreground/80 text-sm pl-1">
+              Text color
+            </Label>
+            <FormTextColorBox />
+          </div>
+
+          <div className="flex items-center justify-between gap-2 pr-2">
+            <Label className=" text-muted-foreground/80 text-sm pl-1">
+              Button color
+            </Label>
             <ActionBtnColorBox />
+          </div>
+
+          <div className="flex items-center justify-between gap-2 pr-2">
+            <Label className=" text-muted-foreground/80 text-sm pl-1">
+              Button text color
+            </Label>
+            <ActionBtnTextColorBox />
+          </div>
+
+          <div className="flex items-center justify-between gap-2 pr-2">
+            <Label className=" text-muted-foreground/80 text-sm pl-1">
+              Button border color
+            </Label>
+            <ActionBtnBorderColorBox />
+          </div>
+
+          <div className="flex items-center justify-between gap-2 pr-2">
+            <Label className=" text-muted-foreground/80 text-sm pl-1">
+              Input background color
+            </Label>
+            <InputBackgroundColorBox />
+          </div>
+
+          <div className="flex items-center justify-between gap-2 pr-2">
+            <Label className=" text-muted-foreground/80 text-sm pl-1">
+              Input border color
+            </Label>
+            <InputBorderColorBox />
+          </div>
+
+          <div className="flex items-center justify-between gap-3">
+            <Label className=" text-muted-foreground/80 text-sm pl-1">
+              Form color scheme
+            </Label>
+            <ColorSchemeBox />
+          </div>
+          <div className="grid gap-3">
+            <Label className=" text-muted-foreground/80 text-sm pl-1">
+              Thankyou message
+            </Label>
+            <CustomThankyouMessageBox />
           </div>
         </div>
       </SheetContent>
@@ -314,7 +226,6 @@ export const FontSizeBox = ({
   sizes: { name: string; value: string }[];
   currentSize: string;
 }) => {
-  const { editor } = useCurrentEditor();
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(currentSize || "");
   const buttonRef = useRef<HTMLButtonElement | null>(null);
@@ -340,10 +251,10 @@ export const FontSizeBox = ({
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className={cn(`p-0 mt-2 font-sans`)}
+        className={cn(`p-0 mt-2 font-sans `)}
         style={{ width: `${buttonRef?.current?.offsetWidth}px` }}
       >
-        <Command className="w-full">
+        <Command className="w-full ">
           <CommandInput placeholder="Search size..." />
           <CommandList>
             <CommandEmpty>No size found.</CommandEmpty>
@@ -378,60 +289,238 @@ export const FontSizeBox = ({
 };
 
 export const FormBackgroundColorBox = () => {
-  const [color, setColor] = useState("");
+  const { formBackgroundColor, setFormBackgroundColor } = useEditorStore(
+    (s) => s
+  );
+  const inputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <InputGroup className="pr-3">
+    <InputGroup
+      onClick={() => inputRef?.current && inputRef?.current?.click()}
+      className={cn("pr-3 size-5 p-0  overflow-hidden")}
+    >
+      <div
+        className=" w-full h-full "
+        style={{ backgroundColor: formBackgroundColor || "" }}
+      ></div>
       <InputGroupInput
         type="color"
-        value={color}
+        value={formBackgroundColor || ""}
         onChange={(e) => {
           const val = e?.currentTarget?.value;
-          setColor(val);
-          // useEditorStore.setState({ actionBtnColor: val });
+          setFormBackgroundColor(val);
         }}
-        className="size-8"
+        className="sr-only"
+        ref={inputRef}
       />
-      <InputGroupButton
-        variant={"default"}
-        className="text-xs"
-        onClick={() => {
-          useEditorStore.setState({ formBackgroundColor: color });
-          toast.success(color);
-        }}
-      >
-        Apply
-      </InputGroupButton>
     </InputGroup>
   );
 };
 
 export const ActionBtnColorBox = () => {
-  const [color, setColor] = useState("");
-
+  const { actionBtnColor, setActionBtnColor } = useEditorStore((s) => s);
+  const inputRef = useRef<HTMLInputElement>(null);
   return (
-    <InputGroup className="pr-3">
+    <InputGroup
+      onClick={() => inputRef?.current && inputRef?.current?.click()}
+      className={cn("pr-3 size-5 p-0  overflow-hidden")}
+    >
+      <div
+        className=" w-full h-full "
+        style={{ backgroundColor: actionBtnColor || "" }}
+      ></div>
       <InputGroupInput
         type="color"
-        value={color}
+        value={actionBtnColor || ""}
         onChange={(e) => {
           const val = e?.currentTarget?.value;
-          setColor(val);
-          // useEditorStore.setState({ actionBtnColor: val });
+          setActionBtnColor(val);
         }}
-        className="size-8"
+        className="sr-only"
+        ref={inputRef}
       />
-      <InputGroupButton
-        variant={"default"}
-        className="text-xs"
-        onClick={() => {
-          useEditorStore.setState({ actionBtnColor: color });
-          toast.success(color);
-        }}
-      >
-        Apply
-      </InputGroupButton>
     </InputGroup>
   );
 };
 
+export const FormTextColorBox = () => {
+  const { formTextColor, setFormTextColor } = useEditorStore((s) => s);
+  const inputRef = useRef<HTMLInputElement>(null);
+  return (
+    <InputGroup
+      onClick={() => inputRef?.current && inputRef?.current?.click()}
+      className={cn("pr-3 size-5 p-0  overflow-hidden")}
+    >
+      <div
+        className=" w-full h-full "
+        style={{ backgroundColor: formTextColor || "" }}
+      ></div>
+      <InputGroupInput
+        type="color"
+        value={formTextColor || ""}
+        onChange={(e) => {
+          const val = e?.currentTarget?.value;
+          setFormTextColor(val);
+        }}
+        className="sr-only"
+        ref={inputRef}
+      />
+    </InputGroup>
+  );
+};
+
+export const ActionBtnTextColorBox = () => {
+  const { actionBtnTextColor, setActionBtnTextColor } = useEditorStore(
+    (s) => s
+  );
+  const inputRef = useRef<HTMLInputElement>(null);
+  return (
+    <InputGroup
+      onClick={() => inputRef?.current && inputRef?.current?.click()}
+      className={cn("pr-3 size-5 p-0  overflow-hidden")}
+    >
+      <div
+        className=" w-full h-full "
+        style={{ backgroundColor: actionBtnTextColor || "" }}
+      ></div>
+      <InputGroupInput
+        type="color"
+        value={actionBtnTextColor || ""}
+        onChange={(e) => {
+          const val = e?.currentTarget?.value;
+          setActionBtnTextColor(val);
+        }}
+        className="sr-only bg-transparent "
+        ref={inputRef}
+      />
+    </InputGroup>
+  );
+};
+
+export const InputBackgroundColorBox = () => {
+  const { inputBackgroundColor, setInputBackgroundColor } = useEditorStore(
+    (s) => s
+  );
+  const inputRef = useRef<HTMLInputElement>(null);
+  return (
+    <InputGroup
+      onClick={() => inputRef?.current && inputRef?.current?.click()}
+      className={cn("pr-3 size-5 p-0  overflow-hidden")}
+    >
+      <div
+        className=" w-full h-full "
+        style={{ backgroundColor: inputBackgroundColor || "" }}
+      ></div>
+      <InputGroupInput
+        type="color"
+        value={inputBackgroundColor || ""}
+        onChange={(e) => {
+          const val = e?.currentTarget?.value;
+          setInputBackgroundColor(val);
+        }}
+        className="sr-only"
+        ref={inputRef}
+      />
+    </InputGroup>
+  );
+};
+
+export const InputBorderColorBox = () => {
+  const { inputBorderColor, setInputBorderColor } = useEditorStore((s) => s);
+  const inputRef = useRef<HTMLInputElement>(null);
+  return (
+    <InputGroup
+      onClick={() => inputRef?.current && inputRef?.current?.click()}
+      className={cn("pr-3 size-5 p-0  overflow-hidden")}
+    >
+      <div
+        className=" w-full h-full "
+        style={{ backgroundColor: inputBorderColor || "" }}
+      ></div>
+      <InputGroupInput
+        type="color"
+        value={inputBorderColor || ""}
+        onChange={(e) => {
+          const val = e?.currentTarget?.value;
+          setInputBorderColor(val);
+        }}
+        className="sr-only"
+        ref={inputRef}
+      />
+    </InputGroup>
+  );
+};
+
+export const ActionBtnBorderColorBox = () => {
+  const { actionBtnBorderColor, setActionBtnBorderColor } = useEditorStore(
+    (s) => s
+  );
+  const inputRef = useRef<HTMLInputElement>(null);
+  return (
+    <InputGroup
+      onClick={() => inputRef?.current && inputRef?.current?.click()}
+      className={cn("pr-3 size-5 p-0  overflow-hidden")}
+    >
+      <div
+        className=" w-full h-full "
+        style={{ backgroundColor: actionBtnBorderColor || "" }}
+      ></div>
+      <InputGroupInput
+        type="color"
+        value={actionBtnBorderColor || ""}
+        onChange={(e) => {
+          const val = e?.currentTarget?.value;
+          setActionBtnBorderColor(val);
+        }}
+        className="sr-only"
+        ref={inputRef}
+      />
+    </InputGroup>
+  );
+};
+
+export const ColorSchemeBox = () => {
+  const { formColorScheme, setFormColorScheme } = useEditorStore((s) => s);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark");
+  }, [formColorScheme]);
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button className=" capitalize" variant="outline">
+          {formColorScheme}
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-36 mx-1 mt-2">
+        <DropdownMenuSeparator />
+        <DropdownMenuRadioGroup
+          value={formColorScheme}
+          onValueChange={(v) => setFormColorScheme(v)}
+        >
+          <DropdownMenuRadioItem value="light">Light</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="dark">Dark</DropdownMenuRadioItem>
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
+export const CustomThankyouMessageBox = () => {
+  const { customThankyouMessage, setCustomThankyouMessage } = useEditorStore(
+    (s) => s
+  );
+
+  return (
+    <InputGroup>
+      <InputGroupTextarea
+        value={customThankyouMessage}
+        onChange={(e) => {
+          const msg = e?.currentTarget?.value;
+          setCustomThankyouMessage(msg);
+        }}
+      />
+    </InputGroup>
+  );
+};

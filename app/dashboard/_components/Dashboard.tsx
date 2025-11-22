@@ -6,6 +6,10 @@ import Workspace from "./Workspace";
 import { apiClient } from "@/lib/axios";
 import useSWR from "swr";
 import { useUser } from "@/hooks/use-User";
+import { useWorkspace } from "@/hooks/use-workspace";
+import { createWorkspaceParams } from "@/lib/types";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const fetcher = (url: string) => apiClient.get(url).then((res) => res.data);
 export const DashboardComp = () => {
@@ -14,6 +18,37 @@ export const DashboardComp = () => {
     () => `/api/analytics/dashboard/` + user?.dodoCustomerId,
     fetcher
   );
+  const router = useRouter()
+  const { workspace, mutate, userId, customerId } = useWorkspace();
+
+  const handleCreateForm = async () => {
+    if (!userId) return;
+
+    try {
+      if (workspace && workspace?.length === 0) {
+        const workspaceBody = {
+          name: "formly-wrkspace",
+          owner: userId,
+          customerId: customerId,
+        } as createWorkspaceParams;
+        const { data, status } = await apiClient.post(
+          "/api/workspace",
+          workspaceBody
+        );
+
+        if (status === 200) {
+          const { id } = data?.workspace;
+          router.push(`/dashboard/${id}/form/create`);
+        }
+      }
+
+      if (workspace && workspace?.length > 0) {
+        router.push(`/dashboard/${workspace[0]?.id}/form/create`);
+      }
+    } catch (e) {
+      toast.error("failed to create form");
+    }
+  };
 
   if (error) {
     return (
@@ -35,7 +70,42 @@ export const DashboardComp = () => {
 
   return (
     <div className="max-w-4xl w-full mx-auto grid gap-3">
-      <h1 className=" text-2xl font-semibold">Dashboard</h1>
+      <div className="flex items-center justify-between gap-1">
+        <h1 className=" text-2xl font-semibold">Dashboard</h1>
+        <Button size={"default"} onClick={handleCreateForm}>
+          <div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="size-5"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <g clipPath="url(#clip0_4418_9825)">
+                <path
+                  d="M6 12H18"
+                  stroke="#fff"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M12 18V6"
+                  stroke="#fff"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </g>
+              <defs>
+                <clipPath id="clip0_4418_9825">
+                  <rect width="24" height="24" fill="white" />
+                </clipPath>
+              </defs>
+            </svg>
+          </div>
+          Form
+        </Button>
+      </div>
       <div className=" grid md:grid-cols-2 grid-cols-1 gap-4">
         <Card>
           <CardHeader>
@@ -90,22 +160,22 @@ export const DashboardComp = () => {
                       opacity="0.4"
                       d="M21 7V17C21 20 19.5 22 16 22H8C4.5 22 3 20 3 17V7C3 4 4.5 2 8 2H16C19.5 2 21 4 21 7Z"
                       fill="white"
-                       style={{fill:"var(--fillg"}}
+                      style={{ fill: "var(--fillg" }}
                     />
                     <path
                       d="M18.5 9.25H16.5C14.98 9.25 13.75 8.02 13.75 6.5V4.5C13.75 4.09 14.09 3.75 14.5 3.75C14.91 3.75 15.25 4.09 15.25 4.5V6.5C15.25 7.19 15.81 7.75 16.5 7.75H18.5C18.91 7.75 19.25 8.09 19.25 8.5C19.25 8.91 18.91 9.25 18.5 9.25Z"
                       fill="white"
-                       style={{fill:"var(--fillg"}}
+                      style={{ fill: "var(--fillg" }}
                     />
                     <path
                       d="M12 13.75H8C7.59 13.75 7.25 13.41 7.25 13C7.25 12.59 7.59 12.25 8 12.25H12C12.41 12.25 12.75 12.59 12.75 13C12.75 13.41 12.41 13.75 12 13.75Z"
                       fill="white"
-                       style={{fill:"var(--fillg"}}
+                      style={{ fill: "var(--fillg" }}
                     />
                     <path
                       d="M16 17.75H8C7.59 17.75 7.25 17.41 7.25 17C7.25 16.59 7.59 16.25 8 16.25H16C16.41 16.25 16.75 16.59 16.75 17C16.75 17.41 16.41 17.75 16 17.75Z"
                       fill="white"
-                      style={{fill:"var(--fillg"}}
+                      style={{ fill: "var(--fillg" }}
                     />
                   </g>
                   <defs>
@@ -122,7 +192,6 @@ export const DashboardComp = () => {
             <p>Forms</p>
           </CardContent>
         </Card>
-       
       </div>
       <Workspace />
     </div>

@@ -20,7 +20,7 @@ import { mutate } from "swr";
 import { Loader } from "lucide-react";
 import ShortUniqueId from "short-unique-id";
 import { v7 } from "uuid";
-import { useMultipleInputStore } from "@/stores/useMultipleInputStore";
+
 import { useEditorStore } from "@/stores/useEditorStore";
 
 const uid = new ShortUniqueId({ length: 10 });
@@ -37,7 +37,7 @@ export const PublishForm = () => {
 
   const handlePublish = async (formname: string) => {
     if (!session?.user?.id) {
-      toast("sorry ur not authenticated please sign up");
+      toast("you'r not authenticated please sign up");
       await signOut();
       return;
     }
@@ -65,7 +65,7 @@ export const PublishForm = () => {
         formCustomisation,
       });
 
-      if (res.status === 201) {
+      if (res.status === 200) {
         const formId = res?.data?.form?.shortId;
         await postFormFields(json, formId);
         toast(`You have successfully created form : ${formname}`);
@@ -129,7 +129,7 @@ export const filterFormFields = (jsonDoc: JsonDoc, formId: string) => {
       id: f?.attrs?.id,
       form: formId,
       // @ts-ignore
-      label: f?.content?.[0]?.text?.trim(),
+      label: f?.content?.[0]?.text?.trim() || f?.attrs?.label,
       type: f?.type,
       subType: f?.attrs?.type,
       placeholder: f?.attrs?.placeholder,
@@ -149,29 +149,36 @@ export const postFormFields = async (jsonDoc: JsonDoc, formId: string) => {
 
   try {
     const res = await apiClient.post(`/api/formField`, fields);
-    return res?.status === 201;
+    return res?.status === 200;
   } catch (e) {
     await apiClient.delete(`/api/form/${formId}`);
     toast("failed to create form");
-    throw new Error("error occurred in creating form");
+    throw new Error("failed-to-postFormFields");
   }
 };
 
 export const handleFormSchema = (jsonDoc: JsonDoc): JsonDoc => {
   if (!jsonDoc) return;
   const doc = jsonDoc;
-  let currentMultipleInputId: string;
+  let multipleChoiceId: string;
   const alterContent = doc?.content?.map((c) => {
     if (c?.type === "multipleChoiceInput") {
-      const id = v7();
-      currentMultipleInputId = id;
-      // useMultipleInputStore.setState({ id: id });
-      return { ...c, attrs: { ...c.attrs, id } };
-    }
+      multipleChoiceId = v7();
+      const mapWithOption = c?.content?.map((opt) => {
+        if (opt?.type === "optionNode") {
+          return {
+            ...opt,
+            attrs: {
+              // @ts-ignore
+              ...opt?.attrs,
+              parentId: multipleChoiceId,
+            },
+          };
+        }
 
-    if (c?.type === "optionNode") {
-      // const parentId = useMultipleInputStore.getState().id;
-      return { ...c, attrs: { ...c.attrs, parentId: currentMultipleInputId } };
+        return opt;
+      });
+      return { ...c, attrs: { ...c.attrs, id: multipleChoiceId }, content: mapWithOption };
     }
 
     if (c?.type?.includes("Input") && c?.type !== "multipleChoiceInput") {
@@ -186,9 +193,15 @@ export const handleFormSchema = (jsonDoc: JsonDoc): JsonDoc => {
 export const getCustomization = () => {
   return {
     formBackgroundColor: useEditorStore.getState().formBackgroundColor,
+    formColorScheme: useEditorStore.getState().formColorScheme,
     formFontFamliy: useEditorStore.getState().formFontFamliy,
     formFontSize: useEditorStore.getState().formFontSize,
+    formTextColor: useEditorStore.getState().formTextColor,
+    actionBtnBorderColor: useEditorStore.getState().actionBtnBorderColor,
     actionBtnColor: useEditorStore.getState().actionBtnColor,
-    formColorScheme: useEditorStore.getState().formColorScheme,
+    actionBtnSize: useEditorStore.getState().actionBtnSize,
+    actionBtnTextColor: useEditorStore.getState().actionBtnTextColor,
+    inputBackgroundColor: useEditorStore.getState().inputBackgroundColor,
+    inputBorderColor: useEditorStore.getState().inputBorderColor,
   };
 };

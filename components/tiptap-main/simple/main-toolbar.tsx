@@ -59,7 +59,7 @@ const MainToolbarContent = ({
   return (
     <div
       className={cn(
-        `bg-background w-full flex overflow-x-auto overscroll-x-contain overscroll-contain pb-2 pt-2 select-none`,
+        `bg-card w-full flex overflow-x-auto overscroll-x-contain overscroll-contain pb-2 pt-1  select-none`,
         `${
           isMobile
             ? `border-t-2  border-border/80`
@@ -80,11 +80,11 @@ const MainToolbarContent = ({
       </ToolbarGroup>
 
       <Separator className="mx-2" orientation="vertical" />
-      <ToolbarGroup>
+      {/* <ToolbarGroup>
         <CustomInputsDropdown />
-      </ToolbarGroup>
+      </ToolbarGroup> */}
 
-      <Separator className="mx-2" orientation="vertical" />
+      {/* <Separator className="mx-2" orientation="vertical" /> */}
 
       <ToolbarGroup>
         <HeadingDropdownMenu levels={[1, 2, 3]} portal={isMobile} />
@@ -203,7 +203,7 @@ export const TiptapToolBar = memo(function ToolBarComp({
   return (
     <Toolbar
       className={cn(
-        "w-full z-30 ",
+        "w-full z-30  ",
         `${isMobile ? " fixed inset-x-0 top-0" : "sticky top-0"}`,
         `${path === "/" && "hidden"}`
       )}

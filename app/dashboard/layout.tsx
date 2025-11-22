@@ -23,28 +23,26 @@ export default function DashboardLayout({
 
   return (
     <SidebarProvider className="">
-      <AppSidebar />
-      <SidebarInset>
+      <AppSidebar className="font-sans" />
+      <SidebarInset className="p-2 bg-sidebar">
+        <main className=" h-full bg-card ">
         <header
           className={cn(
-            `flex h-14 shrink-0 items-center gap-2`,
+            `flex h-9 pb-2 mb-8 shrink-0 items-center gap-2 max-w-5xl mx-auto w-full sticky top-0 bg-card `,
             `${workspaceId && pathName?.includes("/form/create") && "hidden"}`,
             `${workspaceId && pathName?.includes(`form/edit`) && "hidden"}`
           )}
         >
-          <div className="flex flex-1 items-center gap-2 px-3">
+          <div className="flex flex-1 items-center gap-2 ">
             <SidebarTrigger />
-            <Separator
-              orientation="vertical"
-              className="mr-2 data-[orientation=vertical]:h-4"
-            />
+            
           </div>
-          <div className={cn(`ml-auto px-3 flex items-center gap-2`)}>
-            <ThemeToggle />
-
+          <div className={cn(`ml-auto  flex items-center gap-2`)}>
             <NavActions />
+            <div className=""><ThemeToggle/></div>
           </div>
         </header>
+        {/* <Separator className="mb-8 mt-1"/> */}
         <div
           className={cn(
             `flex flex-1 flex-col gap-4 px-4 font-sans`,
@@ -54,6 +52,7 @@ export default function DashboardLayout({
         >
           {children}
         </div>
+        </main>
       </SidebarInset>
     </SidebarProvider>
   );
