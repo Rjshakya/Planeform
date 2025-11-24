@@ -16,14 +16,13 @@ import {
 } from "@/components/tiptap-ui/heading-button";
 
 // --- UI Primitives ---
-import type { ButtonProps } from "@/components/tiptap-ui-primitive/button";
 // import { Badge } from "@/components/tiptap-ui-primitive/badge"
 import { useTiptapEditor } from "@/hooks/use-tiptap-editor";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 export interface HeadingButtonProps
-  extends Omit<ButtonProps, "type">,
+  extends Omit<any, "type">,
     UseHeadingConfig {
   /**
    * Optional text to display alongside the icon.
@@ -105,7 +104,6 @@ export const HeadingButton = React.forwardRef<
         data-disabled={!canToggle}
         aria-label={label}
         aria-pressed={isActive}
-        tooltip={label}
         onClick={handleClick}
         {...buttonProps}
         ref={ref}

@@ -15,7 +15,7 @@ import { ListButton, type ListType } from "@/components/tiptap-ui/list-button";
 import { useListDropdownMenu } from "./use-list-dropdown-menu";
 
 // --- UI Primitives ---
-import type { ButtonProps } from "@/components/tiptap-ui-primitive/button";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,7 +30,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-export interface ListDropdownMenuProps extends Omit<ButtonProps, "type"> {
+export interface ListDropdownMenuProps extends Omit<any, "type"> {
   /**
    * The Tiptap editor instance.
    */
@@ -98,7 +98,6 @@ export function ListDropdownMenu({
               disabled={!canToggle}
               data-disabled={!canToggle}
               aria-label="List options"
-              tooltip="List"
               {...props}
               className=" px-4"
             >

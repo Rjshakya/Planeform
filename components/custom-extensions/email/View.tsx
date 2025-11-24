@@ -21,6 +21,7 @@ import {
   InputGroupText,
   InputGroupTextarea,
 } from "@/components/ui/input-group";
+import { validationFn } from "../FormFieldValidations";
 
 export const EmailInput = (props: NodeViewProps) => {
   const { label, id, type, isRequired, placeholder, prefix } = props?.node
@@ -33,6 +34,7 @@ export const EmailInput = (props: NodeViewProps) => {
         <FormField
           control={form?.control}
           name={id}
+          rules={{validate:validationFn({isRequired, type:"emailInput"})}}
           render={({ field }) => (
             <FormItem className={`mt-4 field gap-3`}>
               <FormLabel
@@ -61,6 +63,7 @@ export const EmailInput = (props: NodeViewProps) => {
                     disabled={props?.editor?.isEditable}
                     ref={field?.ref}
                     onBlur={field?.onBlur}
+                    
                   />
                   <InputGroupAddon>
                     <span>

@@ -19,7 +19,6 @@ import {
 } from "@/components/tiptap-ui/text-align-button";
 
 // --- UI Primitives ---
-import type { ButtonProps } from "@/components/tiptap-ui-primitive/button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,7 +31,7 @@ type IconProps = React.SVGProps<SVGSVGElement>;
 type IconComponent = ({ className, ...props }: IconProps) => React.ReactElement;
 
 export interface TextAlignButtonProps
-  extends Omit<ButtonProps, "type">,
+  extends Omit<any, "type">,
     UseTextAlignConfig {
   /**
    * Optional text to display alongside the icon.

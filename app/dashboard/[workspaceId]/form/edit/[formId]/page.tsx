@@ -5,7 +5,6 @@ import { useParams } from "next/navigation";
 import useSWR from "swr";
 import { FormEditor } from "../../_components/FormEditor";
 import { Loader, TriangleAlert } from "lucide-react";
-import { useUser } from "@/hooks/use-User";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useFormStore } from "@/stores/useformStore";
@@ -20,7 +19,7 @@ export default function Page() {
   const formData = data?.data?.form;
   const form_schema = formData?.form_schema;
   const customisation = formData?.customisation as Icustomisation;
-  // useUser();
+
   useEffect(() => {
     useFormStore.setState({ form });
     useEditorStore.setState({ ...customisation });

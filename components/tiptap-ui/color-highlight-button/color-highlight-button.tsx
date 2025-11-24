@@ -16,7 +16,6 @@ import {
 } from "@/components/tiptap-ui/color-highlight-button";
 
 // --- UI Primitives ---
-import type { ButtonProps } from "@/components/tiptap-ui-primitive/button";
 
 // --- Styles ---
 import "@/components/tiptap-ui/color-highlight-button/color-highlight-button.scss";
@@ -29,7 +28,7 @@ import {
 } from "@/components/ui/tooltip";
 
 export interface ColorHighlightButtonProps
-  extends Omit<ButtonProps, "type">,
+  extends Omit<any, "type">,
     UseColorHighlightConfig {
   /**
    * Optional text to display alongside the icon.

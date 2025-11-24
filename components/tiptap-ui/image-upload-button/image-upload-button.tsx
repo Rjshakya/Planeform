@@ -16,7 +16,6 @@ import {
 } from "@/components/tiptap-ui/image-upload-button";
 
 // --- UI Primitives ---
-import type { ButtonProps } from "@/components/tiptap-ui-primitive/button";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -26,7 +25,7 @@ import {
 } from "@/components/ui/tooltip";
 
 export interface ImageUploadButtonProps
-  extends Omit<ButtonProps, "type">,
+  extends Omit<any, "type">,
     UseImageUploadConfig {
   /**
    * Optional text to display alongside the icon.

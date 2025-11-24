@@ -1,21 +1,19 @@
 import { Editor } from "@tiptap/core";
 import DragHandle from "@tiptap/extension-drag-handle-react";
-import React, { memo, RefObject, useRef } from "react";
+import React, { memo, useRef } from "react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { GripVertical, Plus } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
+import { GripVertical } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { useOutsideClick } from "@/hooks/use-outside-click";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
-import { Ioptions } from "@/components/custom-extensions/multiple-choices/node";
+import { Node } from "@tiptap/pm/model";
 
 export const EditorDragHandle = memo(function Dragcomp({
   editor,
@@ -24,51 +22,30 @@ export const EditorDragHandle = memo(function Dragcomp({
 }) {
   const [isInputNode, setIsInputNode] = React.useState(false);
   const [nodePosition, setNodePosition] = React.useState<number | null>(null);
-  const [currentNode, setCurrentNode] = React?.useState<any>(null);
+  const [currentNode, setCurrentNode] = React?.useState<Node | null>(null);
   const [openPopover, setOpenPopover] = React.useState(false);
-  const popoverRef = useRef<HTMLDivElement>(null);
-
-  // useOutsideClick(popoverRef as RefObject<HTMLDivElement>, () =>
-  //   setOpenPopover(false)
-  // );
-
   return (
     <DragHandle
       computePositionConfig={{ strategy: "fixed" }}
       onNodeChange={({ node, pos, editor }) => {
-        // if (node?.type?.name) {
-        //   setCurrentNode(node);
-        // } else {
-        //   setCurrentNode(null);
-        // }
-
         setCurrentNode(node);
         setNodePosition(pos);
 
         if (node?.type?.name?.includes("Input")) {
           setIsInputNode(true);
-          // setNodePosition(pos);
-          // setCurrentNode(node);
         } else {
           setIsInputNode(false);
-          // setNodePosition(null);
         }
       }}
       editor={editor!}
       className={cn(``)}
     >
       <div className="pt-1  pl-5 md:px-2">
-        <div
-          ref={popoverRef}
-          onClick={() => setOpenPopover(!openPopover)}
-          className="handler"
-        ></div>
         <Popover open={openPopover} onOpenChange={setOpenPopover}>
           {currentNode && (
             <PopoverTrigger asChild className=" cursor-pointer">
               <div className="flex items-center gap-2">
                 <GripVertical size={16} />
-                {/* <Button type="button" className="" size={"icon"} variant={"ghost"}>d</Button> */}
               </div>
             </PopoverTrigger>
           )}
@@ -81,7 +58,7 @@ export const EditorDragHandle = memo(function Dragcomp({
             >
               {isInputNode &&
                 currentNode &&
-                Object?.entries?.(currentNode?.attrs)?.map?.((o: any, i) => {
+                Object?.entries?.(currentNode.attrs)?.map?.((o, i) => {
                   if (o[0] === "placeholder") {
                     return (
                       <div
@@ -122,7 +99,6 @@ export const EditorDragHandle = memo(function Dragcomp({
                       </div>
                     );
                   }
-
                   if (o?.[0] === "isRequired") {
                     return (
                       <div
@@ -194,8 +170,6 @@ export const EditorDragHandle = memo(function Dragcomp({
                       variant={"ghost"}
                       size={"icon"}
                       onClick={() => {
-                        console.log("delete");
-
                         editor
                           ?.chain()
                           ?.focus()

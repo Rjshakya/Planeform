@@ -174,8 +174,8 @@ export default function Workspace() {
                 <DialogHeader>
                   <DialogTitle className="text-base font-medium">Create new workspace</DialogTitle>
                 </DialogHeader>
-                <div className="grid gap-1">
-                <Label className="pl-1 text-lg">Name</Label>
+                <div className="grid gap-2">
+                <Label className="text-lg">Name</Label>
                 <Input
                  placeholder="my-workspace-1"
                   value={workspaceName}

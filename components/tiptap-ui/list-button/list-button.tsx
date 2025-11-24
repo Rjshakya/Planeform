@@ -9,7 +9,6 @@ import { parseShortcutKeys } from "@/lib/tiptap-utils"
 import { useTiptapEditor } from "@/hooks/use-tiptap-editor"
 
 // --- UI Primitives ---
-import type { ButtonProps } from "@/components/tiptap-ui-primitive/button"
 
 
 // --- Tiptap UI ---
@@ -20,7 +19,7 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 export interface ListButtonProps
-  extends Omit<ButtonProps, "type">,
+  extends Omit<any, "type">,
     UseListConfig {
   /**
    * Optional text to display alongside the icon.
