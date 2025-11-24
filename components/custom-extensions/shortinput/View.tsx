@@ -15,6 +15,7 @@ import { useFormStore } from "@/stores/useformStore";
 import { NodeViewContent } from "@tiptap/react";
 import { NodeViewWrapper, type NodeViewProps } from "@tiptap/react";
 import React from "react";
+import { validationFn } from "../FormFieldValidations";
 
 const ShortInput = (props: NodeViewProps) => {
   const { label, id, type, isRequired, placeholder } = props?.node?.attrs;
@@ -26,6 +27,9 @@ const ShortInput = (props: NodeViewProps) => {
         <FormField
           control={form?.control}
           name={id}
+          rules={{
+            validate:validationFn({isRequired, type:"shortInput"})
+          }}
           render={({ field }) => (
             <FormItem className={`mt-4 field gap-3`}>
               <FormLabel

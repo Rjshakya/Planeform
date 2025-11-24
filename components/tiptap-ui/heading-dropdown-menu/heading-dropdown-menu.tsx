@@ -14,7 +14,6 @@ import type { UseHeadingDropdownMenuConfig } from "@/components/tiptap-ui/headin
 import { useHeadingDropdownMenu } from "@/components/tiptap-ui/heading-dropdown-menu";
 
 // --- UI Primitives ---
-import type { ButtonProps } from "@/components/tiptap-ui-primitive/button";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -36,7 +35,7 @@ import {
 // } from "@/components/ui/tooltip";
 
 export interface HeadingDropdownMenuProps
-  extends Omit<ButtonProps, "type">,
+  extends Omit<any, "type">,
     UseHeadingDropdownMenuConfig {
   /**
    * Whether to render the dropdown menu in a portal
@@ -118,7 +117,7 @@ export const HeadingDropdownMenu = React.forwardRef<
         <DropdownMenuContent align="start" className=" rounded-sm grid p-1">
           {/* <Card className=" py-1 border-0 shadow-none w-full bg-popover">
             <CardContent className="px-1 w-full"> */}
-              {levels.map((level) => (
+              {levels.map((level:any) => (
                 <DropdownMenuItem className="w-full flex justify-start" key={`heading-${level}`} asChild>
                   <HeadingButton
                     editor={editor}

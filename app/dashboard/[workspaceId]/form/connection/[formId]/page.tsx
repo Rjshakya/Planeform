@@ -113,9 +113,7 @@ export default function Page() {
     );
   }
 
-  if(!user){
-    return <p>unauthorised</p>
-  }
+  
 
   return (
     <div>
@@ -142,7 +140,7 @@ export default function Page() {
           />
           <Button
             onClick={() =>
-              handleNotion(state, formId as string, user.dodoCustomerId)
+              handleNotion(state, formId as string, user!.dodoCustomerId)
             }
             className=" py-5"
           >
@@ -204,7 +202,7 @@ export default function Page() {
             placeholder="write anything here"
           />
           <Button
-            onClick={() => handleGmailNotify(emailData, user.dodoCustomerId)}
+            onClick={() => handleGmailNotify(emailData, user!.dodoCustomerId)}
             className=" py-5"
           >
             Submit

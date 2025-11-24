@@ -11,7 +11,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { motion } from "motion/react";
 
 export const RenderForm = ({ docs }: { docs: JsonDoc[] }) => {
-  const { activeStep, maxStep, isLastStep } = useFormStore((s) => s);
+  const { activeStep, maxStep } = useFormStore((s) => s);
   const handleActiveIndex = useCallback(
     (idx: number) => {
       const index = idx < 0 ? 0 : Math.min(docs?.length - 1, idx);
@@ -20,24 +20,22 @@ export const RenderForm = ({ docs }: { docs: JsonDoc[] }) => {
         isLastStep: maxStep === index,
       });
     },
-    [ maxStep, docs?.length]
+    [maxStep, docs?.length]
   );
 
   return (
     <div className="pt-3 w-full">
-      {docs?.length > 1 &&
-        activeStep !== 0 &&
-        activeStep < docs?.length - 1 && (
-          <div className="w-full max-w-2xl mx-auto fixed top-4 inset-x-0  z-20">
-            <Button
-              onClick={() => handleActiveIndex(activeStep - 1)}
-              variant={"secondary"}
-              size={"icon"}
-            >
-              <ArrowLeft size={16} />
-            </Button>
-          </div>
-        )}
+      {docs?.length > 1 && activeStep > 0 && activeStep < docs?.length && (
+        <div className="w-full max-w-2xl mx-auto fixed top-4 inset-x-0  z-20">
+          <Button
+            onClick={() => handleActiveIndex(activeStep - 1)}
+            variant={"secondary"}
+            size={"icon"}
+          >
+            <ArrowLeft size={16} />
+          </Button>
+        </div>
+      )}
 
       {docs?.length > 0 && activeStep === docs?.length && (
         <div className="max-w-3xl mx-auto text-center">

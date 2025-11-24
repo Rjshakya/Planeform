@@ -10,14 +10,15 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { NodeViewWrapper, type NodeViewProps } from "@tiptap/react";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { InsertMultipleChoiceParams, Ioptions } from "./node";
 
 import { useFormStore } from "@/stores/useformStore";
 import { NodeViewContent } from "@tiptap/react";
-import { cn } from "@/lib/utils";
+
 import { Button } from "@/components/ui/button";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
+import { validationFn } from "../FormFieldValidations";
 
 export const MultipleChoiceView = (props: NodeViewProps) => {
   const { id, label, isDropdown, type, isRequired } = props?.node
@@ -31,6 +32,9 @@ export const MultipleChoiceView = (props: NodeViewProps) => {
         <FormField
           control={form?.control}
           name={id}
+          rules={{
+            validate: validationFn({ isRequired, type: "multipleChoiceInput" }),
+          }}
           render={({ field }) => (
             <FormItem className="mt-4 field mb-3 gap-3 ">
               <FormLabel
@@ -70,61 +74,78 @@ export const MultipleChoiceView = (props: NodeViewProps) => {
                       {label}
                     </p>
                   )}
-                  {isDropdown && (
+                </div>
+
+                {isDropdown && (
+                  <div className="flex w-full h-9 items-start  gap-2 max-w-sm ">
+                    <div className="flex-1  h-full ">
+                      <Input className="h-9" readOnly defaultValue={field.value} />
+                    </div>
                     <Button
+                      size={"icon"}
                       variant={"ghost"}
-                      size={"sm"}
                       type="button"
-                      onClick={() => setOpen(!open)}
-                      className="size-6"
+                      onClick={() => {
+                        if (props.editor.isEditable) return;
+                        setOpen(!open);
+                      }}
+                      className="h-full"
                     >
                       <div>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          className=" size-5 fill-foreground"
+                          width="24"
+                          height="24"
                           viewBox="0 0 24 24"
-                          fill="#fff"
+                          fill="none"
                         >
                           <path
-                            d="M16.19 2H7.81C4.17 2 2 4.17 2 7.81V16.18C2 19.83 4.17 22 7.81 22H16.18C19.82 22 21.99 19.83 21.99 16.19V7.81C22 4.17 19.83 2 16.19 2ZM16.06 11.17L12.53 14.7C12.38 14.85 12.19 14.92 12 14.92C11.81 14.92 11.62 14.85 11.47 14.7L7.94 11.17C7.65 10.88 7.65 10.4 7.94 10.11C8.23 9.82 8.71 9.82 9 10.11L12 13.11L15 10.11C15.29 9.82 15.77 9.82 16.06 10.11C16.35 10.4 16.35 10.87 16.06 11.17Z"
-                            fill="white"
-                            style={{ fill: "var(--fillg)" }}
+                            d="M19.92 8.9502L13.4 15.4702C12.63 16.2402 11.37 16.2402 10.6 15.4702L4.07996 8.9502"
+                            stroke="#fff"
+                            stroke-width="1.5"
+                            stroke-miterlimit="10"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
                           />
                         </svg>
                       </div>
                     </Button>
-                  )}
-                </div>
+                  </div>
+                )}
 
-                {isDropdown ? (
-                  open && (
+                <AnimatePresence>
+                  {isDropdown ? (
+                    open && (
+                      <motion.div
+                        initial={{ opacity: 0, filter: "blur(2px)" }}
+                        animate={{ opacity: 1, filter: "blur(0px)" }}
+                        exit={{ opacity: 0, filter: "blur(0px)" }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                        className={`${
+                          props?.editor?.isEditable === false &&
+                          isDropdown &&
+                          "absolute z-[99] max-w-[325px] inset-x-0 top-20 bg-card p-1 mb-8  rounded-sm shadow-xl border"
+                        }`}
+                      >
+                        <NodeViewContent
+                          className={`content px-2 w-full overflow-y-auto ${
+                            props.editor.isEditable || "h-[180px]"
+                          }`}
+                        />
+                      </motion.div>
+                    )
+                  ) : (
                     <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
                       transition={{ duration: 0.5, ease: "easeInOut" }}
-                      className={`${
-                        props?.editor?.isEditable === false &&
-                        isDropdown &&
-                        "absolute inset-x-0  top-8 bg-card p-1  pr-2 rounded-md shadow-xl border"
-                      }`}
                     >
                       <NodeViewContent
                         className={`content pl-1 max-w-3xl w-full`}
                       />
                     </motion.div>
-                  )
-                ) : (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.5, ease: "easeInOut" }}
-                  >
-                    <NodeViewContent
-                      className={`content pl-1 max-w-3xl w-full`}
-                    />
-                  </motion.div>
-                )}
+                  )}
+                </AnimatePresence>
               </FormLabel>
               <FormMessage />
             </FormItem>
@@ -136,7 +157,7 @@ export const MultipleChoiceView = (props: NodeViewProps) => {
 };
 
 export const Option = (props: NodeViewProps) => {
-  const { parentId, type  , isRequired} = props?.node?.attrs as Ioptions;
+  const { parentId, type, isRequired } = props?.node?.attrs as Ioptions;
   const optionLabel = props?.node?.content?.content[0]?.text;
   const isEditable = props.editor.isEditable;
 

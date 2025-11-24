@@ -18,19 +18,19 @@ import {
   useUndoRedo,
 } from "@/components/tiptap-ui/undo-redo-button";
 
-// --- UI Primitives ---
-import type { ButtonProps } from "@/components/tiptap-ui-primitive/button";
+
 // import { Button } from "@/components/tiptap-ui-primitive/button"
-import { Badge } from "@/components/tiptap-ui-primitive/badge";
+
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
 } from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
 
 export interface UndoRedoButtonProps
-  extends Omit<ButtonProps, "type">,
+  extends Omit<any, "type">,
     UseUndoRedoConfig {
   /**
    * Optional text to display alongside the icon.

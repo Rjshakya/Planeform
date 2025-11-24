@@ -12,19 +12,12 @@ import {
 import { LinkContent } from "@/components/tiptap-ui/link-popover";
 
 import { UndoRedoButton } from "@/components/tiptap-ui/undo-redo-button";
-// import "@/components/tiptap-node/blockquote-node/blockquote-node.scss";
-// import "@/components/tiptap-node/code-block-node/code-block-node.scss";
-// // import "@/components/tiptap-node/horizontal-rule-node/horizontal-rule-node.scss";
-// import "@/components/tiptap-node/list-node/list-node.scss";
-// import "@/components/tiptap-node/image-node/image-node.scss";
-// import "@/components/tiptap-node/heading-node/heading-node.scss";
-// import "@/components/tiptap-node/paragraph-node/paragraph-node.scss";
+
 import {
   Toolbar,
   ToolbarGroup,
   ToolbarSeparator,
 } from "@/components/tiptap-ui-primitive/toolbar";
-import { CustomInputsDropdown } from "@/components/custom-input-dropdown";
 import { TiptapMarkDropdown } from "@/components/tiptap-mark-dropdown";
 import { TiptapTextAlignDropdown } from "@/components/tiptap-text-align-dropdown";
 import { CutomizationPanel } from "@/components/custom-extensions/CutomizationPanel";
@@ -39,7 +32,6 @@ import { useCursorVisibility } from "@/hooks/use-cursor-visibility";
 import React, { memo } from "react";
 import { Editor } from "@tiptap/core";
 import { cn } from "@/lib/utils";
-import { ThemeToggle } from "./theme-toggle";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";

@@ -16,7 +16,6 @@ import {
 } from "@/components/tiptap-ui/mark-button";
 
 // --- UI Primitives ---
-import type { ButtonProps } from "@/components/tiptap-ui-primitive/button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,7 +25,7 @@ import {
 } from "@/components/ui/tooltip";
 
 export interface MarkButtonProps
-  extends Omit<ButtonProps, "type">,
+  extends Omit<any, "type">,
     UseMarkConfig {
   /**
    * Optional text to display alongside the icon.

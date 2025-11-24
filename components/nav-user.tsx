@@ -59,13 +59,13 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { Separator } from "./tiptap-ui-primitive/separator";
+
 import {
   Isubscription,
   usePlans,
   useSubscriptions,
 } from "@/hooks/use-subscriptions";
-import { ThemeToggle } from "./tiptap-main/simple/theme-toggle";
+
 
 export function NavUser({
   user,

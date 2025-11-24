@@ -39,6 +39,7 @@ import {
   createSuggestionsItems,
   SlashCmdProvider,
   SlashCmd,
+  renderItems
 } from "@harshtalks/slash-tiptap";
 
 import { v4, v7 } from "uuid";
@@ -48,13 +49,12 @@ import { EditorDragHandle } from "./drag-handle";
 import UploadImage from "tiptap-extension-upload-image";
 import { apiClient } from "@/lib/axios";
 import axios from "axios";
-import { fileUploadNode } from "@/components/custom-extensions/file-uplaod/node";
+import { fileUploadNode } from "@/components/custom-extensions/file-upload/node";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { PageBreakNode } from "@/components/custom-extensions/page-break/node";
 import { toast } from "sonner";
 import { emailInputNode } from "@/components/custom-extensions/email/node";
-
 
 const suggestions = createSuggestionsItems([
   {
@@ -123,7 +123,6 @@ const suggestions = createSuggestionsItems([
       </div>
     ),
   },
-
   {
     title: "Long Answer",
     searchTerms: ["long", "paragraph", "text area", "feedback", "description"],
@@ -183,7 +182,6 @@ const suggestions = createSuggestionsItems([
       </div>
     ),
   },
-
   {
     title: "Email",
     command: ({ editor, range }) => {
@@ -232,7 +230,6 @@ const suggestions = createSuggestionsItems([
       </div>
     ),
   },
-
   {
     title: "Phone",
     searchTerms: ["phone", "contact", "number", "mobile"],
@@ -242,7 +239,7 @@ const suggestions = createSuggestionsItems([
         ?.focus()
         ?.deleteRange(range)
         ?.insertShortInput({
-          id: v4(),
+          id: v7(),
           isRequired: true,
           label: "Phone Number",
           placeholder: "",
@@ -286,11 +283,10 @@ const suggestions = createSuggestionsItems([
       </div>
     ),
   },
-
   {
     title: "Date",
     command: ({ editor, range }) => {
-      const id = v4();
+      const id = v7();
       editor
         ?.chain()
         ?.focus()
@@ -355,7 +351,6 @@ const suggestions = createSuggestionsItems([
       </div>
     ),
   },
-
   {
     title: "Single Choice",
     searchTerms: ["single choice", "radio", "select one", "yes no", "option"],
@@ -424,7 +419,6 @@ const suggestions = createSuggestionsItems([
       </div>
     ),
   },
-
   {
     title: "Multiple Choice",
     searchTerms: [
@@ -495,66 +489,6 @@ const suggestions = createSuggestionsItems([
       </div>
     ),
   },
-  // {
-  //   title: "Add option",
-  //   command: ({ editor, range }) => {
-  //     const { from } = editor.state.selection;
-  //     const optionNodes = editor.$nodes("optionNode");
-
-  //     // Filter nodes that are before or contain the cursor, get the last one
-  //     if (optionNodes) {
-  //       const closestNode = optionNodes
-  //         .filter(({ pos, node }) => pos <= from)
-  //         .sort((a, b) => b.pos - a.pos)[0];
-
-  //       const { parentId, type, id } = closestNode?.node.attrs as Ioptions;
-  //       const option = Number(id || "1");
-  //       editor
-  //         .chain()
-  //         .focus()
-  //         .deleteRange(range)
-  //         .insertOption({
-  //           id: `${option + 1}`,
-  //           label: "option" + `${option + 1}`,
-  //           parentId,
-  //           type,
-  //         })
-  //         .run();
-  //       console.log(closestNode?.node.attrs);
-  //     }
-  //   },
-  //   description: "Add new option for multiple choice or single choice",
-  //   icon: (
-  //     <div>
-  //       <svg
-  //         xmlns="http://www.w3.org/2000/svg"
-  //         className=" size-5 fill-foreground"
-  //         viewBox="0 0 24 24"
-  //         fill="#fff"
-  //       >
-  //         <g clipPath="url(#clip0_4418_4944)">
-  //           <path
-  //             opacity="0.4"
-  //             d="M16.19 2H7.81C4.17 2 2 4.17 2 7.81V16.18C2 19.83 4.17 22 7.81 22H16.18C19.82 22 21.99 19.83 21.99 16.19V7.81C22 4.17 19.83 2 16.19 2Z"
-  //             fill="white"
-  //             style={{ fill: "var(--fillg)" }}
-  //           />
-  //           <path
-  //             d="M16 11.25H12.75V8C12.75 7.59 12.41 7.25 12 7.25C11.59 7.25 11.25 7.59 11.25 8V11.25H8C7.59 11.25 7.25 11.59 7.25 12C7.25 12.41 7.59 12.75 8 12.75H11.25V16C11.25 16.41 11.59 16.75 12 16.75C12.41 16.75 12.75 16.41 12.75 16V12.75H16C16.41 12.75 16.75 12.41 16.75 12C16.75 11.59 16.41 11.25 16 11.25Z"
-  //             fill="white"
-  //             style={{ fill: "var(--fillg)" }}
-  //           />
-  //         </g>
-  //         <defs>
-  //           <clipPath id="clip0_4418_4944">
-  //             <rect width="24" height="24" fill="white" />
-  //           </clipPath>
-  //         </defs>
-  //       </svg>
-  //     </div>
-  //   ),
-  // },
-
   {
     title: "File Upload",
     command: ({ editor, range }) => {
@@ -563,7 +497,7 @@ const suggestions = createSuggestionsItems([
         ?.focus()
         ?.deleteRange(range)
         ?.insertFileUploadInput({
-          id: v4(),
+          id: v7(),
           isRequired: true,
           label: "upload file",
           type: "multiple",
@@ -733,8 +667,9 @@ export function SimpleEditor({
   const pathName = usePathname();
 
   const editorContentRef = React.useRef<HTMLDivElement>(null);
-  const { activeStep, maxStep, handleSubmit, getHookForm, isLastStep } =
-    useFormStore((s) => s);
+  const { activeStep, maxStep, handleSubmit, isLastStep } = useFormStore(
+    (s) => s
+  );
   const {
     formBackgroundColor,
     formFontFamliy,
@@ -749,7 +684,8 @@ export function SimpleEditor({
   } = useEditorStore((s) => s);
 
   // form init
-  const form = useFormStore.getState().getHookForm()
+  const form = useFormStore.getState().getHookForm();
+
   const uploadFn = async (file: File) => {
     const fileName = file?.name;
     let url = URL.createObjectURL(file);
@@ -784,7 +720,6 @@ export function SimpleEditor({
           openOnClick: true,
           enableClickSelection: true,
         },
-        // trailingNode: false,
       }) as any,
       Slash.configure({
         suggestion: {
@@ -811,7 +746,13 @@ export function SimpleEditor({
 
             return filtered;
           },
+          startOfLine:true,
+          char:"/",
+          allowSpaces:true,
+          allowToIncludeChar:true
+          
         },
+
       }),
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       TaskList,
@@ -840,6 +781,9 @@ export function SimpleEditor({
       FontSize,
       Placeholder.configure({
         placeholder: "Press / to open menu",
+        showOnlyWhenEditable:true,
+        showOnlyCurrent:true,
+
       }),
       UploadImage.configure({
         uploadFn: uploadFn,
@@ -858,24 +802,25 @@ export function SimpleEditor({
     },
   });
 
-  const handleActiveIndex = (idx: number) => {
-    let index = idx;
-    if (index < 0) {
-      index = 0;
-    }
-    if (index > maxStep) {
-      index = maxStep + 1;
+  const handleActiveIndex = 
+    React.useCallback((idx: number) => {
+      let index = idx;
+      if (index < 0) {
+        index = 0;
+      }
+      if (index > maxStep) {
+        index = maxStep + 1;
+        useFormStore.setState({
+          activeStep: index,
+        });
+        return;
+      }
+
       useFormStore.setState({
         activeStep: index,
+        isLastStep: maxStep === index,
       });
-      return;
-    }
-
-    useFormStore.setState({
-      activeStep: index,
-      isLastStep: maxStep === index,
-    });
-  };
+    },[maxStep ,activeStep])
 
   const handleOnSubmit = async (values: FieldValues) => {
     const isSubmitted = await handleSubmit({
@@ -893,15 +838,12 @@ export function SimpleEditor({
     handleActiveIndex(activeStep + 1);
   };
 
-  React.useEffect(() => {
-    useEditorStore.setState({ editor: editor });
-  }, [editor]);
-
- 
 
   if (!editor) {
     return null;
   }
+
+
 
   return (
     <div
@@ -928,60 +870,62 @@ export function SimpleEditor({
                 // "--color-input": inputBackgroundColor || undefined,
               } as React.CSSProperties & Record<string, string>
             }
-            // noValidate
+            noValidate
           >
             {isEditable && <EditorDragHandle editor={editor} />}
-
             {isEditable ? (
-              <SlashCmdProvider>
-                <EditorContent
-                  editor={editor}
-                  role="presentation"
-                  className={`w-full h-full flex flex-col mx-auto px-1 sm:mt-0  mt-16   relative ${
-                    isEditable && "max-w-3xl mx-auto pb-4"
-                  }`}
-                  ref={editorContentRef}
-                />
+              <EditorWithSuggestions
+                editor={editor}
+                editorRef={editorContentRef}
 
-                <SlashCmd.Root editor={editor}>
-                  <SlashCmd.Cmd className="max-w-[320px] w-full bg-popover backdrop-blur-2xl rounded-md z-50 border shadow-xl dark:bg-popover">
-                    <SlashCmd.Empty className="px-4 py-2">
-                      No commands available
-                    </SlashCmd.Empty>
-                    <ScrollArea className="h-[200px] w-full">
-                      <SlashCmd.List className=" w-full grid gap-5 px-2 py-1 rounded-md font-sans font-medium tracking-tighter">
-                        {suggestions?.map?.((item) => {
-                          // if (!item || !item.title) return null;
-                          return (
-                            <SlashCmd.Item
-                              value={item?.title}
-                              onCommand={(val) => {
-                                item?.command?.(val);
-                              }}
-                              key={item.title}
-                              className=" flex gap-2 my-1 items-center justify-start pr-2 dark:hover:bg-accent/30 hover:bg-accent/30 hover:backdrop-blur-lg rounded-md dark:border-border/40 "
-                            >
-                              <Button
-                                className=" shadow-none"
-                                variant={"outline"}
-                                size={"icon"}
-                              >
-                                {item.icon}
-                                {/* <span className="">{item.icon}</span> */}
-                              </Button>
-                              <p className="text-sm  py-2">{item.title}</p>
-                            </SlashCmd.Item>
-                          );
-                        })}
-
-                        {/* </ItemGroup> */}
-                      </SlashCmd.List>
-                      <ScrollBar orientation="vertical" />
-                    </ScrollArea>
-                  </SlashCmd.Cmd>
-                </SlashCmd.Root>
-              </SlashCmdProvider>
+              />
             ) : (
+              // <SlashCmdProvider>
+              //   <EditorContent
+              //     editor={editor}
+              //     role="presentation"
+              //     className={`w-full h-full flex flex-col mx-auto px-1 sm:mt-0  mt-16   relative ${
+              //       isEditable && "max-w-3xl mx-auto pb-4"
+              //     }`}
+              //     ref={editorContentRef}
+              //   />
+
+              //   <SlashCmd.Root editor={editor}>
+              //     <SlashCmd.Cmd className="max-w-[320px] w-full bg-popover backdrop-blur-2xl rounded-md border shadow-xl dark:bg-popover">
+              //       <SlashCmd.Empty className="px-4 py-2">
+              //         No commands available
+              //       </SlashCmd.Empty>
+              //       <ScrollArea className="h-[200px] w-full">
+              //         <SlashCmd.List className=" w-full grid gap-5 px-2 py-1 rounded-md font-sans font-medium tracking-tighter cursor-pointer">
+              //           {suggestions?.map?.((item) => {
+              //             if (!item || !item.title) return null;
+              //             return (
+              //               <SlashCmd.Item
+              //                 value={item?.title}
+              //                 onCommand={(val) => {
+              //                   item?.command?.(val);
+              //                 }}
+              //                 key={item.title}
+              //                 keywords={item.searchTerms}
+              //                 className="flex gap-2 my-1 items-center justify-start pr-2 dark:hover:bg-accent/30 hover:bg-accent/30 hover:backdrop-blur-lg rounded-md dark:border-border/40"
+              //               >
+              //                 <Button
+              //                   className=" shadow-none"
+              //                   variant={"outline"}
+              //                   size={"icon"}
+              //                 >
+              //                   {item.icon}
+              //                 </Button>
+              //                 <p className="text-sm py-2">{item.title}</p>
+              //               </SlashCmd.Item>
+              //             );
+              //           })}
+              //         </SlashCmd.List>
+              //         <ScrollBar orientation="vertical" />
+              //       </ScrollArea>
+              //     </SlashCmd.Cmd>
+              //   </SlashCmd.Root>
+              // </SlashCmdProvider>
               <EditorContent
                 editor={editor}
                 role="presentation"
@@ -1001,12 +945,70 @@ export function SimpleEditor({
                 type="submit"
                 size={"lg"}
               >
-                Submit
+                {isLastStep ? "Submit" : "Next"}
+                {/* Submit */}
               </Button>
             </div>
           </form>
         </Form>
       </EditorContext.Provider>
     </div>
+  );
+}
+
+export function EditorWithSuggestions({
+  editor,
+  editorRef,
+}: {
+  editor: Editor;
+  editorRef: React.Ref<HTMLDivElement>;
+}) {
+  return (
+    <SlashCmdProvider >
+      <EditorContent
+        editor={editor}
+        role="presentation"
+        className={`w-full h-full flex flex-col mx-auto px-1 sm:mt-0  mt-16   relative ${
+          editor.isEditable && "max-w-3xl mx-auto pb-4"
+        }`}
+        ref={editorRef}
+      />
+
+      <SlashCmd.Root  editor={editor}>
+        <SlashCmd.Cmd  className="max-w-[320px] w-full bg-popover backdrop-blur-2xl rounded-md border shadow-xl dark:bg-popover ">
+          <SlashCmd.Empty className="px-4 py-2">
+            No commands available
+          </SlashCmd.Empty>
+          <ScrollArea className="h-[200px] w-full">
+            <SlashCmd.List className=" w-full grid gap-5 px-2 py-1 rounded-md font-sans font-medium tracking-tighter cursor-pointer">
+              {suggestions?.map?.((item) => {
+              
+                return (
+                  <SlashCmd.Item
+                    value={item?.title}
+                    onCommand={(val) => {
+                      item?.command?.(val);
+                    }}
+                    key={item.title}
+                    keywords={item.searchTerms}
+                    className="flex gap-2 my-1 items-center justify-start pr-2 dark:hover:bg-accent/30 hover:bg-accent/30 hover:backdrop-blur-lg rounded-md dark:border-border/40"
+                  >
+                    <Button
+                      className=" shadow-none"
+                      variant={"outline"}
+                      size={"icon"}
+                    >
+                      {item.icon}
+                    </Button>
+                    <p className="text-sm py-2">{item.title}</p>
+                  </SlashCmd.Item>
+                );
+              })}
+            </SlashCmd.List>
+            <ScrollBar orientation="vertical" />
+          </ScrollArea>
+        </SlashCmd.Cmd>
+      </SlashCmd.Root>
+    </SlashCmdProvider>
   );
 }

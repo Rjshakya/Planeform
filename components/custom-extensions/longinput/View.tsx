@@ -12,6 +12,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useFormStore } from "@/stores/useformStore";
 import { NodeViewContent } from "@tiptap/react";
+import { validationFn } from "../FormFieldValidations";
 
 export const LongInputView = (props: NodeViewProps) => {
   const { label, id, isRequired, placeholder, rows } = props?.node
@@ -25,6 +26,7 @@ export const LongInputView = (props: NodeViewProps) => {
         <FormField
           control={form?.control}
           name={id}
+          rules={{ validate: validationFn({ isRequired, type: "longInput" }) }}
           render={({ field }) => (
             <FormItem className="mt-4 field gap-3">
               <FormLabel htmlFor={label} className=" text-md pl-1" id={id}>
@@ -43,7 +45,7 @@ export const LongInputView = (props: NodeViewProps) => {
                   disabled={props?.editor?.isEditable}
                 />
               </FormControl>
-              <FormMessage/>
+              <FormMessage />
             </FormItem>
           )}
         />

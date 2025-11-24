@@ -13,10 +13,9 @@ import { BanIcon } from "@/components/tiptap-icons/ban-icon";
 import { HighlighterIcon } from "@/components/tiptap-icons/highlighter-icon";
 
 // --- UI Primitives ---
-import type { ButtonProps } from "@/components/tiptap-ui-primitive/button";
-import { ButtonGroup } from "@/components/tiptap-ui-primitive/button";
 
-import { Separator } from "@/components/tiptap-ui-primitive/separator";
+
+
 
 // --- Tiptap UI ---
 import type {
@@ -40,6 +39,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Separator } from "@/components/ui/separator";
 
 export interface ColorHighlightPopoverContentProps {
   /**
@@ -54,7 +54,7 @@ export interface ColorHighlightPopoverContentProps {
 }
 
 export interface ColorHighlightPopoverProps
-  extends Omit<ButtonProps, "type">,
+  extends Omit<any, "type">,
     Pick<
       UseColorHighlightConfig,
       "editor" | "hideWhenUnavailable" | "onApplied"
@@ -68,17 +68,13 @@ export interface ColorHighlightPopoverProps
 
 export const ColorHighlightPopoverButton = React.forwardRef<
   HTMLButtonElement,
-  ButtonProps
+  any
 >(({ className, children, ...props }, ref) => (
   <Button
     type="button"
     className={className}
     variant={"ghost"}
-    // data-appearance="default"
-    // role="button"
-    // tabIndex={-1}
     aria-label="Highlight text"
-    tooltip="Highlight"
     ref={ref}
     {...props}
   >

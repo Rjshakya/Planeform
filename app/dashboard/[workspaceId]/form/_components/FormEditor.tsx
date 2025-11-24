@@ -9,8 +9,6 @@ export const FormEditor = ({
   isEditable,
   content,
   className,
-  isLast,
-  activeStep,
 }: {
   isEditable: boolean;
   content?: JsonDoc;

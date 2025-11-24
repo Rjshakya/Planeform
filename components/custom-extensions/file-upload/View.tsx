@@ -22,7 +22,7 @@ import { ChangeEvent, DragEvent, useCallback, useRef, useState } from "react";
 import { apiClient } from "@/lib/axios";
 import { usePathname } from "next/navigation";
 import axios from "axios";
-// import { Input } from "react-aria-components";
+import { validationFn } from "../FormFieldValidations";
 
 export const FileUploadInputView = (props: NodeViewProps) => {
   const { id, isRequired, label, type, maxFiles, maxSize, accept } = props?.node
@@ -160,11 +160,6 @@ export const FileUploadInputView = (props: NodeViewProps) => {
       // Clear existing errors when new files are uploaded
       setState((prev) => ({ ...prev, errors: [] }));
 
-      // In single file mode, clear existing files first
-      // if (!multiple) {
-      //   clearFiles();
-      // }
-
       // Check if adding these files would exceed maxFiles (only in multiple mode)
       if (
         maxFiles !== Infinity &&
@@ -301,13 +296,6 @@ export const FileUploadInputView = (props: NodeViewProps) => {
     []
   );
 
-  const clearErrors = useCallback(() => {
-    setState((prev) => ({
-      ...prev,
-      errors: [],
-    }));
-  }, []);
-
   const handleDragEnter = useCallback((e: DragEvent<HTMLElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -368,156 +356,146 @@ export const FileUploadInputView = (props: NodeViewProps) => {
       <FormField
         control={form?.control}
         name={id}
-        render={({ field: { name, onBlur, onChange, value, disabled } }) => (
+        rules={{
+          validate: validationFn({ isRequired, type: "fileInput" }),
+        }}
+        render={({
+          field: { name, onBlur, onChange, value, disabled, ref },
+          fieldState,
+        }) => (
           <FormItem className={`mt-4 field gap-3`}>
             <FormLabel
-              htmlFor={label}
-              aria-label={label}
-              className=" text-md pl-1"
+              htmlFor={name}
+              aria-label={name}
+              className=" text-md pl-1 grid gap-1"
               id={id}
             >
               {/* {field?.} */}
               <NodeViewContent
-                // onKeyDown={(e) => e?.key === "Enter" && e?.preventDefault()}
                 as="div"
                 className=" min-w-[20px] w-full"
               />
-            </FormLabel>
-            <FormControl>
-              {/* Drop area */}
-              <div>
-                <div
-                  onDragEnter={handleDragEnter}
-                  onDragLeave={handleDragLeave}
-                  onDragOver={handleDragOver}
-                  onDrop={async (e) => {
-                    const files = await handleDrop(e);
-                    const previews = files?.map((f) => f?.preview);
-                    onChange(previews);
-                  }}
-                  data-dragging={state.isDragging || undefined}
-                  data-files={state.files.length > 0 || undefined}
-                  // onClick={openFileDialog}
-                  className="relative dark:bg-input/40 bg-input/70 flex min-h-52 flex-col items-center overflow-hidden rounded-xl border-4 border-dashed border-accent-foreground/20 p-4 transition-colors not-data-[files]:justify-center has-[input:focus]:border-ring has-[input:focus]:ring-[3px] has-[input:focus]:ring-ring/50 data-[dragging=true]:bg-accent/50"
-                >
-                  <input
-                    // {...getInputProps()}
-                    className="sr-only"
-                    aria-label={label}
-                    id={id}
-                    name={name}
-                    ref={inputRef}
-                    onChange={async (e) => {
-                      const files = await handleFileChange(e);
+
+              <FormControl>
+                {/* Drop area */}
+                <div>
+                  <div
+                    onDragEnter={handleDragEnter}
+                    onDragLeave={handleDragLeave}
+                    onDragOver={handleDragOver}
+                    onDrop={async (e) => {
+                      const files = await handleDrop(e);
                       const previews = files?.map((f) => f?.preview);
                       onChange(previews);
                     }}
-                    type="file"
-                    multiple={type === "multiple"}
-                    required={isRequired}
-                    onBlur={onBlur}
-                  />
-                  
-                  <div className="flex flex-col items-center justify-center px-4 py-3 text-center">
-                    <div
-                      className="mb-2 flex size-11 shrink-0 items-center justify-center rounded-full border  bg-background"
-                      aria-hidden="true"
-                    >
-                      <ImageIcon className="size-4 opacity-60" />
-                    </div>
-                    <p className="mb-1.5 text-sm font-medium">
-                      Drop your files here or click
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      (max. {maxSize}MB)
-                    </p>
-                    {/* <Button
-                      type="button"
-                      variant="outline"
-                      className="mt-4"
-                      onClick={openFileDialog}
-                    >
-                      <UploadIcon
-                        className="-ms-1 opacity-60"
-                        aria-hidden="true"
-                      />
-                      Select images
-                    </Button> */}
-                  </div>
-                  <Button
-                    onClick={openFileDialog}
-                    size={"sm"}
-                    variant={"outline"}
-                    type="button"
+                    data-dragging={state.isDragging || undefined}
+                    data-files={state.files.length > 0 || undefined}
+                    className="relative dark:bg-input/40 bg-input/70 flex min-h-52 flex-col items-center overflow-hidden rounded-xl border-4 border-dashed border-accent-foreground/20 p-4 transition-colors not-data-[files]:justify-center has-[input:focus]:border-ring has-[input:focus]:ring-[3px] has-[input:focus]:ring-ring/50 data-[dragging=true]:bg-accent/50"
                   >
-                    select files
-                  </Button>
-                </div>
-                {state.errors.length > 0 && (
-                  <div
-                    className="flex items-center gap-1 text-xs text-destructive"
-                    role="alert"
-                  >
-                    <AlertCircleIcon className="size-3 shrink-0" />
-                    <span>{state.errors[0]}</span>
-                  </div>
-                )}
+                    <input
+                      className="sr-only"
+                      aria-label={label}
+                      id={name}
+                      name={name}
+                      ref={inputRef}
+                      onChange={async (e) => {
+                        const files = await handleFileChange(e);
+                        const previews = files?.map((f) => f?.preview);
+                        onChange(previews);
+                      }}
+                      type="file"
+                      multiple={type === "multiple"}
+                      // required={isRequired}
+                      onBlur={onBlur}
+                      aria-invalid={fieldState.invalid}
+                    />
 
-                {/* File list */}
-
-                {state?.files?.length > 0 && (
-                  <div className="space-y-2">
-                    {state?.files?.map((file) => (
+                    <div className="flex flex-col items-center justify-center px-4 py-3 text-center">
                       <div
-                        key={file?.id}
-                        className="flex items-center justify-between gap-2 rounded-lg border bg-background p-2 pe-3"
+                        className="mb-2 flex size-11 shrink-0 items-center justify-center rounded-full border  bg-background"
+                        aria-hidden="true"
                       >
-                        <div className="flex items-center gap-3 overflow-hidden">
-                          <div className="aspect-square shrink-0 rounded bg-accent">
-                            <img
-                              src={file?.preview}
-                              alt={file?.file.name}
-                              className="size-10 rounded-[inherit] object-cover"
-                            />
-                          </div>
-                          <div className="flex min-w-0 flex-col gap-0.5">
-                            <p className="truncate text-[13px] font-medium">
-                              {file?.file.name}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {formatBytes(file?.file.size)}
-                            </p>
-                          </div>
-                        </div>
-
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          className="-me-2 size-8 text-muted-foreground/80 hover:bg-transparent hover:text-foreground"
-                          onClick={() => removeFile(file.id, state.files)}
-                          aria-label="Remove file"
-                        >
-                          <XIcon aria-hidden="true" />
-                        </Button>
+                        <ImageIcon className="size-4 opacity-60" />
                       </div>
-                    ))}
-
-                    {state?.files.length > 1 && (
-                      <div>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={clearFiles}
-                        >
-                          Remove all files
-                        </Button>
-                      </div>
-                    )}
+                      <p className="mb-1.5 text-sm font-medium">
+                        Drop your files here or click
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        (max. {maxSize / (1024 * 1024)}MB)
+                      </p>
+                    </div>
+                    <Button onClick={openFileDialog} size={"sm"} variant={"outline"} type="button">
+                      select files
+                    </Button>
                   </div>
-                )}
-              </div>
-            </FormControl>
-            <FormMessage/>
+
+                  {state.errors.length > 0 && (
+                    <div
+                      className="flex items-center gap-1 text-xs text-destructive"
+                      role="alert"
+                    >
+                      <AlertCircleIcon className="size-3 shrink-0" />
+                      <span>{state.errors[0]}</span>
+                    </div>
+                  )}
+
+                  {/* File list */}
+
+                  {state?.files?.length > 0 && (
+                    <div className="space-y-2">
+                      {state?.files?.map((file) => (
+                        <div
+                          key={file?.id}
+                          className="flex items-center justify-between gap-2 rounded-lg border bg-background p-2 pe-3"
+                        >
+                          <div className="flex items-center gap-3 overflow-hidden">
+                            <div className="aspect-square shrink-0 rounded bg-accent">
+                              <img
+                                src={file?.preview}
+                                alt={file?.file.name}
+                                className="size-10 rounded-[inherit] object-cover"
+                              />
+                            </div>
+                            <div className="flex min-w-0 flex-col gap-0.5">
+                              <p className="truncate text-[13px] font-medium">
+                                {file?.file.name}
+                              </p>
+                              <p className="text-xs text-muted-foreground">
+                                {formatBytes(file?.file.size)}
+                              </p>
+                            </div>
+                          </div>
+
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="-me-2 size-8 text-muted-foreground/80 hover:bg-transparent hover:text-foreground"
+                            onClick={() => removeFile(file.id, state.files)}
+                            aria-label="Remove file"
+                          >
+                            <XIcon aria-hidden="true" />
+                          </Button>
+                        </div>
+                      ))}
+
+                      {state?.files.length > 1 && (
+                        <div>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={clearFiles}
+                          >
+                            Remove all files
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </FormControl>
+            </FormLabel>
+
+            <FormMessage />
           </FormItem>
         )}
       />

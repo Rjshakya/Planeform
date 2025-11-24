@@ -18,9 +18,7 @@ import type { UseLinkPopoverConfig } from "@/components/tiptap-ui/link-popover";
 import { useLinkPopover } from "@/components/tiptap-ui/link-popover";
 
 // --- UI Primitives ---
-import type { ButtonProps } from "@/components/tiptap-ui-primitive/button";
 
-import { Separator } from "@/components/tiptap-ui-primitive/separator";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -30,6 +28,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 
 export interface LinkMainProps {
   /**
@@ -59,7 +58,7 @@ export interface LinkMainProps {
 }
 
 export interface LinkPopoverProps
-  extends Omit<ButtonProps, "type">,
+  extends Omit<any, "type">,
     UseLinkPopoverConfig {
   /**
    * Callback for when the popover opens or closes.
@@ -75,7 +74,7 @@ export interface LinkPopoverProps
 /**
  * Link button component for triggering the link popover
  */
-export const LinkButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
+export const LinkButton = React.forwardRef<HTMLButtonElement, any>(
   ({ className, children, ...props }, ref) => {
     return (
       <Button

@@ -1,25 +1,20 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { RenderForm } from "./_components/RenderForm";
-import { ThemeToggle } from "@/components/tiptap-main/simple/theme-toggle";
-import { ButtonGroup } from "@/components/ui/button-group";
-import { Button } from "@/components/ui/button";
 import { useFormStore } from "@/stores/useformStore";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { apiClient } from "@/lib/axios";
 import { useParams } from "next/navigation";
 import useSWR from "swr";
 import { JsonDoc } from "@/lib/types";
-import { thankyouPageContent } from "@/lib/content";
 import { Loader, TriangleAlert } from "lucide-react";
 import {
   Icustomisation,
   IeditorStore,
   useEditorStore,
 } from "@/stores/useEditorStore";
-import { zodResolver } from "@hookform/resolvers/zod";
-import z, { ZodObject } from "zod";
+import z from "zod";
 
 const fetcher = (url: string) => apiClient.get(url);
 export default function Page() {
@@ -27,30 +22,13 @@ export default function Page() {
   const { data, isLoading, error } = useSWR(`/api/form/${formId}`, fetcher);
   const [docs, setDocs] = useState<JsonDoc[]>([]);
   const { formColorScheme } = useEditorStore((s) => s);
+  const { activeStep } = useFormStore((s) => s);
   const [closedState, setClosed] = useState({
     isClosed: false,
     closedMessage: "The form is closed",
   });
 
-  // const [schemaConfig, setSchemaConfig] = useState<{
-  //   schema: Record<string, any>;
-  //   defaults: Record<string, any>;
-  // }>({
-  //   schema: {},
-  //   defaults: {},
-  // });
-
-  // const zodSchema = useMemo(() => {
-  //   if (Object.keys(schemaConfig.schema).length === 0) {
-  //     return z.object({});
-  //   }
-  //   return z.object(schemaConfig.schema);
-  // }, [schemaConfig.schema]);
-
-  const form = useForm<Record<string, any>>({
-    // resolver: zodResolver(zodSchema) as any,
-    // defaultValues: schemaConfig.defaults,
-  });
+  const form = useForm<Record<string, any>>({});
 
   const handleCreateRespondent = async (formId: string, customerId: string) => {
     if (useFormStore.getState().respondentId) return;
@@ -64,7 +42,9 @@ export default function Page() {
     useFormStore?.setState({ respondentId });
   };
 
+
   useEffect(() => {
+
     if (!data) return;
     const formData = data.data?.form;
     const closed = formData?.closed;
@@ -138,19 +118,15 @@ export default function Page() {
     }
 
     setDocs(parsedDocs);
-    // setSchemaConfig({
-    //   schema: zSchema,
-    //   defaults: defaultValues,
-    // });
+   
 
     if (parsedDocs?.length === 1) {
       useFormStore.setState({
         isSingleForm: true,
         creator: creator,
         customerId: customerId,
-        isLastStep: true,
+        isLastStep: activeStep === parsedDocs?.length - 1,
         maxStep: parsedDocs?.length - 1,
-        activeStep: 0,
         form,
       });
     } else {
@@ -158,9 +134,8 @@ export default function Page() {
         isSingleForm: false,
         creator: creator,
         customerId: customerId,
-        isLastStep: false,
+        isLastStep: activeStep === parsedDocs?.length - 1,
         maxStep: parsedDocs?.length - 1,
-        activeStep: 0,
         form,
       });
     }
