@@ -23,11 +23,11 @@ export default function DashboardLayout({
   return (
     <SidebarProvider className="">
       <AppSidebar className="font-sans" />
-      <SidebarInset className="p-2 bg-sidebar ">
+      <SidebarInset className=" min-h-screen bg-sidebar ">
         <main className=" h-full bg-card ">
           <header
             className={cn(
-              `flex h-9 pb-2 mb-8 shrink-0 items-center gap-2 max-w-5xl mx-auto w-full sticky top-0 bg-card `,
+              `flex h-9 pb-2 mb-8 pt-4 shrink-0 items-center gap-2 max-w-5xl mx-auto w-full sticky top-0 bg-card `,
               `${
                 workspaceId && pathName?.includes("/form/create") && "hidden"
               }`,

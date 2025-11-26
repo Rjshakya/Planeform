@@ -13,6 +13,7 @@ import { LiveConnection } from "./_components_integrations/LiveConnection";
 import { AnimatedBackground } from "@/components/ui/animated-background";
 import { icons, Loader, TriangleAlert } from "lucide-react";
 import { useUser } from "@/hooks/use-User";
+import { useFormField } from "@/hooks/use-form-fields";
 
 const fetcher = (url: string) => apiClient.get(url);
 
@@ -306,14 +307,14 @@ export const Integrations = ({
       {/* integrations */}
       <div className=" grid md:grid-cols-3 gap-3 ">
         <AnimatedBackground
-          className="rounded-lg bg-muted/20"
+          className="rounded-lg bg-muted/80"
           transition={{
             type: "spring",
             bounce: 0.2,
             duration: 0.6,
           }}
           enableHover
-          // defaultValue="card-1"
+          
         >
           {integrations?.map((i, index) => {
             return (

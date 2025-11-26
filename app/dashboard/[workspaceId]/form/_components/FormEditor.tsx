@@ -18,7 +18,6 @@ export const FormEditor = ({
   maxStep?: number;
 }) => {
   
-
   return (
     <div className={cn(`  w-full ${className || ""} `)} >
       <SimpleEditor

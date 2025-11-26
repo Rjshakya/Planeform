@@ -9,9 +9,11 @@ import { ArrowLeft, Loader, TriangleAlert } from "lucide-react";
 import { useParams } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import { motion } from "motion/react";
+import { useEditorStore } from "@/stores/useEditorStore";
 
 export const RenderForm = ({ docs }: { docs: JsonDoc[] }) => {
   const { activeStep, maxStep } = useFormStore((s) => s);
+  const { customThankyouMessage } = useEditorStore(s => s)
   const handleActiveIndex = useCallback(
     (idx: number) => {
       const index = idx < 0 ? 0 : Math.min(docs?.length - 1, idx);
@@ -39,7 +41,7 @@ export const RenderForm = ({ docs }: { docs: JsonDoc[] }) => {
 
       {docs?.length > 0 && activeStep === docs?.length && (
         <div className="max-w-3xl mx-auto text-center">
-          <p>Thankyou</p>
+          <p>{customThankyouMessage || "Thankyou"}</p>
         </div>
       )}
 

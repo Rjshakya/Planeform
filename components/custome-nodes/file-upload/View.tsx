@@ -20,14 +20,16 @@ import {
 } from "@/hooks/use-file-upload";
 import { ChangeEvent, DragEvent, useCallback, useRef, useState } from "react";
 import { apiClient } from "@/lib/axios";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import axios from "axios";
 import { validationFn } from "../FormFieldValidations";
+import { toast } from "sonner";
 
 export const FileUploadInputView = (props: NodeViewProps) => {
   const { id, isRequired, label, type, maxFiles, maxSize, accept } = props?.node
     ?.attrs as InsertFileUploadParams;
 
+  const { respondentId } = useFormStore((s) => s);
   const form = useFormStore.getState().getHookForm();
   const [state, setState] = useState<FileUploadState>({
     files: [],
@@ -35,6 +37,7 @@ export const FileUploadInputView = (props: NodeViewProps) => {
     errors: [],
   });
   const pathName = usePathname();
+  const { formId } = useParams();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const validateFile = useCallback(
@@ -95,15 +98,25 @@ export const FileUploadInputView = (props: NodeViewProps) => {
           return url;
         }
 
+        if (!respondentId) {
+          toast.error("Can't upload file please refresh or try again later");
+          return;
+        }
+
         try {
-          const res = await apiClient.post("/api/file", { fileName: name });
+          const res = await apiClient.post("/api/file/respondent", {
+            fileName: name,
+            formId,
+            respondentId,
+          });
           if (res?.status === 200) {
             const signedUrl = res?.data?.url?.uploadUrl;
             url = res?.data?.url?.fileUrl;
             await axios.put(signedUrl, file);
           }
         } catch (e) {
-          console.log("Error uploading file to server:");
+          console.log("Error uploading file");
+          toast.error("Failed to upload file.");
         }
 
         return url;
@@ -287,7 +300,7 @@ export const FileUploadInputView = (props: NodeViewProps) => {
           fileToRemove.file.type.startsWith("image/")
         ) {
           const key = fileToRemove.preview?.split("xyz/")[1];
-          await apiClient.post(`/api/file/delete`, { key });
+          await apiClient.put(`/api/file/delete`, { key });
         }
       } catch (e) {
         console.log("Error deleting file from server:");
@@ -371,10 +384,7 @@ export const FileUploadInputView = (props: NodeViewProps) => {
               id={id}
             >
               {/* {field?.} */}
-              <NodeViewContent
-                as="div"
-                className=" min-w-[20px] w-full"
-              />
+              <NodeViewContent as="div" className=" min-w-[20px] w-full" />
 
               <FormControl>
                 {/* Drop area */}
@@ -405,7 +415,6 @@ export const FileUploadInputView = (props: NodeViewProps) => {
                       }}
                       type="file"
                       multiple={type === "multiple"}
-                      // required={isRequired}
                       onBlur={onBlur}
                       aria-invalid={fieldState.invalid}
                     />
@@ -424,7 +433,12 @@ export const FileUploadInputView = (props: NodeViewProps) => {
                         (max. {maxSize / (1024 * 1024)}MB)
                       </p>
                     </div>
-                    <Button onClick={openFileDialog} size={"sm"} variant={"outline"} type="button">
+                    <Button
+                      onClick={openFileDialog}
+                      size={"sm"}
+                      variant={"outline"}
+                      type="button"
+                    >
                       select files
                     </Button>
                   </div>

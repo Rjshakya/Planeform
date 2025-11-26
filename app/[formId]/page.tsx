@@ -15,8 +15,12 @@ import {
   useEditorStore,
 } from "@/stores/useEditorStore";
 import z from "zod";
+import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/Logo";
+import Link from "next/link";
 
 const fetcher = (url: string) => apiClient.get(url);
+const planetform = process.env.NEXT_PUBLIC_CLIENT_URL;
 export default function Page() {
   const { formId } = useParams();
   const { data, isLoading, error } = useSWR(`/api/form/${formId}`, fetcher);
@@ -42,9 +46,7 @@ export default function Page() {
     useFormStore?.setState({ respondentId });
   };
 
-
   useEffect(() => {
-
     if (!data) return;
     const formData = data.data?.form;
     const closed = formData?.closed;
@@ -53,8 +55,6 @@ export default function Page() {
     const creator = formData?.creator;
     const customerId = formData?.customerId;
     const customisation = formData?.customisation as Icustomisation;
-    const zSchema = {} as Record<string, any>;
-    const defaultValues = {} as Record<string, any>;
 
     if (closed) {
       setClosed({ ...closedState, isClosed: closed, closedMessage });
@@ -72,36 +72,6 @@ export default function Page() {
       if (node.type === "horizontalRule") {
         breakIndices.push(i);
       }
-      if (
-        node?.type?.includes("Input") &&
-        node?.type !== "multipleChoiceInput"
-      ) {
-        defaultValues[node?.attrs?.id] = " ";
-        if (node?.attrs?.isRequired) {
-          zSchema[node?.attrs?.id] = z
-            .string()
-            .nonempty({ error: "field is required" });
-        }
-      }
-
-      if (node?.type === "multipleChoiceInput") {
-        if (node?.attrs?.type === "single") {
-          defaultValues[node?.attrs?.id] = "";
-
-          if (node?.attrs?.isRequired) {
-            zSchema[node?.attrs?.id] = z
-              .string()
-              .min(1, { message: "field is required" });
-          }
-        }
-
-        if (node?.attrs?.type !== "single") {
-          defaultValues[node?.attrs?.id] = [];
-          if (node?.attrs?.isRequired) {
-            zSchema[node?.attrs?.id] = z.array(z.string());
-          }
-        }
-      }
     });
 
     breakIndices?.push(content?.length - 1);
@@ -118,7 +88,6 @@ export default function Page() {
     }
 
     setDocs(parsedDocs);
-   
 
     if (parsedDocs?.length === 1) {
       useFormStore.setState({
@@ -144,8 +113,9 @@ export default function Page() {
   }, [data]);
 
   useEffect(() => {
-    const val = document.documentElement.classList.value;
-    document.documentElement.classList.replace(val, formColorScheme);
+    const val = document.documentElement.classList.values();
+    document.documentElement.classList.remove(...val);
+    document.documentElement.classList.add(formColorScheme);
   }, [formColorScheme]);
 
   if (error) {
@@ -172,6 +142,13 @@ export default function Page() {
           ` max-w-6xl w-full mx-auto px-2 min-h-screen flex items-center justify-center relative`
         )}
       >
+        <div className=" fixed z-50 left-0 bottom-4  w-full h-9 flex items-center justify-end py-2 px-4">
+          <Link href={planetform}>
+            <Button size={"lg"} variant={"secondary"}>
+              <Logo />
+            </Button>
+          </Link>
+        </div>
         {closedState.isClosed ? (
           <div className="w-full text-center">
             <p>{closedState.closedMessage}</p>

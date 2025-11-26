@@ -111,8 +111,8 @@ export const PublishForm = () => {
             Cancel
           </Button>
           <Button onClick={async () => await handlePublish(formName)}>
-            {creating && <Loader className={`animate-spin`} />}
             <span>Create</span>
+            {creating && <Loader className={`animate-spin`} />}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -203,5 +203,6 @@ export const getCustomization = () => {
     actionBtnTextColor: useEditorStore.getState().actionBtnTextColor,
     inputBackgroundColor: useEditorStore.getState().inputBackgroundColor,
     inputBorderColor: useEditorStore.getState().inputBorderColor,
+    customThankyouMessage: useEditorStore.getState().customThankyouMessage,
   };
 };

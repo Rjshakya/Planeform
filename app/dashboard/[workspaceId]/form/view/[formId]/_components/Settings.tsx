@@ -1,4 +1,13 @@
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
@@ -28,7 +37,7 @@ export const Settings = () => {
     const payload = {
       customerId: user?.dodoCustomerId,
       formId,
-      ...state
+      ...state,
     };
 
     const { status } = await apiClient.post(
@@ -70,11 +79,13 @@ export const Settings = () => {
   }
 
   return (
-    <div className="grid gap-6 pb-4">
-      {/* <p>Form settings</p> */}
-      <div className="grid gap-4">
-        <Label htmlFor="check" className=" flex items-center justify-between gap-2  p-4 bg-muted rounded-sm">
-          <span>Closed</span>
+    <Card className=" border-none shadow-none">
+      <CardContent className="grid gap-4">
+        <Label
+          htmlFor="check"
+          className=" flex items-center justify-between gap-2  bg-muted rounded-sm py-4 px-2"
+        >
+          <span>Close form</span>
           <Switch
             id="check"
             checked={state.closed}
@@ -83,27 +94,32 @@ export const Settings = () => {
             }}
           />
         </Label>
-        <div className=" flex flex-col   gap-2  p-4 bg-muted rounded-sm">
-          <Label>Closing message</Label>
-          <Textarea
-            className=" appearance-none bg-transparent border-none shadow-none"
-            value={state.closedMessage}
-            onChange={(e) => {
-              setState({ ...state, closedMessage: e?.currentTarget?.value });
-            }}
-          />
+        <div className="grid gap-4">
+
+           <Label className="pl-1">Closing message</Label>
+        <Textarea
+          className=" appearance-none bg-transparent border-none shadow-none"
+          value={state.closedMessage}
+          onChange={(e) => {
+            setState({ ...state, closedMessage: e?.currentTarget?.value });
+          }}
+        />
+
         </div>
-        <div className="flex justify-start pl-1 ">
-          <Button
-            onClick={handleSubmit}
-            variant={"destructive"}
-            className="w-[120px]"
-            size={"lg"}
-          >
-            Submit
-          </Button>
-        </div>
-      </div>
-    </div>
+       
+      </CardContent>
+      <CardFooter  className="">
+        <CardAction className="px-1">
+        <Button
+          onClick={handleSubmit}
+          variant={"destructive"}
+          className="w-[120px]"
+          size={"lg"}
+        >
+          Submit
+        </Button>
+        </CardAction>
+      </CardFooter>
+    </Card>
   );
 };

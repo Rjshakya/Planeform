@@ -16,22 +16,19 @@ import { Focus, Placeholder, Selection } from "@tiptap/extensions";
 
 import { FieldValues, useForm, UseFormReturn } from "react-hook-form";
 import { Form } from "@/components/ui/form";
-import { shortInputNode } from "@/components/custom-extensions/shortinput/node";
-import { longInputNode } from "@/components/custom-extensions/longinput/node";
+import { shortInputNode } from "@/components/custome-nodes/shortinput/node";
+import { longInputNode } from "@/components/custome-nodes/longinput/node";
 import {
-  Ioptions,
   multipleChoiceNode,
   optionNode,
-} from "@/components/custom-extensions/multiple-choices/node";
+} from "@/components/custome-nodes/multiple-choices/node";
 
-import { actionButtonNode } from "@/components/custom-extensions/action-btn/node";
 import { useEditorStore } from "@/stores/useEditorStore";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { useFormStore } from "@/stores/useformStore";
 import { TextStyle, FontFamily } from "@tiptap/extension-text-style";
-import { FontSize } from "@/components/custom-extensions/font-size/node";
 
-import { dateInputNode } from "@/components/custom-extensions/date-input/node";
+import { dateInputNode } from "@/components/custome-nodes/date-input/node";
 
 import {
   Slash,
@@ -39,22 +36,21 @@ import {
   createSuggestionsItems,
   SlashCmdProvider,
   SlashCmd,
-  renderItems
+  renderItems,
 } from "@harshtalks/slash-tiptap";
 
-import { v4, v7 } from "uuid";
-import { Text } from "lucide-react";
+import { v7 } from "uuid";
 import { TiptapToolBar } from "./main-toolbar";
 import { EditorDragHandle } from "./drag-handle";
 import UploadImage from "tiptap-extension-upload-image";
 import { apiClient } from "@/lib/axios";
 import axios from "axios";
-import { fileUploadNode } from "@/components/custom-extensions/file-upload/node";
+import { fileUploadNode } from "@/components/custome-nodes/file-upload/node";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { PageBreakNode } from "@/components/custom-extensions/page-break/node";
 import { toast } from "sonner";
-import { emailInputNode } from "@/components/custom-extensions/email/node";
+import { emailInputNode } from "@/components/custome-nodes/email/node";
+import { Loader } from "lucide-react";
 
 const suggestions = createSuggestionsItems([
   {
@@ -73,7 +69,7 @@ const suggestions = createSuggestionsItems([
         ?.focus()
         ?.deleteRange(range)
         .insertShortInput({
-          id: v4(),
+          id: v7(),
           isRequired: true,
           label: "Short Answer",
           placeholder: "write anything here",
@@ -132,7 +128,7 @@ const suggestions = createSuggestionsItems([
         ?.focus()
         ?.deleteRange(range)
         ?.insertLongInput({
-          id: v4(),
+          id: v7(),
           isRequired: true,
           label: "Long Answer",
           placeholder: "write anything here",
@@ -608,7 +604,7 @@ const suggestions = createSuggestionsItems([
     ],
   },
   {
-    title: "Add image",
+    title: "Embed image",
     command: ({ editor, range }) => {
       editor.chain().focus().addImage().run();
     },
@@ -663,7 +659,7 @@ export function SimpleEditor({
   content?: any;
   isEditable?: boolean;
 }) {
-  const { formId } = useParams();
+  const { formId, workspaceId } = useParams();
   const pathName = usePathname();
 
   const editorContentRef = React.useRef<HTMLDivElement>(null);
@@ -686,10 +682,28 @@ export function SimpleEditor({
   // form init
   const form = useFormStore.getState().getHookForm();
 
-  const uploadFn = async (file: File) => {
+  const handleUpload = async (file: File, editor: Editor | null) => {
+    console.log(file.name);
+
+    if (!workspaceId) {
+      toast.error("Workspace ID is missing. Cannot upload file.");
+      return "";
+    }
+
+    const imgs = editor?.$nodes("uploadImage");
+    console.log(imgs);
+
+    if (file?.size > 5 * 1024 * 1024) {
+      toast.error("File size exceeds the 5MB limit.");
+      return "";
+    }
+
     const fileName = file?.name;
     let url = URL.createObjectURL(file);
-    const res = await apiClient.post("/api/file", { fileName });
+    const res = await apiClient.post("/api/file/workspace", {
+      fileName,
+      workspaceId,
+    });
     if (res?.status === 200) {
       const signedUrl = res?.data?.url?.uploadUrl;
       url = res?.data?.url?.fileUrl;
@@ -746,13 +760,11 @@ export function SimpleEditor({
 
             return filtered;
           },
-          startOfLine:true,
-          char:"/",
-          allowSpaces:true,
-          allowToIncludeChar:true
-          
+          startOfLine: true,
+          char: "/",
+          allowSpaces: true,
+          allowToIncludeChar: true,
         },
-
       }),
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       TaskList,
@@ -768,9 +780,7 @@ export function SimpleEditor({
       multipleChoiceNode,
       optionNode,
       dateInputNode,
-      actionButtonNode,
       fileUploadNode,
-      PageBreakNode,
       emailInputNode,
       Focus.configure({
         className: "has-focus",
@@ -778,15 +788,13 @@ export function SimpleEditor({
       }),
       TextStyle,
       FontFamily,
-      FontSize,
       Placeholder.configure({
         placeholder: "Press / to open menu",
-        showOnlyWhenEditable:true,
-        showOnlyCurrent:true,
-
+        showOnlyWhenEditable: true,
+        showOnlyCurrent: true,
       }),
       UploadImage.configure({
-        uploadFn: uploadFn,
+        uploadFn: (file: File): Promise<string> => handleUpload(file, editor),
       }),
     ],
     editable: isEditable,
@@ -802,8 +810,8 @@ export function SimpleEditor({
     },
   });
 
-  const handleActiveIndex = 
-    React.useCallback((idx: number) => {
+  const handleActiveIndex = React.useCallback(
+    (idx: number) => {
       let index = idx;
       if (index < 0) {
         index = 0;
@@ -820,7 +828,9 @@ export function SimpleEditor({
         activeStep: index,
         isLastStep: maxStep === index,
       });
-    },[maxStep ,activeStep])
+    },
+    [maxStep, activeStep]
+  );
 
   const handleOnSubmit = async (values: FieldValues) => {
     const isSubmitted = await handleSubmit({
@@ -832,18 +842,20 @@ export function SimpleEditor({
 
     if (isLastStep && isSubmitted) {
       handleActiveIndex(activeStep + 1);
-      return form?.reset();
+      form?.reset();
+      return;
     }
 
     handleActiveIndex(activeStep + 1);
   };
 
-
   if (!editor) {
     return null;
   }
 
-
+  if (!form) {
+    return null;
+  }
 
   return (
     <div
@@ -851,23 +863,24 @@ export function SimpleEditor({
       style={
         {
           backgroundColor: formBackgroundColor || undefined,
-          color: formTextColor || undefined,
-          "--input": inputBackgroundColor || undefined,
         } as React.CSSProperties & Record<string, string>
       }
     >
       <EditorContext.Provider value={{ editor }}>
         {isEditable && <TiptapToolBar editor={editor} />}
 
-        <Form {...form!}>
+        <Form {...form}>
           <form
-            onSubmit={form?.handleSubmit?.(handleOnSubmit)}
+            onSubmit={form?.handleSubmit?.(handleOnSubmit, (v) =>
+              console.log(v)
+            )}
             className={`w-full h-full px-2 `}
             style={
               {
                 fontFamily: formFontFamliy || undefined,
                 fontSize: formFontSize || undefined,
-                // "--color-input": inputBackgroundColor || undefined,
+                "--input": inputBackgroundColor || undefined,
+                color: formTextColor || undefined,
               } as React.CSSProperties & Record<string, string>
             }
             noValidate
@@ -877,55 +890,8 @@ export function SimpleEditor({
               <EditorWithSuggestions
                 editor={editor}
                 editorRef={editorContentRef}
-
               />
             ) : (
-              // <SlashCmdProvider>
-              //   <EditorContent
-              //     editor={editor}
-              //     role="presentation"
-              //     className={`w-full h-full flex flex-col mx-auto px-1 sm:mt-0  mt-16   relative ${
-              //       isEditable && "max-w-3xl mx-auto pb-4"
-              //     }`}
-              //     ref={editorContentRef}
-              //   />
-
-              //   <SlashCmd.Root editor={editor}>
-              //     <SlashCmd.Cmd className="max-w-[320px] w-full bg-popover backdrop-blur-2xl rounded-md border shadow-xl dark:bg-popover">
-              //       <SlashCmd.Empty className="px-4 py-2">
-              //         No commands available
-              //       </SlashCmd.Empty>
-              //       <ScrollArea className="h-[200px] w-full">
-              //         <SlashCmd.List className=" w-full grid gap-5 px-2 py-1 rounded-md font-sans font-medium tracking-tighter cursor-pointer">
-              //           {suggestions?.map?.((item) => {
-              //             if (!item || !item.title) return null;
-              //             return (
-              //               <SlashCmd.Item
-              //                 value={item?.title}
-              //                 onCommand={(val) => {
-              //                   item?.command?.(val);
-              //                 }}
-              //                 key={item.title}
-              //                 keywords={item.searchTerms}
-              //                 className="flex gap-2 my-1 items-center justify-start pr-2 dark:hover:bg-accent/30 hover:bg-accent/30 hover:backdrop-blur-lg rounded-md dark:border-border/40"
-              //               >
-              //                 <Button
-              //                   className=" shadow-none"
-              //                   variant={"outline"}
-              //                   size={"icon"}
-              //                 >
-              //                   {item.icon}
-              //                 </Button>
-              //                 <p className="text-sm py-2">{item.title}</p>
-              //               </SlashCmd.Item>
-              //             );
-              //           })}
-              //         </SlashCmd.List>
-              //         <ScrollBar orientation="vertical" />
-              //       </ScrollArea>
-              //     </SlashCmd.Cmd>
-              //   </SlashCmd.Root>
-              // </SlashCmdProvider>
               <EditorContent
                 editor={editor}
                 role="presentation"
@@ -933,7 +899,7 @@ export function SimpleEditor({
                 ref={editorContentRef}
               />
             )}
-            <div className={`${isEditable && "max-w-3xl"} mx-auto px-[0.5rem]`}>
+            <div className={`${isEditable && "max-w-3xl"} mx-auto px-1.5`}>
               <Button
                 style={
                   {
@@ -944,9 +910,23 @@ export function SimpleEditor({
                 }
                 type="submit"
                 size={"lg"}
+                onClick={(e) => {
+                  if (isEditable) {
+                    e.preventDefault();
+                    toast.error("Can't submit while creating form");
+                  }
+                }}
               >
-                {isLastStep ? "Submit" : "Next"}
-                {/* Submit */}
+                {isEditable || isLastStep ? (
+                  <div className="flex items-center gap-2">
+                    <span>Submit</span>
+                    {form?.formState.isSubmitting && (
+                      <Loader className={`${isEditable || "animate-spin"} ${isEditable && "hidden"}`} />
+                    )}
+                  </div>
+                ) : (
+                  "Next"
+                )}
               </Button>
             </div>
           </form>
@@ -964,7 +944,7 @@ export function EditorWithSuggestions({
   editorRef: React.Ref<HTMLDivElement>;
 }) {
   return (
-    <SlashCmdProvider >
+    <SlashCmdProvider>
       <EditorContent
         editor={editor}
         role="presentation"
@@ -974,15 +954,14 @@ export function EditorWithSuggestions({
         ref={editorRef}
       />
 
-      <SlashCmd.Root  editor={editor}>
-        <SlashCmd.Cmd  className="max-w-[320px] w-full bg-popover backdrop-blur-2xl rounded-md border shadow-xl dark:bg-popover ">
+      <SlashCmd.Root editor={editor}>
+        <SlashCmd.Cmd className="max-w-[320px] w-full bg-popover backdrop-blur-2xl rounded-md border shadow-xl dark:bg-popover ">
           <SlashCmd.Empty className="px-4 py-2">
             No commands available
           </SlashCmd.Empty>
           <ScrollArea className="h-[200px] w-full">
             <SlashCmd.List className=" w-full grid gap-5 px-2 py-1 rounded-md font-sans font-medium tracking-tighter cursor-pointer">
               {suggestions?.map?.((item) => {
-              
                 return (
                   <SlashCmd.Item
                     value={item?.title}

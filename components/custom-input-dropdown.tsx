@@ -8,14 +8,13 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Card, CardContent } from "./ui/card";
-import { InsertShortInput } from "./custom-extensions/shortinput/Insert";
-import { InsertLongInput } from "./custom-extensions/longinput/Insert";
-import { InsertMultipleChoice } from "./custom-extensions/multiple-choices/Insert";
+import { InsertShortInput } from "./custome-nodes/shortinput/Insert";
+import { InsertLongInput } from "./custome-nodes/longinput/Insert";
+import { InsertMultipleChoice } from "./custome-nodes/multiple-choices/Insert";
 import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
-import { InsertActionBtn } from "./custom-extensions/action-btn/Insert";
-import { InsertPhoneInput } from "./custom-extensions/phoneinput/Insert";
-import { InsertDateInput } from "./custom-extensions/date-input/Insert";
+import { InsertPhoneInput } from "./custome-nodes/phoneinput/Insert";
+import { InsertDateInput } from "./custome-nodes/date-input/Insert";
 
 import { ChevronDown, TextCursorInput } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
@@ -82,9 +81,7 @@ export const CustomInputsDropdown = () => {
                 <InsertPhoneInput />
               </DropdownMenuItem>
 
-              <DropdownMenuItem asChild>
-                <InsertActionBtn />
-              </DropdownMenuItem>
+              
             {/* </CardContent>
           </Card> */}
         </DropdownMenuContent>
