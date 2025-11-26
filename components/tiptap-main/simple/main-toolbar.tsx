@@ -20,7 +20,7 @@ import {
 } from "@/components/tiptap-ui-primitive/toolbar";
 import { TiptapMarkDropdown } from "@/components/tiptap-mark-dropdown";
 import { TiptapTextAlignDropdown } from "@/components/tiptap-text-align-dropdown";
-import { CutomizationPanel } from "@/components/custom-extensions/CutomizationPanel";
+import { CutomizationPanel } from "@/components/custome-nodes/CutomizationPanel";
 import { PreviewForm } from "@/app/dashboard/[workspaceId]/form/create/_components/PreviewForm";
 import { EditForm } from "@/app/dashboard/[workspaceId]/form/edit/[formId]/_components/EditForm";
 import { PublishForm } from "@/app/dashboard/[workspaceId]/form/create/_components/PublishForm";

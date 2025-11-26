@@ -10,22 +10,29 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { NodeViewWrapper, type NodeViewProps } from "@tiptap/react";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { InsertMultipleChoiceParams, Ioptions } from "./node";
 
 import { useFormStore } from "@/stores/useformStore";
 import { NodeViewContent } from "@tiptap/react";
 
-import { Button } from "@/components/ui/button";
 import { AnimatePresence, motion } from "motion/react";
 import { validationFn } from "../FormFieldValidations";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import { useOutsideClick } from "@/hooks/use-outside-click";
 
 export const MultipleChoiceView = (props: NodeViewProps) => {
   const { id, label, isDropdown, type, isRequired } = props?.node
     ?.attrs as InsertMultipleChoiceParams;
   const [open, setOpen] = useState(true);
   const form = useFormStore.getState().getHookForm();
+  const dropdownBoxRef = useRef<HTMLDivElement>(null);
 
+  useOutsideClick(dropdownBoxRef , () => setOpen(false))
   return (
     <>
       <NodeViewWrapper as={"div"} className={"w-full relative "}>
@@ -40,10 +47,10 @@ export const MultipleChoiceView = (props: NodeViewProps) => {
               <FormLabel
                 htmlFor={label}
                 aria-label={label}
-                className=" text-md grid gap-1"
+                className=" text-md grid gap-2"
                 id={id}
               >
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 ">
                   {props?.editor?.isEditable ? (
                     <input
                       className="flex-1 appearance-none  bg-card focus-visible:ring-0 focus:outline-none"
@@ -77,21 +84,20 @@ export const MultipleChoiceView = (props: NodeViewProps) => {
                 </div>
 
                 {isDropdown && (
-                  <div className="flex w-full h-9 items-start  gap-2 max-w-sm ">
-                    <div className="flex-1  h-full ">
-                      <Input className="h-9" readOnly defaultValue={field.value} />
-                    </div>
-                    <Button
-                      size={"icon"}
-                      variant={"ghost"}
-                      type="button"
-                      onClick={() => {
-                        if (props.editor.isEditable) return;
-                        setOpen(!open);
-                      }}
-                      className="h-full"
-                    >
-                      <div>
+                  <div
+                    ref={dropdownBoxRef}
+                    className="flex w-full items-start  gap-2 max-w-sm "
+                  >
+                    <InputGroup className="h-9">
+                      <InputGroupInput
+                        onClick={() => {
+                          if (props.editor.isEditable) return;
+                          setOpen(!open);
+                        }}
+                        readOnly
+                        defaultValue={field.value}
+                      />
+                      <InputGroupAddon align={"inline-end"}>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="24"
@@ -101,15 +107,15 @@ export const MultipleChoiceView = (props: NodeViewProps) => {
                         >
                           <path
                             d="M19.92 8.9502L13.4 15.4702C12.63 16.2402 11.37 16.2402 10.6 15.4702L4.07996 8.9502"
-                            stroke="#fff"
-                            stroke-width="1.5"
-                            stroke-miterlimit="10"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
+                            className=" stroke-foreground"
+                            strokeWidth="1.5"
+                            strokeMiterlimit="10"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
                           />
                         </svg>
-                      </div>
-                    </Button>
+                      </InputGroupAddon>
+                    </InputGroup>
                   </div>
                 )}
 
@@ -117,20 +123,30 @@ export const MultipleChoiceView = (props: NodeViewProps) => {
                   {isDropdown ? (
                     open && (
                       <motion.div
-                        initial={{ opacity: 0, filter: "blur(2px)" }}
+                        initial={{
+                          opacity: 0,
+                          filter: "blur(2px)",
+                        }}
                         animate={{ opacity: 1, filter: "blur(0px)" }}
-                        exit={{ opacity: 0, filter: "blur(0px)" }}
+                        exit={{
+                          opacity: 0,
+                          filter: "blur(0px)",
+                        }}
                         transition={{ duration: 0.3, ease: "easeInOut" }}
                         className={`${
                           props?.editor?.isEditable === false &&
                           isDropdown &&
-                          "absolute z-[99] max-w-[325px] inset-x-0 top-20 bg-card p-1 mb-8  rounded-sm shadow-xl border"
+                          "absolute z-99 inset-x-0 top-24 bg-card p-1 mb-8  rounded-sm shadow-xl border"
                         }`}
+                        style={{
+                          width: `${dropdownBoxRef?.current?.offsetWidth}px`,
+                        }}
                       >
                         <NodeViewContent
-                          className={`content px-2 w-full overflow-y-auto ${
+                          className={`content px-2 overflow-y-auto ${
                             props.editor.isEditable || "h-[180px]"
                           }`}
+                          style={{ scrollbarWidth: "none" }}
                         />
                       </motion.div>
                     )

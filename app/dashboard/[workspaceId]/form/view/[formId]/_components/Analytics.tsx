@@ -92,7 +92,7 @@ export const Analytics = () => {
         </div>
       ),
       text: "Visitors",
-      data:data?.visitors
+      data: data?.visitors,
     },
     {
       id: 1,
@@ -142,7 +142,7 @@ export const Analytics = () => {
         </div>
       ),
       text: "Unique visitors",
-      data:data?.uniqueVisitors
+      data: data?.uniqueVisitors,
     },
     {
       id: 2,
@@ -192,7 +192,7 @@ export const Analytics = () => {
         </div>
       ),
       text: "Submissions",
-      data:data?.submissions
+      data: data?.submissions,
     },
     {
       id: 3,
@@ -242,7 +242,7 @@ export const Analytics = () => {
         </div>
       ),
       text: "Unique submission",
-      data:data?.uniqueSubmissions
+      data: data?.uniqueSubmissions,
     },
   ];
 
@@ -284,30 +284,30 @@ export const Analytics = () => {
           </SelectContent>
         </Select>
       </div>
-      <div className=" grid md:grid-cols-4 grid-cols-1 md:gap-1 gap-2 mt-4">
+      <div className=" grid md:grid-cols-2 grid-cols-1 md:gap-1 gap-2 mt-4">
         {AnalyticsTypes?.map((I) => {
           return (
-            <Card key={I.id} className=" rounded-md bg-muted/50 dark:bg-muted/40 shadow-none border-none py-3 ">
-              
+            <Card
+              key={I.id}
+              className=" rounded-md bg-muted/50 dark:bg-muted/40 shadow-none border-none py-3 "
+            >
               <CardHeader className=" mb-4 gap-3  ">
-              <p className="text-xs text-muted-foreground">{I.text}</p>
-              <div className="flex items-start justify-between gap-1">
-                <Button size={"icon"} variant={"secondary"}>
-                  {" "}
-                  {I.icon}
-                </Button>
-                <div className="  ">
-                  {I.data && I.data.length > 0 ? (
-                    <TotalCountComp arr={I.data} />
-                  ) : (
-                    <p className="text-lg font-bold">0</p>
-                  )}
-                 
-                </div>
+                <p className="text-xs text-muted-foreground">{I.text}</p>
+                <div className="flex items-start justify-between gap-1">
+                  <Button size={"icon"} variant={"secondary"}>
+                    {" "}
+                    {I.icon}
+                  </Button>
+                  <div className="  ">
+                    {I.data && I.data.length > 0 ? (
+                      <TotalCountComp arr={I.data} />
+                    ) : (
+                      <p className="text-lg font-bold">0</p>
+                    )}
+                  </div>
                 </div>
               </CardHeader>
               <CardContent className="px-8">
-                
                 {I.data && I.data.length > 0 ? (
                   <AnalyticsBarChart data={I.data} />
                 ) : (
@@ -319,7 +319,6 @@ export const Analytics = () => {
             </Card>
           );
         })}
-        
       </div>
     </div>
   );
@@ -344,18 +343,18 @@ const AnalyticsBarChart = ({ data }: { data: IAnalyticsObj[] }) => {
     const date = new Date(dateString);
     const now = new Date();
     const isToday = date.toDateString() === now.toDateString();
-    
+
     if (isToday) {
-      return date.toLocaleTimeString("en-US", { 
-        hour: "numeric", 
+      return date.toLocaleTimeString("en-US", {
+        hour: "numeric",
         minute: "2-digit",
-        hour12: true 
+        hour12: true,
       });
     }
-    
-    return date.toLocaleDateString("en-US", { 
-      month: "short", 
-      day: "numeric" 
+
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
     });
   };
 
@@ -372,9 +371,14 @@ const AnalyticsBarChart = ({ data }: { data: IAnalyticsObj[] }) => {
   };
 
   return (
-    <ChartContainer  config={chartConfig} className=" w-full">
-      <BarChart accessibilityLayer data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }} barSize={15}  >
-      {/* <CartesianGrid vertical={false} /> */}
+    <ChartContainer config={chartConfig} className=" w-full">
+      <BarChart
+        accessibilityLayer
+        data={chartData}
+        margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+        barSize={15}
+      >
+        {/* <CartesianGrid vertical={false} /> */}
         <XAxis
           dataKey="date"
           tick={{ fontSize: 12 }}
@@ -382,15 +386,8 @@ const AnalyticsBarChart = ({ data }: { data: IAnalyticsObj[] }) => {
           axisLine={false}
           tickMargin={10}
         />
-        <ChartTooltip
-          cursor={false}
-          content={<ChartTooltipContent />}
-        />
-        <Bar
-          dataKey="count"
-          fill="var(--color-count)"
-          radius={4}
-        />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Bar dataKey="count" fill="var(--color-count)" radius={4} />
       </BarChart>
     </ChartContainer>
   );

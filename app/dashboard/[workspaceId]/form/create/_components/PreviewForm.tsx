@@ -16,46 +16,32 @@ import { ArrowLeft } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { useForm } from "react-hook-form";
 import { useEditorStore } from "@/stores/useEditorStore";
+import { motion } from "motion/react";
 
 export const PreviewForm = () => {
   const [jsonContent, setJsonContent] = useState<JsonDoc>();
   const { editor } = useCurrentEditor();
   const [docs, setDocs] = useState<JsonDoc[]>([]);
-  const form = useForm({
-    shouldUseNativeValidation:true
-  });
+  const form = useForm({});
 
   const { data: session } = authClient.useSession();
-  const { activeStep, isLastStep, maxStep } = useFormStore((s) => s);
+  const { activeStep } = useFormStore((s) => s);
   const { formBackgroundColor } = useEditorStore((s) => s);
 
   const handlePreview = useCallback(() => {
     if (!editor) return;
     const json = editor.getJSON();
-    console.log(json);
-
     setJsonContent(json);
+    useFormStore.setState({ activeStep: 0, form });
   }, [editor]);
 
-  const handleActiveIndex = useCallback(
-    (idx: number) => {
-      const index = idx < 0 ? 0 : Math.min(maxStep, idx);
-
-      useFormStore.setState({
-        activeStep: index,
-        isLastStep: maxStep === index,
-      });
-    },
-    [maxStep]
-  );
-
   useEffect(() => {
-    if (!jsonContent?.content) {
+    if (!jsonContent?.content || !form) {
       setDocs([]);
       return;
     }
 
-    const content = [...jsonContent?.content]
+    const content = [...jsonContent?.content];
     const breakIndices: number[] = [0];
 
     content?.forEach((node, i) => {
@@ -84,7 +70,7 @@ export const PreviewForm = () => {
         isSingleForm: true,
         creator: session?.user?.id,
         customerId: session?.user?.dodoCustomerId,
-        isLastStep: true,
+        isLastStep: activeStep === parsedDocs?.length - 1,
         maxStep: parsedDocs?.length - 1,
       });
     } else {
@@ -92,19 +78,11 @@ export const PreviewForm = () => {
         isSingleForm: false,
         creator: session?.user?.id,
         customerId: session?.user?.dodoCustomerId,
-        isLastStep: false,
+        isLastStep: activeStep === parsedDocs?.length - 1,
         maxStep: parsedDocs?.length - 1,
       });
     }
-
-    useFormStore.setState({ activeStep: 0, form });
-  }, [
-    jsonContent,
-    editor,
-    form,
-    session?.user?.dodoCustomerId,
-    session?.user?.id,
-  ]);
+  }, [jsonContent, form , handlePreview]);
 
   return (
     <Sheet>
@@ -123,40 +101,66 @@ export const PreviewForm = () => {
         <SheetHeader>
           <SheetTitle>Preview form</SheetTitle>
         </SheetHeader>
-        <div className="pt-2 pb-4">
-        {docs?.length > 1 && activeStep !== 0 && (
-            <div className="w-full max-w-3xl mx-auto">
-              <Button
-                onClick={() => handleActiveIndex(activeStep - 1)}
-                variant={"secondary"}
-                size={"icon"}
-              >
-                <ArrowLeft size={16} />
-              </Button>
-            </div>
-          )}
-
-          {docs?.length > 0 && activeStep === docs?.length && (
-            <div className="max-w-3xl mx-auto text-center">
-              <p>Thankyou</p>
-            </div>
-          )}
-
-          {docs?.map((d, i) => {
-            if (activeStep === i) {
-              return (
-                <FormEditor
-                  key={i}
-                  className=" mx-auto max-w-3xl   w-full rounded-2xl  dark:bg-accent/0 "
-                  isEditable={false}
-                  content={d}
-                />
-              );
-            }
-            return null;
-          })}
-        </div>
+        <RenderPreviewForm docs={docs} />
       </SheetContent>
     </Sheet>
+  );
+};
+
+export const RenderPreviewForm = ({ docs }: { docs: JsonDoc[] }) => {
+  const { activeStep, maxStep } = useFormStore((s) => s);
+  const handleActiveIndex = useCallback(
+    (idx: number) => {
+      const index = idx < 0 ? 0 : Math.min(docs?.length - 1, idx);
+      useFormStore.setState({
+        activeStep: index,
+        isLastStep: maxStep === index,
+      });
+    },
+    [maxStep, docs?.length]
+  );
+
+  return (
+    <div className="pt-2 pb-4">
+      {docs?.length > 1 && activeStep !== 0 && (
+        <div className="w-full max-w-3xl mx-auto">
+          <Button
+            onClick={() => handleActiveIndex(activeStep - 1)}
+            variant={"secondary"}
+            size={"icon"}
+          >
+            <ArrowLeft size={16} />
+          </Button>
+        </div>
+      )}
+
+      {docs?.length > 0 && activeStep === docs?.length && (
+        <div className="max-w-3xl mx-auto text-center">
+          <p>Thankyou</p>
+        </div>
+      )}
+
+      {docs?.map((content, i) => {
+        if (activeStep === i) {
+          return (
+            <motion.div
+              key={activeStep}
+              initial={{ opacity: 0, y: -700, filter: "blur(5px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
+              className="w-full"
+            >
+              <FormEditor
+                key={activeStep}
+                className="max-w-xl mx-auto  w-full rounded-2xl  dark:bg-accent/0 "
+                isEditable={false}
+                content={content}
+              />
+            </motion.div>
+          );
+        }
+        return null;
+      })}
+    </div>
   );
 };

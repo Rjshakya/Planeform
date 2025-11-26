@@ -14,6 +14,8 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Node } from "@tiptap/pm/model";
+import { apiClient } from "@/lib/axios";
+import { toast } from "sonner";
 
 export const EditorDragHandle = memo(function Dragcomp({
   editor,
@@ -24,6 +26,27 @@ export const EditorDragHandle = memo(function Dragcomp({
   const [nodePosition, setNodePosition] = React.useState<number | null>(null);
   const [currentNode, setCurrentNode] = React?.useState<Node | null>(null);
   const [openPopover, setOpenPopover] = React.useState(false);
+
+  const handleDeleteNode = async (currentNode: Node | null) => {
+    if (!editor || !currentNode) return;
+
+    try {
+      if (currentNode.type.name === "uploadImage" && currentNode?.attrs?.src) {
+        const src = currentNode?.attrs?.src as string;
+        const key = src.split("xyz/")[1];
+        await apiClient.put(`/api/file/delete`, { key });
+      }
+      editor
+        ?.chain()
+        ?.focus()
+        ?.setNodeSelection(nodePosition!)
+        ?.deleteSelection()
+        ?.run();
+    } catch (e) {
+      toast.error("failed to delete node");
+    }
+  };
+
   return (
     <DragHandle
       computePositionConfig={{ strategy: "fixed" }}
@@ -169,14 +192,7 @@ export const EditorDragHandle = memo(function Dragcomp({
                       className="size-6"
                       variant={"ghost"}
                       size={"icon"}
-                      onClick={() => {
-                        editor
-                          ?.chain()
-                          ?.focus()
-                          ?.setNodeSelection(nodePosition!)
-                          ?.deleteSelection()
-                          ?.run();
-                      }}
+                      onClick={() => handleDeleteNode(currentNode)}
                     >
                       <span>
                         <svg

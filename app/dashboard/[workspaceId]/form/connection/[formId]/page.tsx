@@ -1,9 +1,11 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useFormField } from "@/hooks/use-form-fields";
 import { useUser } from "@/hooks/use-User";
 import { apiClient } from "@/lib/axios";
 import {
@@ -14,6 +16,9 @@ import {
 } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { GmailIntegration, GmailNotifyIntegration, IemailData } from "./_components/Gmail";
+
+
 
 export default function Page() {
   const searchParams = useSearchParams();
@@ -22,7 +27,7 @@ export default function Page() {
   const { user } = useUser();
   const router = useRouter();
   const [state, setState] = useState("");
-  const [emailData, setEmailData] = useState({
+  const [emailData, setEmailData] = useState<IemailData>({
     subject: "",
     body: "",
     from: "",
@@ -39,7 +44,9 @@ export default function Page() {
         metaData,
         customerId: user.dodoCustomerId,
       });
-      router.push(`${clientUrl}/dashboard/${workspaceId}/form/view/${formId}`);
+      router.replace(
+        `${clientUrl}/dashboard/${workspaceId}/form/view/${formId}`
+      );
     } catch (e) {
       toast("failed to create sheet");
     }
@@ -58,7 +65,9 @@ export default function Page() {
         metaData,
         customerId,
       });
-      router.push(`${clientUrl}/dashboard/${workspaceId}/form/view/${formId}`);
+      router.replace(
+        `${clientUrl}/dashboard/${workspaceId}/form/view/${formId}`
+      );
     } catch (e) {
       toast("failed to create notion page");
     }
@@ -78,7 +87,9 @@ export default function Page() {
         metaData: JSON.stringify({ url }),
       };
       await apiClient.post(`/api/integration/webhook`, body);
-      router.push(`${clientUrl}/dashboard/${workspaceId}/form/view/${formId}`);
+      router.replace(
+        `${clientUrl}/dashboard/${workspaceId}/form/view/${formId}`
+      );
     } catch (e) {
       toast("failed to create webhook");
     }
@@ -95,7 +106,14 @@ export default function Page() {
       metaData: JSON.stringify(bodyData),
     };
     await apiClient.post(`/api/integration/gmail-notify`, body);
-    router.push(`${clientUrl}/dashboard/${workspaceId}/form/view/${formId}`);
+    setEmailData({
+      subject: "",
+      body: "",
+      from: "",
+      to: "",
+    });
+    router.replace(`${clientUrl}/dashboard/${workspaceId}/form/view/${formId}`);
+    return;
   };
 
   if (!searchParams || !searchParams.get("type")) {
@@ -113,11 +131,9 @@ export default function Page() {
     );
   }
 
-  
-
   return (
     <div>
-      {searchParams.get("type") === "sheet" && (
+      {searchParams && searchParams.get("type") === "sheet" && (
         <div className="max-w-lg mx-auto grid gap-3">
           <Label>Sheet name</Label>
           <Input
@@ -130,7 +146,7 @@ export default function Page() {
           </Button>
         </div>
       )}
-      {searchParams.get("type") === "notion" && (
+      {searchParams && searchParams.get("type") === "notion" && (
         <div className="max-w-lg mx-auto grid gap-3">
           <Label>Page name</Label>
           <Input
@@ -148,7 +164,7 @@ export default function Page() {
           </Button>
         </div>
       )}
-      {searchParams.get("type") === "webhook" && (
+      {searchParams && searchParams.get("type") === "webhook" && (
         <div className="max-w-lg mx-auto grid gap-3">
           <Label>Webhook url</Label>
           <Input
@@ -167,47 +183,11 @@ export default function Page() {
           </Button>
         </div>
       )}
-      {searchParams.get("type") === "gmail-notify" && (
-        <div className="max-w-lg mx-auto grid gap-3">
-          <Label>From</Label>
-          <Input
-            value={user?.email}
-            placeholder="type subject here"
-            type="url"
-            readOnly
-          />
-          <Label>To</Label>
-          <Input
-            value={user?.email}
-            placeholder="type subject here"
-            type="url"
-            readOnly
-          />
-          <Label>Subject</Label>
-          <Input
-            value={emailData?.subject}
-            onChange={(e) =>
-              setEmailData({ ...emailData, subject: e?.currentTarget?.value })
-            }
-            placeholder="write subject here"
-            type="url"
-          />
-          <Label>Body</Label>
-          <Textarea
-            maxLength={55}
-            value={emailData?.body}
-            onChange={(e) =>
-              setEmailData({ ...emailData, body: e.currentTarget.value })
-            }
-            placeholder="write anything here"
-          />
-          <Button
-            onClick={() => handleGmailNotify(emailData, user!.dodoCustomerId)}
-            className=" py-5"
-          >
-            Submit
-          </Button>
-        </div>
+      {searchParams && searchParams.get("type") === "gmail-notify" && (
+        <GmailNotifyIntegration/>
+      )}
+      {searchParams && searchParams.get("type") === "gmail" && (
+        <GmailIntegration />
       )}
     </div>
   );

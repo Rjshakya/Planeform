@@ -21,6 +21,7 @@ const ShortInput = (props: NodeViewProps) => {
   const { label, id, type, isRequired, placeholder } = props?.node?.attrs;
 
   const form = useFormStore.getState().getHookForm();
+  
   return (
     <>
       <NodeViewWrapper as={"div"}>
@@ -40,7 +41,6 @@ const ShortInput = (props: NodeViewProps) => {
               >
                 {/* {field?.} */}
                 <NodeViewContent
-                  // onKeyDown={(e) => e?.key === "Enter" && e?.preventDefault()}
                   as="div"
                   className=" min-w-[20px] w-full"
                 />
@@ -66,8 +66,6 @@ const ShortInput = (props: NodeViewProps) => {
                     ref={field?.ref}
                     onBlur={field?.onBlur}
                     className=""
-                    
-                    // {...field}
                   />
                 )}
               </FormControl>

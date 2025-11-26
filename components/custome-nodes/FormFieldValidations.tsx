@@ -5,9 +5,11 @@ export interface Ivalidation {
   type: string;
 }
 
-const emailSchema = z.email();
+
 export const validationFn = (params: Ivalidation) => {
+  const emailSchema = z.email();
   return (value: any) => {
+    
     if (!params.isRequired) return true;
     if (!value || value?.length === 0) {
       return "field is required";

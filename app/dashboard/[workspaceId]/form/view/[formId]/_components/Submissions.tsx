@@ -36,100 +36,11 @@ export const Submissions = () => {
     fetcher
   );
   const [tableData, setTableData] = useState<any[]>();
-  const [totalPages , setTotalPages] = useState(0)
+  const [totalPages, setTotalPages] = useState(0);
   const [columns, setColumns] = useState<ColumnDef<Iheads>[]>([]);
 
- 
-  // const columns = useMemo(() => {
-  //   const columnArr: ColumnDef<Iheads>[] = heads?.map((h) => {
-  //     return {
-  //       id: h?.id,
-  //       header: h?.label,
-  //       accessorKey: h?.id,
-  //       cell: ({ row }) => {
-  //         // @ts-ignore
-  //         const value = row.getValue(h?.id)?.value;
-  //         const dateSchema = z.iso.datetime();
-  //         const imgUrlSchema = z.httpUrl({
-  //           pattern:
-  //             /^https:\/\/bucket\.planetform\.xyz\/[\w\-\.\/]+\.(jpg|jpeg|png|gif|webp|svg)$/i,
-  //         });
-  //         const parsed = dateSchema.safeParse(value);
-  //         const parsedImg = imgUrlSchema.safeParse(value);
-
-  //         if (parsed.success) {
-  //           const date = new Date(parsed.data);
-  //           return <div className="font-medium ">{format(date, "Pp")}</div>;
-  //         }
-  //         if (parsedImg.success) {
-  //           return (
-  //             <div className="font-medium ">
-  //               <Image
-  //                 className=""
-  //                 width={80}
-  //                 height={80}
-  //                 src={parsedImg.data}
-  //                 alt="uploaded-img"
-  //               />
-  //             </div>
-  //           );
-  //         }
-
-  //         return (
-  //           <div className="font-medium ">
-  //             {/* @ts-ignore */}
-  //             <p className=" text-wrap">{row.getValue(h?.id)?.value}</p>
-  //           </div>
-  //         );
-  //       },
-
-  //       size: 200,
-  //       enableHiding: true,
-  //     };
-  //   });
-
-  //   columnArr?.unshift({
-  //     id: "select",
-  //     header: ({ table }) => (
-  //       <div className=" grid place-content-center mr-1">
-  //         <Checkbox
-  //           checked={
-  //             table.getIsAllPageRowsSelected() ||
-  //             (table.getIsSomePageRowsSelected() && "indeterminate")
-  //           }
-  //           onCheckedChange={(value) =>
-  //             table.toggleAllPageRowsSelected(!!value)
-  //           }
-  //           aria-label="Select all"
-  //         />
-  //       </div>
-  //     ),
-  //     cell: ({ row }) => (
-  //       <Checkbox
-  //         className=" ml-1"
-  //         checked={row.getIsSelected()}
-  //         onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //         aria-label="Select row"
-  //       />
-  //     ),
-  //     size: 46,
-  //     enableSorting: false,
-  //     enableHiding: false,
-  //   });
-
-  //   columnArr?.push({
-  //     id: "actions",
-  //     header: () => <span className="sr-only">Actions</span>,
-  //     cell: ({ row }) => <RowActions row={row} />,
-  //     size: 60,
-  //     enableHiding: false,
-  //   });
-
-  //   return columnArr;
-  // }, [data, heads]);
-  
   useEffect(() => {
-    if(!submissionData)return;
+    if (!submissionData) return;
     const responses = submissionData.responses;
     const heads: Iheads[] = responses?.headers;
     if (!heads) return;
@@ -156,7 +67,7 @@ export const Submissions = () => {
           }
           if (parsedImg.success) {
             return (
-              <div className="font-medium ">
+              <div className="font-medium flex ">
                 <Image
                   className=""
                   width={80}
@@ -164,6 +75,26 @@ export const Submissions = () => {
                   src={parsedImg.data}
                   alt="uploaded-img"
                 />
+                <a href={parsedImg.data} download>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className=" size-6 fill-green-500"
+                    viewBox="0 0 24 24"
+                    fill="#fff"
+                  >
+                    <path
+                      opacity="0.4"
+                      d="M2 16.19V7.81C2 4.17 4.17 2 7.81 2H16.18C19.83 2 22 4.17 22 7.81V16.18C22 19.82 19.83 21.99 16.19 21.99H7.81C4.17 22 2 19.83 2 16.19Z"
+                      fill="white"
+                      style={{fill:'var(--fillg)'}}
+                    />
+                    <path
+                      d="M11.47 18.53L7.18 14.24C6.89 13.95 6.89 13.47 7.18 13.18C7.47 12.89 7.95 12.89 8.24 13.18L11.25 16.19V6C11.25 5.59 11.59 5.25 12 5.25C12.41 5.25 12.75 5.59 12.75 6V16.19L15.76 13.18C16.05 12.89 16.53 12.89 16.82 13.18C16.97 13.33 17.04 13.52 17.04 13.71C17.04 13.9 16.97 14.09 16.82 14.24L12.53 18.53C12.39 18.67 12.2 18.75 12 18.75C11.8 18.75 11.61 18.67 11.47 18.53Z"
+                      fill="white"
+                      style={{fill:'var(--fillg)'}}
+                    />
+                  </svg>
+                </a>
               </div>
             );
           }
@@ -219,10 +150,9 @@ export const Submissions = () => {
     });
 
     setColumns(columnArr);
-    setTotalPages(responses?.totalPages)
-    setTableData(responses?.res)
-
-  }, [submissionData , pagination]);
+    setTotalPages(responses?.totalPages);
+    setTableData(responses?.res);
+  }, [submissionData, pagination]);
 
   if (error) {
     return (

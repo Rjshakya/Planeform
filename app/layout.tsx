@@ -127,8 +127,8 @@ export default function RootLayout({
         className={cn(`${dmSans.variable} ${geistMono.variable} ${inter.variable} ${geist.variable} ${spaceGrotesk.variable} ${playFairDisplay.variable} antialiased , ${roboto.variable}
           ${robotoMono.variable} ${robotoSerif.variable} ${poppins.variable} ${acme.variable} ${playfair.variable} ${instrumentSerif.variable}`)}
       >
-        <div className={`font-sans tracking-tighter w-full`}>{children}</div>
-        <Toaster position="top-right" />
+        <div className={`font-sans tracking-tighter w-full min-h-screen`}>{children}</div>
+        <Toaster className="font-sans" position="top-right" />
       </body>
     </html>
   );

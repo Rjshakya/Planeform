@@ -79,6 +79,7 @@ export const IntegrationCard = ({
         provider === "Gmail"
           ? `${clientUrl}/dashboard/${workspaceId}/form/connection/${formId}?type=gmail`
           : `${clientUrl}/dashboard/${workspaceId}/form/connection/${formId}?type=gmail-notify`;
+      
       await authClient.linkSocial({
         provider: "google",
         scopes: [
@@ -87,6 +88,8 @@ export const IntegrationCard = ({
         ],
         callbackURL,
       });
+
+
     }
 
     if (provider === "Webhook") {
@@ -113,9 +116,9 @@ export const IntegrationCard = ({
         <div className=" w-full flex  gap-2 ">
           <div className="">
             <Button
-              className="w-full bg-transparent text-green-500 dark:text-green-400 border-none shadow-none ring-0"
+              className="w-full bg-transparent text-green-500 dark:text-green-400 hover:text-green-400 dark:hover:text-green-400  shadow-none"
               onClick={handleConnect}
-              variant={"secondary"}
+              variant={"outline"}
             >
               Connect
             </Button>

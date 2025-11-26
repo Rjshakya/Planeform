@@ -263,7 +263,7 @@ export const FontSizeBox = ({
                 <CommandItem
                   key={size?.value}
                   value={size?.name}
-                  onSelect={(currentValue) => {
+                  onSelect={() => {
                     setValue(size?.value);
                     useEditorStore.setState({
                       formFontSize: size?.value || null,

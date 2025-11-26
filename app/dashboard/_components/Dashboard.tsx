@@ -18,7 +18,7 @@ export const DashboardComp = () => {
     () => `/api/analytics/dashboard/` + user?.dodoCustomerId,
     fetcher
   );
-  const router = useRouter()
+  const router = useRouter();
   const { workspace, mutate, userId, customerId } = useWorkspace();
 
   const handleCreateForm = async () => {
@@ -27,7 +27,7 @@ export const DashboardComp = () => {
     try {
       if (workspace && workspace?.length === 0) {
         const workspaceBody = {
-          name: "formly-wrkspace",
+          name: "my-wrkspace",
           owner: userId,
           customerId: customerId,
         } as createWorkspaceParams;
@@ -107,13 +107,13 @@ export const DashboardComp = () => {
         </Button>
       </div>
       <div className=" grid md:grid-cols-2 grid-cols-1 gap-4">
-        <Card>
+        <Card className=" shadow-none rounded-sm">
           <CardHeader>
             <Button size={"icon"} variant={"secondary"}>
               <div>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className=" size-5 fill-foreground"
+                  className=" size-5 fill-purple-500"
                   viewBox="0 0 24 24"
                   fill="#fffcfc"
                 >
@@ -144,14 +144,14 @@ export const DashboardComp = () => {
             <p>Workspace</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className=" shadow-none rounded-sm">
           <CardHeader>
             <Button size={"icon"} variant={"secondary"}>
               {" "}
               <div>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className=" size-5 fill-foreground"
+                  className={`size-5 ${data?.TotalForms ? 'fill-green-500' : 'fill-red-500'}`}
                   viewBox="0 0 24 24"
                   fill="#fffcfc"
                 >

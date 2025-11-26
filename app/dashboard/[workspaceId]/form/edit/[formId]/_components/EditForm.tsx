@@ -87,8 +87,9 @@ export const EditForm = () => {
             Cancel
           </Button>
           <Button onClick={async () => await handleSaveEditForm()}>
+             <span>Save</span>
             {creating && <Loader className={`animate-spin`} />}
-            <span>Save</span>
+           
           </Button>
         </DialogFooter>
       </DialogContent>
