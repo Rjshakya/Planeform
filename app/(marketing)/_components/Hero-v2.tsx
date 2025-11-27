@@ -133,7 +133,7 @@ export const HeroV2 = () => {
         {/* Main Container with Grid Layout - Firecrawl inspired */}
         <div className="bg-card grid grid-cols-1 w-full rounded-2xl shadow-foreground dark:shadow-foreground dark:shadow-2xl shadow-2xl  border-[7px] ">
           {/* Form Editor*/}
-          <div className="col-span-1 relative h-full md:mt-16 mt-8  ">
+          <div className="col-span-1 relative h-full md:mt-16 mt-8 pb-16 ">
             <div
               style={{ scrollbarWidth: "none" }}
               className="relative max-h-[400px] sm:max-h-[400px] h-full overflow-x-auto "

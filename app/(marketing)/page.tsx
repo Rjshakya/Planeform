@@ -41,8 +41,6 @@ export default function LandingV2() {
       <main className="relative min-h-screen bg-input/40  overflow-hidden">
         {/* Background Decorative Elements */}
 
-       
-
         <div className="absolute inset-0 pointer-events-none">
           {/* Top Left Label */}
           <div className="absolute top-20 left-8 md:left-16 text-xs text-muted-foreground/40 font-mono">
@@ -183,24 +181,26 @@ export default function LandingV2() {
             {/* Unlimited Stats or Features - Firecrawl inspired */}
             <div className="grid grid-cols-2 md:grid-cols-3  border-b">
               <div className="text-center group border-b col-span-2 md:col-span-1 sm:border-r py-14">
-                <div className="text-lg md:text-xl  opacity-90  mb-1 group-hover:scale-95 transition-transform  ease-in">
-                  UNLIMITED
+                <div className="text-3xl md:text-4xl font-bold tracking-tighter  opacity-90  mb-1 group-hover:scale-95 transition-transform  ease-in">
+                  Unlimited
                 </div>
-                <div className="text-sm  font-mono text-primary">[ FORMS ]</div>
+                <div className="text-xs font-semibold  uppercase tracking-wide text-primary">
+                  [ FORMS ]
+                </div>
               </div>
               <div className="text-center group border-b col-span-1  md:col-span-1 border-r py-14">
-                <div className="text-lg md:text-xl  opacity-90  mb-1 group-hover:scale-95 transition-transform  ease-in">
-                  UNLIMITED
+                <div className="text-3xl md:text-4xl  font-bold tracking-tighter  opacity-90  mb-1 group-hover:scale-95 transition-transform  ease-in">
+                  Unlimited
                 </div>
-                <div className="text-sm  font-mono text-primary">
+                <div className="text-xs font-semibold  uppercase tracking-wide text-primary">
                   [ INSIGHTS ]
                 </div>
               </div>
               <div className="text-center group border-b col-span-1 md:col-span-1 sm:border-l py-14">
-                <div className="text-lg md:text-xl  opacity-90  mb-1 group-hover:scale-95 transition-transform  ease-in">
-                  UNLIMITED
+                <div className="text-3xl md:text-4xl font-bold tracking-tighter  opacity-90  mb-1 group-hover:scale-95 transition-transform  ease-in">
+                  Unlimited
                 </div>
-                <div className="text-sm  font-mono text-primary">
+                <div className="text-xs font-semibold  uppercase tracking-wide text-primary">
                   [ SUBMITS ]
                 </div>
               </div>
@@ -259,10 +259,10 @@ export default function LandingV2() {
           {/* Comparison Section */}
           <section
             id="comparison"
-            className="max-w-5xl mx-auto h-full  px-2 md:px-6 border-x pt-36 pb-12 "
+            className="max-w-5xl mx-auto h-full   border-x pt-36 pb-12 "
           >
             <div className="">
-              <div className="space-y-4 max-w-lg">
+              <div className="space-y-4 max-w-lg px-4 md:px-6">
                 <Badge className="outline-1" variant={"outline"}>
                   Comparison
                 </Badge>
@@ -393,9 +393,9 @@ export default function LandingV2() {
       </main>
 
       {/* Footer */}
-      <footer className="w-full px-4 md:px-6  bg-foreground text-background ">
-        <div className="w-full border-t border-border/20 pt-10 pb-6 ">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-6xl mx-auto">
+      <footer className="w-full px-4 md:px-6  bg-foreground text-background   ">
+        <div className="grid gap-16  border-t border-border/20 pt-10 pb-6">
+          <div className="w-full grid grid-cols-1 md:grid-cols-4 gap-8 max-w-6xl mx-auto">
             <div className="md:col-span-2 flex flex-col justify-end gap-3">
               <div className="flex items-center gap-2">
                 {/* <div className="size-5 text-background">
@@ -470,7 +470,7 @@ export default function LandingV2() {
             </div>
           </div>
 
-          <div className="mt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 max-w-6xl mx-auto">
+          <div className="w-full mt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 max-w-6xl mx-auto">
             <div className="flex sm:hidden items-center gap-4 text-xs text-muted-foreground">
               <a href="#" className="hover:text-background">
                 Privacy

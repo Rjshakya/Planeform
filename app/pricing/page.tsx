@@ -2,12 +2,20 @@
 
 import { usePlans } from "@/hooks/use-subscriptions";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { NavV2 } from "../(marketing)/_components/Nav-v2";
 import { ThemeToggle } from "@/components/tiptap-main/simple/theme-toggle";
 import Link from "next/link";
 import { Check, Loader2, ArrowRight } from "lucide-react";
+import { CTAV2 } from "../(marketing)/_components/CTA-v2";
 
 export default function PricingPage() {
   const { plans, loadingPlans } = usePlans();
@@ -69,7 +77,7 @@ export default function PricingPage() {
 
         {/* Content Section */}
         <div className="relative z-0 px-2 pt-24">
-          <div className="max-w-5xl mx-auto border-x pt-12 pb-24">
+          <div className="max-w-5xl mx-auto border-x pt-12 pb-4">
             {/* Header */}
             <div className="px-4 md:px-6 space-y-4 mb-16">
               <Badge className="outline-1" variant={"outline"}>
@@ -77,26 +85,85 @@ export default function PricingPage() {
               </Badge>
               <h1
                 style={{ fontFamily: "var(--font-insturment-serif)" }}
-                className="text-3xl md:text-5xl font-bold max-w-2xl"
+                className="text-3xl md:text-5xl  max-w-2xl"
               >
                 Simple, transparent pricing
               </h1>
               <p className="max-w-2xl text-sm md:text-base text-muted-foreground">
-                Choose the plan that works best for you. All plans include unlimited forms, submissions, and insights.
+                Choose the plan that works best for you. All plans include
+                unlimited forms, submissions, and insights.
               </p>
             </div>
 
             {/* Pricing Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 px-4 ">
+            <div className=" ">
+              <Card className={`relative flex flex-col`}>
+                <CardHeader className="border-b pb-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <CardTitle className="text-2xl font-bold">Free</CardTitle>
+                    <Badge variant="outline">Month</Badge>
+                  </div>
+                  <CardDescription className="text-base">
+                    free plan
+                  </CardDescription>
+                </CardHeader>
+
+                <CardContent className="flex-1 pt-6">
+                  <div className="mb-6">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-3xl font-bold">$</span>
+                      <span className="text-3xl font-bold">0</span>
+                      <span className="text-muted-foreground">per month</span>
+                    </div>
+                  </div>
+
+                  <ul className="space-y-3">
+                    <li className="flex items-start gap-2">
+                      <Check className="size-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">Unlimited forms</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="size-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">Unlimited submissions</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="size-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">simple analytics</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="size-5 text-primary shrink-0 mt-0.5" />
+                      <span className="text-sm">Planeform branding</span>
+                    </li>
+                  </ul>
+                </CardContent>
+
+                <CardFooter className="border-t pt-6">
+                  <Button
+                    asChild
+                    className="w-full"
+                    variant={"outline"}
+                    size="lg"
+                  >
+                    <Link href="/auth">
+                      Get Started
+                      <ArrowRight className="size-4 ml-2" />
+                    </Link>
+                  </Button>
+                </CardFooter>
+              </Card>
+            </div>
             {loadingPlans ? (
               <div className="flex items-center justify-center py-24">
                 <Loader2 className="size-8 animate-spin text-primary" />
               </div>
             ) : plans && plans.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 md:px-6">
+              <div className=" ">
                 {plans.map((plan, index) => {
                   const price = parseInt(plan.price_detail?.price || "0") / 100;
-                  const currency = plan.price_detail?.currency || "$";
-                  const interval = plan.price_detail?.payment_frequency_interval || "month";
+                  const currency = "$";
+                  const interval =
+                    plan.price_detail?.payment_frequency_interval || "month";
                   const isPopular = index === 1; // Mark middle plan as popular
 
                   return (
@@ -121,9 +188,7 @@ export default function PricingPage() {
                           <CardTitle className="text-2xl font-bold">
                             {plan.name}
                           </CardTitle>
-                          <Badge variant="outline">
-                            {interval}
-                          </Badge>
+                          <Badge variant="outline">{interval}</Badge>
                         </div>
                         <CardDescription className="text-base">
                           {plan.description}
@@ -136,18 +201,17 @@ export default function PricingPage() {
                             <span className="text-3xl font-bold">
                               {currency}
                             </span>
-                            <span className="text-5xl font-bold">
-                              {price}
-                            </span>
+                            <span className="text-3xl font-bold">{price}</span>
                             <span className="text-muted-foreground">
-                              /{interval}
+                              per {interval}
                             </span>
                           </div>
-                          {plan.price_detail?.trial_period_days && (
+                          {/* {plan.price_detail?.trial_period_days && (
                             <p className="text-sm text-muted-foreground mt-2">
-                              {plan.price_detail.trial_period_days} days free trial
+                              {plan.price_detail.trial_period_days} days free
+                              trial
                             </p>
-                          )}
+                          )} */}
                         </div>
 
                         <ul className="space-y-3">
@@ -157,11 +221,19 @@ export default function PricingPage() {
                           </li>
                           <li className="flex items-start gap-2">
                             <Check className="size-5 text-primary shrink-0 mt-0.5" />
-                            <span className="text-sm">Unlimited submissions</span>
+                            <span className="text-sm">
+                              Unlimited submissions
+                            </span>
                           </li>
                           <li className="flex items-start gap-2">
                             <Check className="size-5 text-primary shrink-0 mt-0.5" />
                             <span className="text-sm">Advanced analytics</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <Check className="size-5 text-primary shrink-0 mt-0.5" />
+                            <span className="text-sm">
+                              No planeform branding
+                            </span>
                           </li>
                           <li className="flex items-start gap-2">
                             <Check className="size-5 text-primary shrink-0 mt-0.5" />
@@ -198,6 +270,7 @@ export default function PricingPage() {
                 </p>
               </div>
             )}
+            </div>
 
             {/* FAQ Section */}
             <div className="mt-24 px-4 md:px-6">
@@ -215,21 +288,28 @@ export default function PricingPage() {
 
               <div className="grid gap-6 border-y">
                 <div className="py-6 border-b first:border-t-0">
-                  <h3 className="font-semibold mb-2">Can I change plans later?</h3>
+                  <h3 className="font-semibold mb-2">
+                    Can I change plans later?
+                  </h3>
                   <p className="text-sm text-muted-foreground">
-                    Yes, you can upgrade or downgrade your plan at any time. Changes will be reflected in your next billing cycle.
+                    Yes, you can upgrade or downgrade your plan at any time.
+                    Changes will be reflected in your next billing cycle.
                   </p>
                 </div>
                 <div className="py-6 border-b">
-                  <h3 className="font-semibold mb-2">What payment methods do you accept?</h3>
+                  <h3 className="font-semibold mb-2">
+                    What payment methods do you accept?
+                  </h3>
                   <p className="text-sm text-muted-foreground">
-                    We accept all major credit cards and debit cards. All payments are processed securely.
+                    We accept all major credit cards and debit cards. All
+                    payments are processed securely.
                   </p>
                 </div>
                 <div className="py-6 border-b">
                   <h3 className="font-semibold mb-2">Is there a free trial?</h3>
                   <p className="text-sm text-muted-foreground">
-                    Most plans include a free trial period. Check the plan details above for specific trial information.
+                    Most plans include a free trial period. Check the plan
+                    details above for specific trial information.
                   </p>
                 </div>
                 <div className="py-6">
@@ -242,16 +322,17 @@ export default function PricingPage() {
             </div>
 
             {/* CTA Section */}
-            <div className="mt-24 px-4 md:px-6 text-center">
-              <div className="border rounded-xl p-12 space-y-6">
+            {/* <div className="mt-24  text-center">
+              <div className=" p-12 space-y-6">
                 <h2
                   style={{ fontFamily: "var(--font-insturment-serif)" }}
-                  className="text-2xl md:text-3xl font-bold"
+                  className="text-2xl md:text-3xl "
                 >
                   Ready to get started?
                 </h2>
                 <p className="text-muted-foreground max-w-md mx-auto">
-                  Start building beautiful forms today. No credit card required for the free trial.
+                  Start building beautiful forms today. No credit card required
+                  for the free trial.
                 </p>
                 <Button asChild size="lg" className="mt-4">
                   <Link href="/auth">
@@ -260,15 +341,12 @@ export default function PricingPage() {
                   </Link>
                 </Button>
               </div>
-            </div>
+            </div> */}
+            <CTAV2 className="pb-0"/>
           </div>
         </div>
 
-        <div>
-          <ThemeToggle />
-        </div>
       </main>
     </>
   );
 }
-

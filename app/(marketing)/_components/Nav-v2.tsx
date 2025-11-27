@@ -25,77 +25,18 @@ export const NavV2 = () => {
         <Logo />
       </div>
 
-      {/* Desktop Navigation */}
-      {/* <div className="hidden md:flex items-center gap-1">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="gap-1">
-              Products
-              <ChevronDown className="size-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem>
-              <Link href="/products">All Products</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Link href="/products/forms">Forms</Link>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        <Button variant="ghost" asChild>
-          <Link href="/playground">Playground</Link>
-        </Button>
-
-        <Button variant="ghost" asChild>
-          <Link href="/docs">Docs</Link>
-        </Button>
-
-        <Button variant="ghost" asChild>
-          <Link href="/pricing">Pricing</Link>
-        </Button>
-
-        <Button variant="ghost" asChild>
-          <Link href="/blog">Blog</Link>
-        </Button>
-
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="gap-1">
-              Extract
-              <ChevronDown className="size-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem>Extract Data</DropdownMenuItem>
-            <DropdownMenuItem>API</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="gap-1">
-              Resources
-              <ChevronDown className="size-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem>Documentation</DropdownMenuItem>
-            <DropdownMenuItem>Support</DropdownMenuItem>
-            <DropdownMenuItem>Community</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div> */}
-
       {/* Right side actions */}
       <div className="hidden md:flex items-center gap-3">
-        <Button variant="ghost" className="gap-2">
-          <span className="text-sm">Pricing</span>
-        </Button>
-        <Button variant={"secondary"} asChild>
-          <Link href="/auth">Sign up</Link>
-        </Button>
+        <Link href={"/pricing"}>
+          <Button variant="ghost" className="gap-2">
+            <span className="text-sm">Pricing</span>
+          </Button>
+        </Link>
+        <Link href={"/auth"}>
+          <Button variant={"secondary"} asChild>
+            <span className="text-sm">Sign Up</span>
+          </Button>
+        </Link>
       </div>
 
       {/* Mobile Navigation */}

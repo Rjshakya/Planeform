@@ -47,8 +47,8 @@ export const FAQV2 = () => {
       id="faq"
       className="relative z-10 border-x max-w-5xl mx-auto pt-36 pb-24"
     >
-      <div className="px-4 md:px-6">
-        <div className="text-left w-full space-y-4 mb-16">
+      <div className="">
+        <div className="text-left w-full space-y-4 mb-16 px-4 md:px-6">
           <Badge className="outline-1" variant={"outline"}>
             FAQ
           </Badge>
@@ -65,10 +65,10 @@ export const FAQV2 = () => {
         </div>
 
         <div className="border-y">
-          <Accordion type="single" collapsible className="w-full">
+          <Accordion  type="single" collapsible className="w-full">
             {faqs.map((faq, i) => (
               <AccordionItem key={i} value={`item-${i}`} className="border-b">
-                <AccordionTrigger className="text-left text-sm md:text-base font-semibold px-6 py-6 hover:bg-accent/20 transition">
+                <AccordionTrigger className="  text-left text-sm md:text-base font-semibold px-6 py-6 hover:bg-accent/20 transition">
                   {faq.question}
                 </AccordionTrigger>
                 <AccordionContent className="px-6 pb-6">
@@ -84,4 +84,3 @@ export const FAQV2 = () => {
     </section>
   );
 };
-

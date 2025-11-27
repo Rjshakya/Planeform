@@ -28,31 +28,31 @@ const integrations = [
     icon: Webhook,
     description: "Custom webhooks for any integration",
   },
-  {
-    name: "Zapier",
-    icon: Zap,
-    description: "Connect to 5000+ apps via Zapier",
-  },
-  {
-    name: "Make",
-    icon: Settings,
-    description: "Automate workflows with Make.com",
-  },
+  // {
+  //   name: "Zapier",
+  //   icon: Zap,
+  //   description: "Connect to 5000+ apps via Zapier",
+  // },
+  // {
+  //   name: "Make",
+  //   icon: Settings,
+  //   description: "Automate workflows with Make.com",
+  // },
   {
     name: "Email",
     icon: Mail,
     description: "Get instant email notifications",
   },
-  {
-    name: "Slack",
-    icon: Slack,
-    description: "Send submissions to Slack channels",
-  },
-  {
-    name: "GitHub",
-    icon: Github,
-    description: "Create issues from form submissions",
-  },
+  // {
+  //   name: "Slack",
+  //   icon: Slack,
+  //   description: "Send submissions to Slack channels",
+  // },
+  // {
+  //   name: "GitHub",
+  //   icon: Github,
+  //   description: "Create issues from form submissions",
+  // },
 ];
 
 export const IntegrationsV2 = () => {
@@ -61,8 +61,8 @@ export const IntegrationsV2 = () => {
       id="integrations"
       className="relative z-10 border-x max-w-5xl mx-auto pt-36 pb-24"
     >
-      <div className="px-4 md:px-6">
-        <div className="text-left w-full space-y-4 mb-16">
+      <div className="">
+        <div className="text-left w-full space-y-4 mb-16 px-4 md:px-6">
           <Badge className="outline-1" variant={"outline"}>
             Integrations
           </Badge>
@@ -78,14 +78,14 @@ export const IntegrationsV2 = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 border-y border-r">
+        <div className="grid md:grid-cols-2 lg:grid-cols-2 border-y border-r">
           {integrations.map((integration, i) => {
             const Icon = integration.icon;
             return (
               <div
                 key={integration.name}
                 className={`group relative border-l ${
-                  i !== 0 && "border-t md:border-t-0"
+                  i !== 0 && "border-t"
                 } p-8 transition hover:border-primary/40`}
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 transition group-hover:opacity-100" />
@@ -93,8 +93,8 @@ export const IntegrationsV2 = () => {
                   <div className="size-10 flex items-center justify-center text-primary">
                     <Icon className="size-6" />
                   </div>
-                  <h3 className="text-sm font-semibold">{integration.name}</h3>
-                  <p className="text-xs text-muted-foreground">
+                  <h3 className="text-lg font-semibold">{integration.name}</h3>
+                  <p className="text-sm text-muted-foreground">
                     {integration.description}
                   </p>
                 </div>
@@ -106,4 +106,3 @@ export const IntegrationsV2 = () => {
     </section>
   );
 };
-

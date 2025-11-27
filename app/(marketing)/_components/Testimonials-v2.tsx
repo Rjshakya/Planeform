@@ -40,8 +40,8 @@ export const TestimonialsV2 = () => {
       id="testimonials"
       className="relative z-10 border-x max-w-5xl mx-auto pt-36 pb-24"
     >
-      <div className="px-4 md:px-6">
-        <div className="text-left w-full space-y-4 mb-16">
+      <div className="">
+        <div className="text-left w-full space-y-4 mb-16 px-4 md:px-6">
           <Badge className="outline-1" variant={"outline"}>
             Testimonials
           </Badge>
@@ -57,11 +57,13 @@ export const TestimonialsV2 = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 border-y">
+        <div className="grid md:grid-cols-2  border-y">
           {testimonials.map((testimonial, i) => (
             <div
               key={i}
-              className="group relative border-l border-r p-8 transition hover:border-primary/40"
+              className={`group relative border-l p-8 transition hover:border-primary/40 ${
+                i !== 0 && "border-t"
+              }`}
             >
               <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 transition group-hover:opacity-100" />
               <div className="relative space-y-4">
@@ -92,4 +94,3 @@ export const TestimonialsV2 = () => {
     </section>
   );
 };
-

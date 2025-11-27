@@ -36,8 +36,8 @@ export const StatsV2 = () => {
       id="stats"
       className="relative z-10 border-x max-w-5xl mx-auto pt-36 pb-24"
     >
-      <div className="px-4 md:px-6">
-        <div className="text-left w-full space-y-4 mb-16">
+      <div className="">
+        <div className="text-left w-full space-y-4 mb-16 px-4 md:px-6">
           <Badge className="outline-1" variant={"outline"}>
             Trusted by teams
           </Badge>
@@ -61,7 +61,7 @@ export const StatsV2 = () => {
                 key={stat.label}
                 className={`group relative border-l ${
                   i !== 0 && "border-t md:border-t-0"
-                } p-8 text-center transition hover:border-primary/40`}
+                } py-8 w-full text-center transition hover:border-primary/40`}
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 transition group-hover:opacity-100" />
                 <div className="relative space-y-3">
@@ -90,4 +90,3 @@ export const StatsV2 = () => {
     </section>
   );
 };
-

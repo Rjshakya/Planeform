@@ -104,6 +104,7 @@ export const metadata: Metadata = {
     title: "Planetform",
     description:
       "Create beautiful, modern forms with an intuitive block-based editor. Simple to build, powerful to analyze",
+    images:"https://bucket.planetform.xyz/planetform-assets/og-planetform.png"
   },
   openGraph: {
     type: "website",
@@ -113,7 +114,9 @@ export const metadata: Metadata = {
     emails: "rajshakya631@gmail",
     siteName: "Planetform",
     title: "Planetform",
+    images:"https://bucket.planetform.xyz/planetform-assets/og-planetform.png"
   },
+
 };
 
 export default function RootLayout({
