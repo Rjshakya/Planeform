@@ -40,6 +40,12 @@ import { ThemeToggle } from "./tiptap-main/simple/theme-toggle";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { fi } from "date-fns/locale";
 import Link from "next/link";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 export function NavActions() {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -69,128 +75,70 @@ export function NavActions() {
 
   return (
     <div className="flex items-center gap-2 text-sm">
-      
+      <DropdownMenu
+        open={isOpen}
+        onOpenChange={(o) => {
+          setIsOpen(o);
+          setIsCopied(false);
+        }}
+      >
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="data-[state=open]:bg-accent h-7 w-7"
+          >
+            <MoreHorizontal />
+          </Button>
+        </DropdownMenuTrigger>
 
-      {
-        <Popover
-          open={isOpen}
-          onOpenChange={(o) => {
-            setIsOpen(o);
-            setIsCopied(false);
-          }}
+        <DropdownMenuContent
+          className="w-40 overflow-hidden rounded-lg p-2 font-sans text-sm"
+          align="end"
         >
-          <PopoverTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="data-[state=open]:bg-accent h-7 w-7"
+         
+      
+          <DropdownMenuItem>
+            <Link
+              className="w-full flex items-center gap-4 text-sm"
+              href={`${appUrl}/${formId}`}
+              target="_blank"
             >
-              <MoreHorizontal />
-            </Button>
-          </PopoverTrigger>
-
-          {formId && path.includes("view") && (
-            <PopoverContent
-              className="w-56 overflow-hidden rounded-lg p-0"
-              align="end"
+              <span>
+                <MoveUpRight size={15} />
+              </span>
+              <span>Open</span>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link
+              className="w-full flex items-center gap-4 text-sm"
+              href={`/dashboard/${workspaceId}/form/edit/${formId}?name=${formId}`}
             >
-              <Sidebar collapsible="none" className="bg-transparent">
-                <SidebarContent>
-                  {
-                    <SidebarGroup>
-                      {" "}
-                      <SidebarGroupContent>
-                        <SidebarMenu>
-                          <SidebarMenuItem>
-                            <SidebarMenuButton
-                              className="w-full flex items-center gap-2"
-                              onClick={() => {
-                                window.navigator.clipboard.writeText(
-                                  `${appUrl}/${formId}`
-                                );
-                                setIsCopied(true);
-                                setTimeout(() => setIsCopied(false), 1000);
-                              }}
-                            >
-                              {isCopyied ? (
-                                <CheckCheck className=" dark:text-green-400 text-green-600" />
-                              ) : (
-                                <LinkIcon />
-                              )}
-                              <span>copy</span>
-                            </SidebarMenuButton>
-                          </SidebarMenuItem>
-                          <SidebarMenuItem>
-                            <SidebarMenuButton
-                              className="w-full flex items-center gap-2"
-                              onClick={() =>
-                                router.push(
-                                  `/dashboard/${workspaceId}/form/edit/${formId}?name=${formId}`
-                                )
-                              }
-                            >
-                              <span>
-                                <Edit size={15} />
-                              </span>
-                              <span>Edit</span>
-                            </SidebarMenuButton>
-                          </SidebarMenuItem>
-                          <SidebarMenuItem>
-                            <SidebarMenuButton className="w-full ">
-                              <Link
-                                className="w-full flex items-center gap-2"
-                                href={`${appUrl}/${formId}`}
-                                target="_blank"
-                              >
-                                <span>
-                                  <MoveUpRight size={15} />
-                                </span>
-                                <span>Go to</span>
-                              </Link>
-                            </SidebarMenuButton>
-                          </SidebarMenuItem>
-                        </SidebarMenu>
-                      </SidebarGroupContent>
-                    </SidebarGroup>
-                  }
-                  {/* {data.map((group, index) => (
-                <SidebarGroup key={index} className="border-b last:border-none">
-                  <SidebarGroupContent className="gap-0">
-                    <SidebarMenu>
-                      {group.map((item, index) => (
-                        <SidebarMenuItem key={index}>
-                          <SidebarMenuButton
-                            className="w-full flex items-center  gap-2"
-                            onClick={async () => {
-                              if (item.label === "Log out") {
-                                await signOut();
-                              }
-                            }}
-                          >
-                            <span>{<item.icon size={15} />}</span>
-                            {item.label === "name" && (
-                              <span>{session?.user?.name || ""}</span>
-                            )}
-                            {item.label === "email" && (
-                              <span>{session?.user?.email || ""}</span>
-                            )}
-
-                            {item.label === "Log out" && (
-                              <span>{item.label}</span>
-                            )}
-                          </SidebarMenuButton>
-                        </SidebarMenuItem>
-                      ))}
-                    </SidebarMenu>
-                  </SidebarGroupContent>
-                </SidebarGroup>
-              ))} */}
-                </SidebarContent>
-              </Sidebar>
-            </PopoverContent>
-          )}
-        </Popover>
-      }
+              <span>
+                <Edit size={15} />
+              </span>
+              <span>Edit</span>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onSelect={(e) => e.preventDefault()}
+            className="w-full flex items-center gap-4 text-sm"
+            onClick={() => {
+              window.navigator.clipboard.writeText(`${appUrl}/${formId}`);
+              setIsCopied(true);
+              setTimeout(() => setIsCopied(false), 1000);
+            }}
+          >
+            {isCopyied ? (
+              <CheckCheck className="dark:text-green-400 text-green-600" />
+            ) : (
+              <LinkIcon />
+            )}
+            <span>Copy link</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }

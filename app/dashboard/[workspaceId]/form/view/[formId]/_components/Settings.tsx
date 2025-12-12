@@ -15,7 +15,7 @@ import { useUser } from "@/hooks/use-User";
 import { apiClient } from "@/lib/axios";
 import { Loader, TriangleAlert } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import useSWR from "swr";
 
@@ -28,8 +28,9 @@ export const Settings = () => {
     fetcher
   );
   const [state, setState] = useState({
-    closed: false,
-    closedMessage: "",
+    closed: data?.settings?.closed || false,
+    closedMessage: data?.settings?.closedMessage || "This form is closed",
+    disable: true,
   });
 
   const handleSubmit = async () => {
@@ -51,15 +52,6 @@ export const Settings = () => {
     }
   };
 
-  useEffect(() => {
-    if (!data || !data?.settings) return;
-
-    setState({
-      closed: data?.settings?.closed,
-      closedMessage: data?.settings?.closedMessage,
-    });
-  }, [data]);
-
   if (error) {
     return (
       <div className="w-full h-[50vh] flex items-center justify-center gap-4">
@@ -79,45 +71,47 @@ export const Settings = () => {
   }
 
   return (
-    <Card className=" border-none shadow-none">
+    <Card className=" border-none shadow-none bg-background">
       <CardContent className="grid gap-4">
         <Label
           htmlFor="check"
           className=" flex items-center justify-between gap-2  bg-muted rounded-sm py-4 px-2"
         >
-          <span>Close form</span>
+          <span className=" text-base font-semibold pl-1">Close form</span>
           <Switch
             id="check"
             checked={state.closed}
             onCheckedChange={(c) => {
-              setState({ ...state, closed: c });
+              setState({ ...state, closed: c, disable: false });
             }}
           />
         </Label>
-        <div className="grid gap-4">
-
-           <Label className="pl-1">Closing message</Label>
-        <Textarea
-          className=" appearance-none bg-transparent border-none shadow-none"
-          value={state.closedMessage}
-          onChange={(e) => {
-            setState({ ...state, closedMessage: e?.currentTarget?.value });
-          }}
-        />
-
+        <div className="grid gap-4 bg-muted py-4 px-2">
+          <Label className="pl-1 text-base font-semibold">Closed message</Label>
+          <Textarea
+            className=" appearance-none bg-transparent border-none shadow-none"
+            value={state.closedMessage}
+            onChange={(e) => {
+              setState({
+                ...state,
+                closedMessage: e?.currentTarget?.value,
+                disable: false,
+              });
+            }}
+          />
         </div>
-       
       </CardContent>
-      <CardFooter  className="">
+      <CardFooter className="">
         <CardAction className="px-1">
-        <Button
-          onClick={handleSubmit}
-          variant={"destructive"}
-          className="w-[120px]"
-          size={"lg"}
-        >
-          Submit
-        </Button>
+          <Button
+            onClick={handleSubmit}
+            variant={"destructive"}
+            className="w-[120px]"
+            size={"lg"}
+            disabled={state.disable}
+          >
+            Submit
+          </Button>
         </CardAction>
       </CardFooter>
     </Card>

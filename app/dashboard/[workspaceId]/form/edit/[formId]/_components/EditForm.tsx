@@ -52,7 +52,7 @@ export const EditForm = () => {
 
       toast(`form updated. successfully`);
       setOpen(false);
-      router.push(`/dashboard/workspace/${workspaceId}`);
+      router.push(`/dashboard/${workspaceId}`);
       mutate(`/api/form/${formId}`);
     } catch (e) {
       toast(`failed to save the form`);

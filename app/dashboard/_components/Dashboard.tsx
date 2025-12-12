@@ -11,15 +11,16 @@ import { createWorkspaceParams } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-const fetcher = (url: string) => apiClient.get(url).then((res) => res.data);
+
 export const DashboardComp = () => {
+  const fetcher = (url: string) => apiClient.get(url).then((res) => res.data);
   const { user } = useUser();
   const { data, error, isLoading } = useSWR(
     () => `/api/analytics/dashboard/` + user?.dodoCustomerId,
     fetcher
   );
   const router = useRouter();
-  const { workspace, mutate, userId, customerId } = useWorkspace();
+  const { workspace, userId, customerId } = useWorkspace();
 
   const handleCreateForm = async () => {
     if (!userId) return;
@@ -69,14 +70,14 @@ export const DashboardComp = () => {
   }
 
   return (
-    <div className="max-w-4xl w-full mx-auto grid gap-3">
+    <div className="max-w-4xl w-full mx-auto grid gap-6 pb-12">
       <div className="flex items-center justify-between gap-1">
         <h1 className=" text-2xl font-semibold">Dashboard</h1>
         <Button size={"default"} onClick={handleCreateForm}>
           <div>
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="size-5"
+              className="size-4"
               viewBox="0 0 24 24"
               fill="none"
             >
@@ -106,11 +107,11 @@ export const DashboardComp = () => {
           Form
         </Button>
       </div>
-      <div className=" grid md:grid-cols-2 grid-cols-1 gap-4">
-        <Card className=" shadow-none rounded-sm">
-          <CardHeader>
+      <div className=" grid md:grid-cols-2 grid-cols-1 gap-2">
+        <Card className=" shadow-none border-none">
+          <CardHeader className="px-7">
             <Button size={"icon"} variant={"secondary"}>
-              <div>
+              <div className="">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className=" size-5 fill-purple-500"
@@ -139,13 +140,15 @@ export const DashboardComp = () => {
               </div>
             </Button>
           </CardHeader>
-          <CardContent className=" px-8">
-            <p>{data?.TotalWorkspaces || 0}</p>
+          <CardContent className=" px-8 flex flex-col gap-2">
+            <p className="">
+            {data?.TotalWorkspaces || 0}
+            </p>
             <p>Workspace</p>
           </CardContent>
         </Card>
-        <Card className=" shadow-none rounded-sm">
-          <CardHeader>
+        <Card className=" shadow-none border-none ">
+          <CardHeader className="px-7">
             <Button size={"icon"} variant={"secondary"}>
               {" "}
               <div>
@@ -187,7 +190,7 @@ export const DashboardComp = () => {
               </div>
             </Button>
           </CardHeader>
-          <CardContent className=" px-8">
+          <CardContent className=" px-8 flex flex-col gap-2">
             <p>{data?.TotalForms || 0}</p>
             <p>Forms</p>
           </CardContent>

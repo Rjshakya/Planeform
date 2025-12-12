@@ -3,14 +3,6 @@ import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../ui/sheet";
 import { Button } from "../ui/button";
 import { useCurrentEditor, useEditorState } from "@tiptap/react";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -34,10 +26,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 export const CutomizationPanel = () => {
   const formFontFamily = [
-    { name: "Default", value: "var(--font-space-grotesk)" },
+    { name: "Default", value: "var(--font-sans)" },
     { name: "Geist-mono", value: "var(--font-geist-mono)" },
     { name: "Inter", value: "var(--font-inter)" },
     { name: "Playfair Display", value: "var(--font-playfair-display)" },
@@ -45,7 +38,9 @@ export const CutomizationPanel = () => {
     { name: "Roboto Mono", value: "var(--font-roboto-mono)" },
     { name: "Roboto Serif", value: "var(--font-roboto-serif)" },
     { name: "Poppins", value: "var(--font-poppins)" },
+    { name: "Space Grotesk", value: "var(--font-space-grotesk)" },
     { name: "Acme", value: "var(--font-acme)" },
+    { name: "DM Sans", value: "var(--font-dm-sans)" },
     { name: "Instrumental serif", value: "var(--font-insturment-serif)" },
   ];
 
@@ -67,14 +62,20 @@ export const CutomizationPanel = () => {
 
   return (
     <Sheet>
-      <SheetTrigger asChild>
-        <Button size={"icon"} variant={"ghost"}>
-          <Bolt />
-        </Button>
-      </SheetTrigger>
-      <SheetContent className=" min-h-screen overflow-x-auto pb-6">
-        <SheetTitle className="p-3">Customization Panel</SheetTitle>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <SheetTrigger asChild>
+            <Button size={"icon"} variant={"ghost"}>
+              <Bolt />
+            </Button>
+          </SheetTrigger>
+        </TooltipTrigger>
+        <TooltipContent>Customisation</TooltipContent>
+      </Tooltip>
 
+      <SheetContent  className=" min-h-screen pb-6 font-sans">
+        <SheetTitle className="p-3">Customization Panel</SheetTitle>
+        
         <div className=" px-2 grid gap-6">
           <div className="grid gap-2">
             <Label className=" text-muted-foreground/80 text-sm pl-1">
@@ -182,38 +183,38 @@ export const FontFamilyBox = ({ families }: { families: any[] }) => {
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className={cn(`p-0 mt-2 font-sans`)}
-        style={{ width: `${buttonRef?.current?.offsetWidth}px` }}
+        className={cn(`p-0 mt-2 font-sans max-h-64 overflow-y-auto z-[999]`)}
+        style={{
+          width: buttonRef?.current?.offsetWidth
+            ? `${buttonRef.current.offsetWidth}px`
+            : undefined,
+        }}
       >
-        <Command className="w-full">
-          <CommandInput placeholder="Search font..." />
-          <CommandList>
-            <CommandEmpty>No family found.</CommandEmpty>
-            <CommandGroup>
-              {families?.map((family) => (
-                <CommandItem
-                  key={family?.name}
-                  value={family?.name}
-                  onSelect={(currentValue) => {
-                    setValue(family?.value);
-                    useEditorStore.setState({
-                      formFontFamliy: family?.value || null,
-                    });
-                    setOpen(false);
-                  }}
-                >
-                  <CheckIcon
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      value === family.name ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                  {family?.name}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
+        {families?.map((family) => (
+          <button
+            key={family?.name}
+            type="button"
+            className={cn(
+              "flex w-full items-center px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground",
+              value === family?.value ? "bg-accent" : ""
+            )}
+            onClick={() => {
+              setValue(family?.value);
+              useEditorStore.setState({
+                formFontFamliy: family?.value || null,
+              });
+              setOpen(false);
+            }}
+          >
+            <CheckIcon
+              className={cn(
+                "mr-2 h-4 w-4",
+                value === family?.value ? "opacity-100" : "opacity-0"
+              )}
+            />
+            {family?.name}
+          </button>
+        ))}
       </PopoverContent>
     </Popover>
   );
@@ -251,38 +252,38 @@ export const FontSizeBox = ({
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className={cn(`p-0 mt-2 font-sans `)}
-        style={{ width: `${buttonRef?.current?.offsetWidth}px` }}
+        className={cn(`p-0 mt-2 font-sans max-h-64 overflow-y-auto`)}
+        style={{
+          width: buttonRef?.current?.offsetWidth
+            ? `${buttonRef.current.offsetWidth}px`
+            : undefined,
+        }}
       >
-        <Command className="w-full ">
-          <CommandInput placeholder="Search size..." />
-          <CommandList>
-            <CommandEmpty>No size found.</CommandEmpty>
-            <CommandGroup>
-              {sizes.map((size) => (
-                <CommandItem
-                  key={size?.value}
-                  value={size?.name}
-                  onSelect={() => {
-                    setValue(size?.value);
-                    useEditorStore.setState({
-                      formFontSize: size?.value || null,
-                    });
-                    setOpen(false);
-                  }}
-                >
-                  <CheckIcon
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      value === size.value ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                  {size?.name}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
+        {sizes.map((size) => (
+          <button
+            key={size?.value}
+            type="button"
+            className={cn(
+              "flex w-full items-center px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground",
+              value === size?.value ? "bg-accent" : ""
+            )}
+            onClick={() => {
+              setValue(size?.value);
+              useEditorStore.setState({
+                formFontSize: size?.value || null,
+              });
+              setOpen(false);
+            }}
+          >
+            <CheckIcon
+              className={cn(
+                "mr-2 h-4 w-4",
+                value === size.value ? "opacity-100" : "opacity-0"
+              )}
+            />
+            {size?.name}
+          </button>
+        ))}
       </PopoverContent>
     </Popover>
   );

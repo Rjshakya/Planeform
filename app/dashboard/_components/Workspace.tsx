@@ -2,20 +2,16 @@
 import { Button } from "@/components/ui/button";
 
 import {
-  FilePlus,
-  Folder,
   Loader,
-  Plus,
-  PlusIcon,
   TriangleAlert,
 } from "lucide-react";
 import { WorkspaceCard } from "./WorkspaceCard";
-import useSWR from "swr";
+
 import { apiClient } from "@/lib/axios";
 import { createWorkspaceParams } from "@/lib/types";
 import { toast } from "sonner";
 import { useState } from "react";
-import { authClient, signOut } from "@/lib/auth-client";
+
 import {
   Dialog,
   DialogContent,
@@ -36,24 +32,13 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useWorkspace } from "@/hooks/use-workspace";
 import { useRouter } from "next/navigation";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuRadioGroup,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
-// const fetcher = (url: string) => apiClient.get(url).then((res) => res.data);
 
 export default function Workspace() {
   const [creating, setCreating] = useState(false);
   const [workspaceName, setWorkspaceName] = useState("");
   const { workspace, error, isLoading, mutate, userId, customerId } =
     useWorkspace();
-  const router = useRouter();
   const [open, setOpen] = useState(false);
 
   const handleCreateWorkspace = async (params: createWorkspaceParams) => {
@@ -77,36 +62,6 @@ export default function Workspace() {
     setWorkspaceName("");
   };
 
-  const handleCreateForm = async () => {
-    if (!userId) return;
-
-    try {
-      if (workspace && workspace?.length === 0) {
-        const workspaceBody = {
-          name: "formly-wrkspace",
-          owner: userId,
-          customerId: customerId,
-        } as createWorkspaceParams;
-        const { data, status } = await apiClient.post(
-          "/api/workspace",
-          workspaceBody
-        );
-
-        if (status === 201) {
-          const { id } = data?.workspace;
-          router.push(`/dashboard/${id}/form/create`);
-        }
-      }
-
-      if (workspace && workspace?.length > 0) {
-        router.push(`/dashboard/${workspace[0]?.id}/form/create`);
-      }
-
-      mutate();
-    } catch (e) {
-      toast("failed to create form");
-    }
-  };
 
   if (error) {
     return (
@@ -127,11 +82,11 @@ export default function Workspace() {
   }
 
   return (
-    <div className="grid gap-8   w-full ">
+    <div className="grid gap-6   w-full ">
       <div className=" header w-full">
         <div className=" w-full flex items-center justify-between p-2">
           <div className=" w-full">
-            <h3 className="text-xl md:text-3xl font-medium text-muted-foreground">
+            <h3 className=" font-medium text-muted-foreground">
               Your workspaces
             </h3>
           </div>
@@ -142,7 +97,7 @@ export default function Workspace() {
                   <div>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="size-5 fill-foreground "
+                      className="size-4 fill-foreground "
                       viewBox="0 0 24 24"
                       fill="none"
                     >

@@ -69,7 +69,6 @@ export const useFormStore = create<IformStore>((set, get) => ({
     if (!formId || isEdit) {
       toast.success("Everything seems good! :)");
       console.log(values);
-
       return true;
     }
 

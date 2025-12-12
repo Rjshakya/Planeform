@@ -27,6 +27,7 @@ export const WorkspaceSettings = ({
   const [workspaceData, setWorkspaceData] = useState<IworkspaceData>({
     name: workspaceName || " ",
   });
+  const [disable, setDisable] = useState(true);
   const { workspaceId } = useParams();
 
   const handleWorkspaceUpdate = async (params: IworkspaceData) => {
@@ -46,7 +47,7 @@ export const WorkspaceSettings = ({
   };
 
   return (
-    <Card className="border-none shadow-none ">
+    <Card className="border-none shadow-none rounded-sm bg-background ">
       <CardContent className="grid gap-3">
         <Label>Name</Label>
         <Input
@@ -56,18 +57,30 @@ export const WorkspaceSettings = ({
               ...workspaceData,
               name: e.target?.value,
             });
+            if (workspaceName !== e.target.value) {
+              setDisable(false);
+            } else {
+              setDisable(true);
+            }
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleWorkspaceUpdate(workspaceData);
+              setDisable(true)
+            }
           }}
           placeholder="Workspace Name"
           className=""
         />
       </CardContent>
       <CardFooter>
-        <CardAction className="px-1">
+        <CardAction className="px-0.5">
           <Button
             onClick={() => handleWorkspaceUpdate(workspaceData)}
             variant={"destructive"}
             className="w-[120px]"
             size={"lg"}
+            disabled={disable}
           >
             Submit
           </Button>

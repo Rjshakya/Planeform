@@ -40,14 +40,14 @@ export default function Page() {
 
   return (
     <main className=" w-full pb-12 relative overflow-hidden">
-      <div className=" max-w-4xl  mx-auto">
-        <div className=" mb-8 ">
-          <p className=" text-muted-foreground text-3xl md:text-5xl font-semibold tracking-tighter">
+      <div className="grid gap-12 max-w-4xl  mx-auto">
+        <div className=" px-2">
+          <p className=" text-muted-foreground text-2xl font-semibold">
             {data?.data?.form?.name || "form"}
           </p>
         </div>
         <Tabs
-          className="w-full px-2 "
+          className="grid "
           value={value}
           onValueChange={(v) => {
             setValue(v);
@@ -55,10 +55,10 @@ export default function Page() {
         >
           <TabsList
             activeClassName="bg-transparent border-b-2 border-ring shadow-none rounded-none  "
-            className=" h-14 rounded-sm bg-transparent gap-5 w-full sm:w-fit  overflow-auto flex  items-center justify-between px-2"
+            className=" h-14 rounded-sm bg-transparent gap-4 w-full sm:w-fit overflow-auto flex  items-center justify-between "
           >
             <TabsTrigger
-              className="border-0  text-base py-4 px-2 gap-2"
+              className="border-0 text-left text-sm py-4 px-2 gap-2"
               value="Submission"
             >
               <div>
@@ -96,7 +96,7 @@ export default function Page() {
               Submission
             </TabsTrigger>
             <TabsTrigger
-              className=" border-0 text-left text-base py-4  px-2 gap-2"
+              className=" border-0 text-left text-sm py-4  px-2 gap-2"
               value="Analytics"
             >
               <div>
@@ -136,7 +136,7 @@ export default function Page() {
               Analytics
             </TabsTrigger>
             <TabsTrigger
-              className=" border-0 text-left text-base py-4  px-2 gap-2"
+              className=" border-0 text-left text-sm py-4  px-2 gap-2"
               value="Integrations"
             >
               <div>
@@ -200,7 +200,7 @@ export default function Page() {
               Integrations
             </TabsTrigger>
             <TabsTrigger
-              className=" border-0 text-left text-base py-4  px-2 gap-2"
+              className=" border-0 text-left text-sm py-4  px-2 gap-2"
               value="Settings"
             >
               <div>

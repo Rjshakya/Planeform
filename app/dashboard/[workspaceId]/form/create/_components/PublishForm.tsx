@@ -76,7 +76,7 @@ export const PublishForm = () => {
     mutate(`/api/form/workspace/${workspace}`);
     setCreating(false);
     setOpen(false);
-    router.push(`/dashboard/workspace/${workspace}`);
+    router.push(`/dashboard/${workspace}`);
   };
 
   return (
@@ -178,7 +178,11 @@ export const handleFormSchema = (jsonDoc: JsonDoc): JsonDoc => {
 
         return opt;
       });
-      return { ...c, attrs: { ...c.attrs, id: multipleChoiceId }, content: mapWithOption };
+      return {
+        ...c,
+        attrs: { ...c.attrs, id: multipleChoiceId },
+        content: mapWithOption,
+      };
     }
 
     if (c?.type?.includes("Input") && c?.type !== "multipleChoiceInput") {

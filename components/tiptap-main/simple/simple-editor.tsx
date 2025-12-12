@@ -16,19 +16,19 @@ import { Focus, Placeholder, Selection } from "@tiptap/extensions";
 
 import { FieldValues, useForm, UseFormReturn } from "react-hook-form";
 import { Form } from "@/components/ui/form";
-import { shortInputNode } from "@/components/custome-nodes/shortinput/node";
-import { longInputNode } from "@/components/custome-nodes/longinput/node";
+import { shortInputNode } from "@/components/custom-nodes/shortinput/node";
+import { longInputNode } from "@/components/custom-nodes/longinput/node";
 import {
   multipleChoiceNode,
   optionNode,
-} from "@/components/custome-nodes/multiple-choices/node";
+} from "@/components/custom-nodes/multiple-choices/node";
 
 import { useEditorStore } from "@/stores/useEditorStore";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { useFormStore } from "@/stores/useformStore";
 import { TextStyle, FontFamily } from "@tiptap/extension-text-style";
 
-import { dateInputNode } from "@/components/custome-nodes/date-input/node";
+import { dateInputNode } from "@/components/custom-nodes/date-input/node";
 
 import {
   Slash,
@@ -45,11 +45,11 @@ import { EditorDragHandle } from "./drag-handle";
 import UploadImage from "tiptap-extension-upload-image";
 import { apiClient } from "@/lib/axios";
 import axios from "axios";
-import { fileUploadNode } from "@/components/custome-nodes/file-upload/node";
+import { fileUploadNode } from "@/components/custom-nodes/file-upload/node";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { emailInputNode } from "@/components/custome-nodes/email/node";
+import { emailInputNode } from "@/components/custom-nodes/email/node";
 import { Loader } from "lucide-react";
 
 const suggestions = createSuggestionsItems([
@@ -895,11 +895,11 @@ export function SimpleEditor({
               <EditorContent
                 editor={editor}
                 role="presentation"
-                className="  w-full h-full flex flex-col mx-auto  md:px-1"
+                className="  w-full h-full flex flex-col max-w-lg mx-auto  md:px-1"
                 ref={editorContentRef}
               />
             )}
-            <div className={`${isEditable && "max-w-3xl"} mx-auto px-1.5`}>
+            <div className={`max-w-lg mx-auto px-1.5`}>
               <Button
                 style={
                   {
@@ -949,7 +949,7 @@ export function EditorWithSuggestions({
         editor={editor}
         role="presentation"
         className={`w-full h-full flex flex-col mx-auto px-1 sm:mt-0  mt-16   relative ${
-          editor.isEditable && "max-w-3xl mx-auto pb-4"
+          editor.isEditable && "max-w-lg mx-auto pb-4"
         }`}
         ref={editorRef}
       />

@@ -8,13 +8,13 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Card, CardContent } from "./ui/card";
-import { InsertShortInput } from "./custome-nodes/shortinput/Insert";
-import { InsertLongInput } from "./custome-nodes/longinput/Insert";
-import { InsertMultipleChoice } from "./custome-nodes/multiple-choices/Insert";
+import { InsertShortInput } from "./custom-nodes/shortinput/Insert";
+import { InsertLongInput } from "./custom-nodes/longinput/Insert";
+import { InsertMultipleChoice } from "./custom-nodes/multiple-choices/Insert";
 import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
-import { InsertPhoneInput } from "./custome-nodes/phoneinput/Insert";
-import { InsertDateInput } from "./custome-nodes/date-input/Insert";
+import { InsertPhoneInput } from "./custom-nodes/phoneinput/Insert";
+import { InsertDateInput } from "./custom-nodes/date-input/Insert";
 
 import { ChevronDown, TextCursorInput } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";

@@ -20,8 +20,8 @@ import {
 } from "@/components/tiptap-ui-primitive/toolbar";
 import { TiptapMarkDropdown } from "@/components/tiptap-mark-dropdown";
 import { TiptapTextAlignDropdown } from "@/components/tiptap-text-align-dropdown";
-import { CutomizationPanel } from "@/components/custome-nodes/CutomizationPanel";
-import { PreviewForm } from "@/app/dashboard/[workspaceId]/form/create/_components/PreviewForm";
+import { CutomizationPanel } from "@/components/custom-nodes/CutomizationPanel";
+import { PreviewButton } from "@/app/dashboard/[workspaceId]/form/create/_components/PreviewBtn";
 import { EditForm } from "@/app/dashboard/[workspaceId]/form/edit/[formId]/_components/EditForm";
 import { PublishForm } from "@/app/dashboard/[workspaceId]/form/create/_components/PublishForm";
 import { Button } from "@/components/ui/button";
@@ -34,7 +34,6 @@ import { Editor } from "@tiptap/core";
 import { cn } from "@/lib/utils";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -51,7 +50,7 @@ const MainToolbarContent = ({
   return (
     <div
       className={cn(
-        `bg-card w-full flex overflow-x-auto overscroll-x-contain overscroll-contain pb-2 pt-1  select-none`,
+        `bg-background w-full flex overflow-x-auto overscroll-x-contain overscroll-contain pb-2 pt-1  select-none`,
         `${
           isMobile
             ? `border-t-2  border-border/80`
@@ -59,7 +58,7 @@ const MainToolbarContent = ({
         }`
       )}
     >
-      {path !== "/" && (
+      {path !== "/" && path !== "/landing" && (
         <ToolbarGroup>
           <SidebarTrigger />
         </ToolbarGroup>
@@ -72,11 +71,6 @@ const MainToolbarContent = ({
       </ToolbarGroup>
 
       <Separator className="mx-2" orientation="vertical" />
-      {/* <ToolbarGroup>
-        <CustomInputsDropdown />
-      </ToolbarGroup> */}
-
-      {/* <Separator className="mx-2" orientation="vertical" /> */}
 
       <ToolbarGroup>
         <HeadingDropdownMenu levels={[1, 2, 3]} portal={isMobile} />
@@ -102,16 +96,8 @@ const MainToolbarContent = ({
 
       <Separator className="mx-2" orientation="vertical" />
 
-      {/* <ToolbarSeparator /> */}
-
       <ToolbarGroup>
         <TiptapTextAlignDropdown />
-      </ToolbarGroup>
-
-      {/* <Separator className="mx-2" orientation="vertical" /> */}
-
-      <ToolbarGroup>
-        <ImageUploadButton text="Add" />
       </ToolbarGroup>
 
       <ToolbarGroup>
@@ -121,7 +107,7 @@ const MainToolbarContent = ({
       <Separator className="mx-2" orientation="vertical" />
 
       <ToolbarGroup className="ml-2">
-        <PreviewForm />
+        <PreviewButton />
       </ToolbarGroup>
 
       <ToolbarGroup className="ml-2">
@@ -197,7 +183,7 @@ export const TiptapToolBar = memo(function ToolBarComp({
       className={cn(
         "w-full z-30  ",
         `${isMobile ? " fixed inset-x-0 top-0" : "sticky top-0"}`,
-        `${path === "/" && "hidden"}`
+        `${isMobile && (path === "/" || path === "/landing") && "hidden"}`
       )}
       ref={toolbarRef}
       // style={{

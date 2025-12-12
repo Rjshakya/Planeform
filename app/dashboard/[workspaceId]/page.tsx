@@ -49,9 +49,9 @@ export default function Page() {
   }
 
   return (
-    <div className="grid gap-4 max-w-4xl w-full mx-auto">
-      <div className=" mb-8  flex justify-between items-center gap-2">
-        <div className=" text-muted-foreground text-3xl md:text-5xl font-semibold tracking-tighter">
+    <div className="grid gap-12 max-w-4xl w-full mx-auto">
+      <div className="flex justify-between items-center gap-2">
+        <div className=" text-muted-foreground text-2xl font-semibold">
           {data?.workspace?.name || "Your workspace"}
         </div>
 
@@ -95,12 +95,12 @@ export default function Page() {
       </div>
       <Tabs defaultValue="forms" className="w-full">
         <TabsList
-          activeClassName="bg-transparent border-b-2 border-ring shadow-none rounded-none "
-          className="h-14 rounded-sm bg-transparent gap-4"
+          activeClassName="bg-transparent border-b-2 border-ring shadow-none rounded-none  "
+          className=" h-14 rounded-sm bg-transparent gap-4 w-full sm:w-fit  overflow-auto flex  items-center justify-between "
         >
           <TabsTrigger
             data-id={"forms"}
-            className="border-0 text-left text-base w-full h-full py-4  px-2 gap-2"
+            className="border-0 text-left text-sm w-full h-full py-4  px-4 gap-2"
             value="forms"
           >
             <div>
@@ -148,7 +148,7 @@ export default function Page() {
           </TabsTrigger>
           <TabsTrigger
             data-id={"settings"}
-            className="border-0 text-left text-base w-full h-full py-4  px-2 gap-2"
+            className="border-0 text-left text-sm w-full h-full py-4  px-4 gap-2"
             value="settings"
           >
             <div>
@@ -176,11 +176,11 @@ export default function Page() {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContents>
-          <TabsContent className="px-1  grid gap-2 mt-4 " value="forms">
+        <TabsContents className="mt-4">
+          <TabsContent className="  grid gap-2 " value="forms">
             <FormsTab forms={data?.workspace?.forms || []} />
           </TabsContent>
-          <TabsContent className="px-1 mt-4" value="settings">
+          <TabsContent className="" value="settings">
             <WorkspaceSettings workspaceName={data?.workspace?.name} />
           </TabsContent>
         </TabsContents>

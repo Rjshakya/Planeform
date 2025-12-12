@@ -19,10 +19,6 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
 
-// const geistSans = Geist({
-//   variable: "--font-geist-sans",
-//   subsets: ["latin"],
-// });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -130,7 +126,7 @@ export default function RootLayout({
         className={cn(`${dmSans.variable} ${geistMono.variable} ${inter.variable} ${geist.variable} ${spaceGrotesk.variable} ${playFairDisplay.variable} antialiased , ${roboto.variable}
           ${robotoMono.variable} ${robotoSerif.variable} ${poppins.variable} ${acme.variable} ${playfair.variable} ${instrumentSerif.variable}`)}
       >
-        <div className={`font-sans tracking-tighter w-full min-h-screen`}>{children}</div>
+        <div className={`font-sans tracking-tighter `}>{children}</div>
         <Toaster className="font-sans" position="top-right" />
       </body>
     </html>

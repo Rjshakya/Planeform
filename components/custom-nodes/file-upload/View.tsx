@@ -11,7 +11,13 @@ import {
 import { useFormStore } from "@/stores/useformStore";
 // import FileUploadComp from "@/components/comp-547";
 import { Button } from "@/components/ui/button";
-import { AlertCircleIcon, ImageIcon, UploadIcon, XIcon } from "lucide-react";
+import {
+  AlertCircleIcon,
+  ImageIcon,
+  Loader,
+  UploadIcon,
+  XIcon,
+} from "lucide-react";
 import {
   FileMetadata,
   FileUploadState,
@@ -35,6 +41,7 @@ export const FileUploadInputView = (props: NodeViewProps) => {
     files: [],
     isDragging: false,
     errors: [],
+    isUploading: false,
   });
   const pathName = usePathname();
   const { formId } = useParams();
@@ -88,13 +95,19 @@ export const FileUploadInputView = (props: NodeViewProps) => {
     [accept, maxSize]
   );
 
+  // main fn that is uploading file to storage
   const createPreview = useCallback(
     async (file: File | FileMetadata): Promise<string | undefined> => {
       if (file instanceof File) {
+        setState((p) => ({ ...p, isUploading: true }));
         const { name } = file;
         let url = URL.createObjectURL(file);
 
-        if (pathName.includes("/create") || pathName.includes("/edit")) {
+        if (
+          pathName.includes("/create") ||
+          pathName.includes("/edit") ||
+          pathName.includes("/preview")
+        ) {
           return url;
         }
 
@@ -119,6 +132,7 @@ export const FileUploadInputView = (props: NodeViewProps) => {
           toast.error("Failed to upload file.");
         }
 
+        setState((p) => ({ ...p, isUploading: false }));
         return url;
       }
       return file.url;
@@ -383,7 +397,7 @@ export const FileUploadInputView = (props: NodeViewProps) => {
               className=" text-md pl-1 grid gap-1"
               id={id}
             >
-              {/* {field?.} */}
+              {/* {label.} */}
               <NodeViewContent as="div" className=" min-w-[20px] w-full" />
 
               <FormControl>
@@ -418,6 +432,13 @@ export const FileUploadInputView = (props: NodeViewProps) => {
                       onBlur={onBlur}
                       aria-invalid={fieldState.invalid}
                     />
+
+                    {/* uploading loader */}
+                    {state.isUploading && (
+                      <div className="absolute inset-x-0 z-30 size-full bg-muted flex items-center justify-center">
+                        <Loader className="animate-spin" />
+                      </div>
+                    )}
 
                     <div className="flex flex-col items-center justify-center px-4 py-3 text-center">
                       <div
@@ -456,7 +477,7 @@ export const FileUploadInputView = (props: NodeViewProps) => {
                   {/* File list */}
 
                   {state?.files?.length > 0 && (
-                    <div className="space-y-2">
+                    <div className="space-y-2 mt-2">
                       {state?.files?.map((file) => (
                         <div
                           key={file?.id}
@@ -508,7 +529,6 @@ export const FileUploadInputView = (props: NodeViewProps) => {
                 </div>
               </FormControl>
             </FormLabel>
-
             <FormMessage />
           </FormItem>
         )}

@@ -39,6 +39,7 @@ export type FileUploadState = {
   files: FileWithPreview[];
   isDragging: boolean;
   errors: string[];
+  isUploading:boolean
 };
 
 export type FileUploadActions = {
@@ -81,13 +82,8 @@ export const useFileUpload = (
     })),
     isDragging: false,
     errors: [],
+    isUploading:false
   });
-  // const pathName = usePathname();
-  // let isPreview = false;
-
-  // if (pathName.includes("/create") || pathName.includes("/edit")) {
-  //   isPreview = true;
-  // }
 
   const inputRef = useRef<HTMLInputElement>(null);
 

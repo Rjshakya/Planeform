@@ -45,7 +45,7 @@ export function NavWorkspaces({
                 <SidebarMenuButton asChild>
                   <Link
                     className=" flex items-center"
-                    href={`/dashboard/workspace/${workspace?.id}`}
+                    href={`/dashboard/${workspace?.id}`}
                   >
                     <span>
                       <svg
@@ -74,7 +74,7 @@ export function NavWorkspaces({
                         </defs>
                       </svg>
                     </span>
-                    <span className=" pl-6">{workspace?.name}</span>
+                    <span className=" pl-6 text-xs">{workspace?.name}</span>
                   </Link>
                 </SidebarMenuButton>
                 <CollapsibleTrigger asChild>
@@ -98,7 +98,7 @@ export function NavWorkspaces({
                           <Link
                             href={`/dashboard/${workspace?.id}/form/view/${form?.shortId}`}
                           >
-                            <span>{form?.name}</span>
+                            <span className="text-xs">{form?.name}</span>
                           </Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>

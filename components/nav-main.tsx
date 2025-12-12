@@ -20,13 +20,13 @@ export function NavMain({
   }[]
 }) {
   return (
-    <SidebarMenu>
+    <SidebarMenu className="">
       {items.map((item) => (
         <SidebarMenuItem key={item.title}>
           <SidebarMenuButton asChild isActive={item.isActive}>
             <Link href={item.url}>
               <item.icon />
-              <span>{item.title}</span>
+              <span className="text-xs tracking-tight">{item.title}</span>
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>

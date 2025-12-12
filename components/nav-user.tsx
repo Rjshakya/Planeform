@@ -45,11 +45,7 @@ import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
-import { useRouter } from "next/navigation";
-import { apiClient } from "@/lib/axios";
-import useSWR from "swr";
 import { Badge } from "./ui/badge";
-import { toast } from "sonner";
 import { format } from "date-fns";
 import {
   Card,
@@ -60,23 +56,10 @@ import {
   CardTitle,
 } from "./ui/card";
 
-import {
-  Isubscription,
-  usePlans,
-  useSubscriptions,
-} from "@/hooks/use-subscriptions";
+import { usePlans, useSubscriptions } from "@/hooks/use-subscriptions";
+import { useUser } from "@/hooks/use-User";
 
-
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string;
-    email: string;
-    avatar: string;
-    customerId: string;
-  };
-}) {
+export function NavUser() {
   const { isMobile } = useSidebar();
   const [address, setAddress] = useState({
     street: "",
@@ -85,6 +68,7 @@ export function NavUser({
     country: "",
     zipcode: "",
   });
+  const { user } = useUser();
 
   const [openDialog, setOpenDialog] = useState(false);
   const { loadingSubscriptions, subscriptionsData, plan } = useSubscriptions();
@@ -232,24 +216,24 @@ export function NavUser({
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage
-                  src={user.avatar || undefined}
-                  alt={user.name}
+                  src={user?.image || undefined}
+                  alt={user?.name || ""}
                   referrerPolicy="no-referrer"
                 />
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
-              {user && (
+              {
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{user?.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate text-xs">{user?.email}</span>
                 </div>
-              )}
+              }
 
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg font-sans"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
@@ -257,15 +241,15 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal mb-4">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar || ""} alt={user.name} />
+                  <AvatarImage src={user?.image || ""} alt={user?.name} />
                   <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                 </Avatar>
-                {user && (
+                {
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-medium">{user?.name}</span>
                     <span className="truncate text-xs">{user?.email}</span>
                   </div>
-                )}
+                }
               </div>
             </DropdownMenuLabel>
 

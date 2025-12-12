@@ -70,15 +70,9 @@ export const WorkspaceCard = (props: workspaceCardProps) => {
 
   return (
     <Item className=" py-2.5 px-2 cursor-pointer" asChild>
-      <Link href={`/dashboard/workspace/${props?.id}`}>
+      <Link href={`/dashboard/${props?.id}`}>
         <ItemContent className=" px-0.5 ">
           <ItemTitle>
-            {/* <Link
-            className=" hover:underline-offset-2 hover:underline"
-            href={`/dashboard/workspace/${props?.id}`}
-          >
-            <p className=" capitalize">{props?.name || "workspace"}</p>
-          </Link> */}
             <p className=" capitalize">{props?.name || "workspace"}</p>
           </ItemTitle>
         </ItemContent>
